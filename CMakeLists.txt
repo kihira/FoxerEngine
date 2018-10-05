@@ -26,7 +26,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glm)
 # sol2
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/sol)
 
-add_executable(301CR main.cpp)
+add_executable(301CR src/main.cpp)
 
 # Link libaries
 target_link_libraries(301CR ${LUA_LIBRARIES})

@@ -7,7 +7,9 @@ int main() {
     sol::state lua;
     lua.open_libraries(sol::lib::base, sol::lib::io);
 
-    lua.script_file("test.lua", &sol::script_default_on_error);
+    auto handler = &sol::script_default_on_error;
+
+    lua.script_file("test.lua", handler);
 
     std::cout << "Hello, World!" << std::endl;
     return 0;
