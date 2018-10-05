@@ -23,6 +23,9 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/glfw)
 # GLM
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glm)
 
+# sol2
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/sol)
+
 add_executable(301CR main.cpp)
 
 # Link libaries

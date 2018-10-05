@@ -1,20 +1,13 @@
+#define SOL_CHECK_ARGUMENTS 1
+
 #include <iostream>
-#include <lua.hpp>
+#include <sol.hpp>
 
 int main() {
-    lua_State *state = luaL_newstate();
-    luaL_openlibs(state);
+    sol::state lua;
+    lua.open_libraries(sol::lib::base, sol::lib::io);
 
-    std::string filename = "test.lua";
-    int err;
-    err = luaL_loadfile(state, filename.c_str()) || lua_pcall(state, 0, 0, 0);
-
-    if (err) {
-        std::cout << lua_tostring(state, -1) << std::endl;
-        lua_pop(state, 1);
-    }
-
-    lua_close(state);
+    lua.script_file("test.lua", &sol::script_default_on_error);
 
     std::cout << "Hello, World!" << std::endl;
     return 0;
