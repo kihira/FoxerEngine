@@ -6,9 +6,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 # lua
 if (APPLE)
-    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/liblua.a)
+    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/liblua53.a)
 else()
-    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/liblua.lib)
+    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/lua53.dll)
 endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lua/include)
 
@@ -23,7 +23,10 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/glfw)
 # GLM
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/glm)
 
-add_executable(301CR main.cpp)
+# sol2
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/sol)
+
+add_executable(301CR src/main.cpp)
 
 # Link libaries
 target_link_libraries(301CR ${LUA_LIBRARIES})
