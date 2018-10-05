@@ -6,9 +6,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 # lua
 if (APPLE)
-    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/liblua.a)
+    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/liblua53.a)
 else()
-    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/liblua.lib)
+    set(LUA_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lua/lib/lua53.dll)
 endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lua/include)
 
