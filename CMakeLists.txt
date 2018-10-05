@@ -28,3 +28,12 @@ add_executable(301CR main.cpp)
 # Link libaries
 target_link_libraries(301CR ${LUA_LIBRARIES})
 target_link_libraries(301CR glfw)
+
+# Symlink assets to an output resources folder
+set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
+set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:301CR>/resources)
+
+add_custom_command(
+        TARGET 301CR
+        POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
+        DEPENDS ${DESTINATION_RESOURCES})
