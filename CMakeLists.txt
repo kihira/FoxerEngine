@@ -3,21 +3,26 @@ project(301CR)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-
-#############################
-# Libraries
-#############################
-
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
-set(LIBRARIES "")
+
+# Source files
+set(SOURCES "src/main.cpp")
+
+add_executable(301CR ${SOURCES})
 
 # Lua
-if (APPLE)
-    list(APPEND LIBRARIES ${LIBRARIES_ROOT}/lua/lib/liblua53.a)
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/lua53.dll)
 else()
-    list(APPEND LIBRARIES ${LIBRARIES_ROOT}/lua/lib/lua53.dll)
+    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/liblua53.a)
 endif()
-include_directories(${LIBRARIES_ROOT}/lua/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/lua/include)
+
+# GLAD
+add_library(glad ${LIBRARIES_ROOT}/glad/src/glad.c)
+target_include_directories(glad PRIVATE ${LIBRARIES_ROOT}/glad/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/glad/include)
+target_link_libraries(${PROJECT_NAME} glad)
 
 # GLFW
 # Disable GLFW docs, tests and examples
@@ -26,38 +31,30 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${LIBRARIES_ROOT}/glfw)
-list(APPEND LIBRARIES glfw)
-
-# GLM
-include_directories(${LIBRARIES_ROOT}/glm)
-
-# sol2
-include_directories(${LIBRARIES_ROOT}/sol)
+target_link_libraries(${PROJECT_NAME} glfw)
 
 # Enet
 if (WIN32)
-    list(APPEND LIBRARIES ${LIBRARIES_ROOT}/enet/enet.lib)
+#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet.lib)
+add_subdirectory(${LIBRARIES_ROOT}/enet)
+target_link_libraries(${PROJECT_NAME} enet)
 else()
     add_subdirectory(${LIBRARIES_ROOT}/enet)
+    target_link_libraries(${PROJECT_NAME} enet)
 endif()
-include_directories(${LIBRARIES_ROOT}/enet/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/enet/include)
 
-# box2d
+# Box2D
 set(BOX2D_BUILD_EXAMPLES OFF)
 add_subdirectory(${LIBRARIES_ROOT}/box2d)
-list(APPEND LIBRARIES Box2D)
-include_directories (${Box2D_SOURCE_DIR})
+target_link_libraries(${PROJECT_NAME} Box2D)
+target_include_directories(${PROJECT_NAME} PRIVATE ${Box2D_SOURCE_DIR})
 
-#############################
-# Sources files and linking
-#############################
+# GLM
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/glm)
 
-# Add files to executable
-add_executable(301CR src/main.cpp)
-
-# Link libaries
-target_link_libraries(301CR ${LIBRARIES})
-target_link_libraries(301CR chipmunk)
+# sol2
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/sol)
 
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
