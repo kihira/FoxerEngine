@@ -4,6 +4,10 @@ project(301CR)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
+#############################
+# Libraries
+#############################
+
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 set(LIBRARIES "")
 
@@ -38,12 +42,22 @@ else()
 endif()
 include_directories(${LIBRARIES_ROOT}/enet/include)
 
+# box2d
+set(BOX2D_BUILD_EXAMPLES OFF)
+add_subdirectory(${LIBRARIES_ROOT}/box2d)
+list(APPEND LIBRARIES Box2D)
+include_directories (${Box2D_SOURCE_DIR})
+
+#############################
+# Sources files and linking
+#############################
+
 # Add files to executable
 add_executable(301CR src/main.cpp)
 
 # Link libaries
-target_link_libraries(301CR ${LUA_LIBRARIES})
-target_link_libraries(301CR enet)
+target_link_libraries(301CR ${LIBRARIES})
+target_link_libraries(301CR chipmunk)
 
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
@@ -51,8 +65,5 @@ set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:301CR>/resources)
 
 add_custom_command(
         TARGET 301CR
-        POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
+        POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
         DEPENDS ${DESTINATION_RESOURCES})
-
-# Set resources folder
-add_compile_definitions(RESOURCE_LOC=./resources/)
