@@ -4,6 +4,7 @@
 #include <sol.hpp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <enet/enet.h>
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error " << error << ": " << desc << std::endl;
@@ -16,6 +17,9 @@ void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
 int main() {
     glfwSetErrorCallback(glfwErrorCallback);
 
+    /*
+     * InitializeGLFW
+     */
     std::cout << "GLFW " << glfwGetVersionString() << std::endl;
     if (!glfwInit()) {
         std::cerr << "Failed to init GLFW" << std::endl;
@@ -47,6 +51,16 @@ int main() {
         exit(EXIT_FAILURE);
     }
     std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
+
+    /*
+     * Initialise networking
+     */
+    std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
+    if (enet_initialize() != 0) {
+        std::cerr << "Failed to intialize ENet" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    atexit(enet_deinitialize);
 
     // Test lua
     sol::state lua;
