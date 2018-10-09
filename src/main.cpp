@@ -14,6 +14,10 @@ void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
     // todo handle resize
 }
 
+sol::protected_function_result luaErrorCallback(sol::protected_function_result pfr) {
+    return pfr;
+}
+
 int main() {
     glfwSetErrorCallback(glfwErrorCallback);
 
@@ -66,9 +70,7 @@ int main() {
     sol::state lua;
     lua.open_libraries(sol::lib::base, sol::lib::io);
 
-    auto handler = &sol::script_default_on_error;
-
-    lua.script_file("resources/scripts/test.lua", handler);
+    lua.script_file("resources/scripts/test.lua", luaErrorCallback);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {

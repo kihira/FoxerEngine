@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
-project(301CR)
+project(GameEngine301CR)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 
 # Source files
-set(SOURCES "src/main.cpp")
+set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h)
 
-add_executable(301CR ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Lua
 if (WIN32)
@@ -58,9 +58,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/sol)
 
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
-set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:301CR>/resources)
+set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
 
 add_custom_command(
-        TARGET 301CR
+        TARGET ${PROJECT_NAME}
         POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
         DEPENDS ${DESTINATION_RESOURCES})
