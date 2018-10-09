@@ -14,7 +14,7 @@ void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
     // todo handle resize
 }
 
-sol::protected_function_result luaErrorCallback(sol::protected_function_result pfr) {
+sol::protected_function_result luaErrorCallback(lua_State*, sol::protected_function_result pfr) {
     return pfr;
 }
 

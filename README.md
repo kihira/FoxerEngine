@@ -5,6 +5,7 @@
 - Sol2 2.20.3
 - ENet 1.3.13
 - Box2D 2.3.1
+- ImGui 1.65
 
 ## Build
 All the libraries are contained within the repo and building the project

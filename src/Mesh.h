@@ -1,0 +1,10 @@
+#ifndef GAMEENGINE301CR_MESH_H
+#define GAMEENGINE301CR_MESH_H
+
+
+class Mesh {
+
+};
+
+
+#endif //GAMEENGINE301CR_MESH_H
