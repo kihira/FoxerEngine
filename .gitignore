@@ -3,6 +3,10 @@ cmake-build-*/
 
 # Build
 bin/
+build/
 
 # CLion
 .idea/
+
+# VSCode
+.vscode/

@@ -20,17 +20,6 @@ set(LIB_INSTALL_DIR lib${LIB_SUFFIX})
 # The Box2D library.
 add_subdirectory(Box2D)
 
-if(BOX2D_BUILD_EXAMPLES)
-  # HelloWorld console example.
-  add_subdirectory(HelloWorld)
-
-  # Testbed and dependencies.
-  find_package(OpenGL REQUIRED)
-  add_subdirectory(freeglut)
-  add_subdirectory(glui)
-  add_subdirectory(Testbed)
-endif(BOX2D_BUILD_EXAMPLES)
-
 if(BOX2D_INSTALL_DOC)
   install(DIRECTORY Documentation DESTINATION share/doc/Box2D PATTERN ".svn" EXCLUDE)
 endif(BOX2D_INSTALL_DOC)
