@@ -10,3 +10,6 @@ build/
 
 # VSCode
 .vscode/
+
+# Example files from libraries
+*examples/*

@@ -25,7 +25,7 @@ GLuint AssetManager::LoadShader(const std::string &name, GLenum shaderType) {
     getline(file, shaderSource, '\0');
 
     GLuint shader = glCreateShader(shaderType);
-    glShaderSource(shader, 1, &shaderSource[0], nullptr);
+    // todo glShaderSource(shader, 1, &shaderSource[0], nullptr);
     glCompileShader(shader);
 
     // Check if the shader has compiled correctly, means its valid code

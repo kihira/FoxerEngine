@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 
 # Source files
-set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/Mesh.cpp src/Mesh.h src/Shader.cpp src/Shader.h)
+set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/Mesh.cpp src/Mesh.h src/Shader.cpp src/Shader.h src/SoundManager.cpp src/SoundManager.h)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
@@ -35,7 +35,6 @@ target_link_libraries(${PROJECT_NAME} glfw)
 
 # Enet
 if (WIN32)
-#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet.lib)
 add_subdirectory(${LIBRARIES_ROOT}/enet)
 target_link_libraries(${PROJECT_NAME} enet)
 else()
@@ -45,10 +44,22 @@ endif()
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/enet/include)
 
 # Box2D
-set(BOX2D_BUILD_EXAMPLES OFF)
 add_subdirectory(${LIBRARIES_ROOT}/box2d)
 target_link_libraries(${PROJECT_NAME} Box2D)
 target_include_directories(${PROJECT_NAME} PRIVATE ${Box2D_SOURCE_DIR})
+
+# FMOD
+if (APPLE)
+    if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmodF.dylib)
+        #target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/studio/lib/libfmodstudioF.dylib)
+    else()
+        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmod.dylib)
+        #target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/studio/lib/libfmodstudio.dylib)
+    endif()
+endif()
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/fmod/lowlevel/inc)
+#target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/fmod/studio/inc)
 
 # GLM
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/glm)

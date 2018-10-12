@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <enet/enet.h>
+#include "SoundManager.h"
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error " << error << ": " << desc << std::endl;
@@ -65,6 +66,11 @@ int main() {
         exit(EXIT_FAILURE);
     }
     atexit(enet_deinitialize);
+
+    /*
+     * Initialise sound system
+     */
+    auto *soundManager = new SoundManager();
 
     // Test lua
     sol::state lua;
