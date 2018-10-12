@@ -13,7 +13,7 @@ SoundManager::SoundManager() {
     uint version;
     system->getVersion(&version);
     ERRCHECK(result);
-    std::cout << "FMOD " << version << std::endl;
+    std::cout << "FMOD 0x" << std::hex << version << std::endl;
 }
 
 SoundManager::~SoundManager() {
@@ -45,4 +45,9 @@ FMOD::Sound *SoundManager::createSound(const char *file) {
 
     sounds.push_back(sound);
     return sound;
+}
+
+void SoundManager::update() {
+    system->update();
+    ERRCHECK(result);
 }

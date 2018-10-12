@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 
 # Source files
-set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/Mesh.cpp src/Mesh.h src/Shader.cpp src/Shader.h src/SoundManager.cpp src/SoundManager.h)
+set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/Mesh.cpp src/Mesh.h src/Shader.cpp src/Shader.h src/SoundManager.cpp src/SoundManager.h src/gl_helper.hpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 

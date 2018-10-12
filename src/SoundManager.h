@@ -18,6 +18,7 @@ public:
     SoundManager();
     ~SoundManager();
     FMOD::Sound *createSound(const char *file);
+    void update();
 };
 
 

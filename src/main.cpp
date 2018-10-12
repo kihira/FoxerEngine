@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <enet/enet.h>
 #include "SoundManager.h"
+#include "gl_helper.hpp"
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error " << error << ": " << desc << std::endl;
@@ -81,10 +82,15 @@ int main() {
     // Main loop
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOTIDY
+        GLERRCHECK();
+
+        soundManager->update();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    delete soundManager;
 
     return 0;
 }
