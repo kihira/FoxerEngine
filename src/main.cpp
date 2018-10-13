@@ -57,16 +57,6 @@ int main() {
     }
     std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
 
-    /*
-     * Initialise networking
-     */
-    std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
-    if (enet_initialize() != 0) {
-        std::cerr << "Failed to intialize ENet" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    atexit(enet_deinitialize);
-
     // Test lua
     sol::state lua;
     lua.open_libraries(sol::lib::base, sol::lib::io);
