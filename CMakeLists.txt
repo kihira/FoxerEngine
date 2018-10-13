@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.04)
 project(GameEngine301CR)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -6,13 +6,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 
 # Source files
-set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/Mesh.cpp src/Mesh.h src/Shader.cpp src/Shader.h src/SoundManager.cpp src/SoundManager.h src/gl_helper.hpp)
+set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/Mesh.cpp src/Mesh.h src/Shader.cpp src/Shader.h src/gl_helper.hpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Lua
 if (WIN32)
-    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/lua53.dll)
+    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/lua53.lib)
 else()
     target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/liblua53.a)
 endif()
@@ -35,8 +35,8 @@ target_link_libraries(${PROJECT_NAME} glfw)
 
 # Enet
 if (WIN32)
-add_subdirectory(${LIBRARIES_ROOT}/enet)
-target_link_libraries(${PROJECT_NAME} enet)
+    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet.lib)
+    target_link_libraries(${PROJECT_NAME} ws2_32 winmm) # Winsock32 libraries required by enet
 else()
     add_subdirectory(${LIBRARIES_ROOT}/enet)
     target_link_libraries(${PROJECT_NAME} enet)
@@ -49,17 +49,17 @@ target_link_libraries(${PROJECT_NAME} Box2D)
 target_include_directories(${PROJECT_NAME} PRIVATE ${Box2D_SOURCE_DIR})
 
 # FMOD
-if (APPLE)
-    if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmodF.dylib)
-        #target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/studio/lib/libfmodstudioF.dylib)
-    else()
-        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmod.dylib)
-        #target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/studio/lib/libfmodstudio.dylib)
-    endif()
-endif()
-target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/fmod/lowlevel/inc)
-#target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/fmod/studio/inc)
+#if (APPLE)
+#    if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+#        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmodL.dylib)
+#    else()
+#        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmod.dylib)
+#    endif()
+#else()
+##    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/fmod_vc.lib)
+#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmod.a)
+#endif()
+#target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/fmod/lowlevel/inc)
 
 # GLM
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/glm)
