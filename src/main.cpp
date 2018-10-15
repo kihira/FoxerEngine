@@ -6,13 +6,14 @@
 #include <GLFW/glfw3.h>
 #include <enet/enet.h>
 #include "gl_helper.hpp"
+#include "KeyHandler.h"
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error " << error << ": " << desc << std::endl;
 }
 
 void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
-    // todo handle resize
+    glViewport(0, 0, width, height);
 }
 
 sol::protected_function_result luaErrorCallback(lua_State*, sol::protected_function_result pfr) {
@@ -56,6 +57,13 @@ int main() {
         exit(EXIT_FAILURE);
     }
     std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
+
+    /*
+     * Setup key handler
+     */
+    KeyHandler *keyHandler = new KeyHandler();
+    glfwSetWindowUserPointer(window, keyHandler);
+    glfwSetKeyCallback(window, KeyHandler::keyCallback);
 
     // Test lua
     sol::state lua;
