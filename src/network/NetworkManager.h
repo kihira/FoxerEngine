@@ -9,6 +9,7 @@
 typedef void (* PacketHandlerFn)(int packetID, void *data, size_t dataLength);
 
 struct PacketMeta {
+    enet_uint8 id;
     enet_uint8 channel;
     ENetPacketFlag packetFlag;
     PacketHandlerFn packetHandler;
@@ -21,6 +22,7 @@ private:
     ENetPeer *peer;
     std::map<enet_uint8, PacketMeta> packetHandlers;
     static void packetFreeCallback(ENetPacket *packet);
+    ENetPacket *buildPacket(PacketMeta meta, void *data, size_t dataLength);
 public:
     NetworkManager();
     void startServer();
@@ -29,6 +31,7 @@ public:
     void shutdown();
     void registerPacket(enet_uint8 packetID, PacketMeta meta);
     void sendToServer(enet_uint8 packetID, void *data, size_t dataLength);
+    void sendToAllClients(enet_uint8 packetID, void *data, size_t dataLength);
     void connectToServer(const char *address, enet_uint16 port);
 };
 

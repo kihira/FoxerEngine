@@ -73,17 +73,16 @@ void NetworkManager::registerPacket(enet_uint8 packetID, PacketMeta meta) {
 
 void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLength) {
     PacketMeta meta = packetHandlers[packetID];
+    ENetPacket *packet = buildPacket(meta, data, dataLength);
 
-    // Append packet id to the data so we know what to do with it on the other end
-    void *newData = malloc(sizeof(enet_uint8) + dataLength);
-    memcpy(newData, &packetID, sizeof(enet_uint8));
-    memcpy(&newData + sizeof(enet_uint8), data, dataLength);
-    dataLength += sizeof(enet_uint8);
-
-    ENetPacket *packet = enet_packet_create(newData, dataLength, meta.packetFlag);
-    packet->freeCallback = NetworkManager::packetFreeCallback;
     enet_peer_send(peer, meta.channel, packet);
-    // enet_host_broadcast(host, packet); send to all connected peers
+}
+
+void NetworkManager::sendToAllClients(enet_uint8 packetID, void *data, size_t dataLength) {
+    PacketMeta meta = packetHandlers[packetID];
+    ENetPacket *packet = buildPacket(meta, data, dataLength);
+
+    enet_host_broadcast(host, meta.channel, packet);
 }
 
 void NetworkManager::packetFreeCallback(ENetPacket *packet) {
@@ -99,4 +98,17 @@ void NetworkManager::connectToServer(const char *address, enet_uint16 port) {
     if (peer == nullptr) {
         std::cerr << "Failed to connect to server" << std::endl;
     }
+}
+
+ENetPacket *NetworkManager::buildPacket(PacketMeta meta, void *data, size_t dataLength) {
+    // Append packet ID to the start of the packet so we know what to do with it on the other end
+    void *newData = malloc(sizeof(enet_uint8) + dataLength);
+    memcpy(newData, &meta.id, sizeof(enet_uint8));
+    memcpy(&newData + sizeof(enet_uint8), data, dataLength);
+    dataLength += sizeof(enet_uint8);
+
+    ENetPacket *packet = enet_packet_create(newData, dataLength, meta.packetFlag);
+    packet->freeCallback = NetworkManager::packetFreeCallback;
+
+    return packet;
 }
