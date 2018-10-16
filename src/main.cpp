@@ -9,7 +9,7 @@
 #include "KeyHandler.h"
 
 void glfwErrorCallback(int error, const char *desc) {
-    std::cerr << "GLFW Error " << error << ": " << desc << std::endl;
+    std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
 }
 
 void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
@@ -32,6 +32,9 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    atexit(glfwTerminate);
+
+    // Required OpenGL 3.2 Core at least
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -43,7 +46,6 @@ int main() {
     GLFWwindow *window = glfwCreateWindow(720, 405, "301CR Engine", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
         exit(EXIT_FAILURE);
     }
 
