@@ -174,5 +174,31 @@ Shader *AssetManager::getErrorShader() {
         return shaderPrograms[ERR_SHADER];
     }
 
-    return nullptr;
+    GLuint vertShader, fragShader, program;
+
+    // Vertex shader
+    vertShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertShader, 1, &errVertShaderSrc, nullptr);
+    glCompileShader(vertShader);
+
+    // Fragment shader
+    fragShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(fragShader, 1, &errFragShaderSrc, nullptr);
+    glCompileShader(fragShader);
+
+    // Create program and attach shaders
+    program = glCreateProgram();
+    glAttachShader(program, vertShader);
+    glAttachShader(program, fragShader);
+    glLinkProgram(program);
+
+    // Don't need shader sources after linked
+    glDeleteShader(vertShader);
+    glDeleteShader(fragShader);
+
+    Shader *shader = new Shader(program);
+    shader->registerUniform("MVP");
+    shaderPrograms[ERR_SHADER] = shader;
+
+    return shader;
 }
