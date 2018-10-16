@@ -1,3 +1,5 @@
+#include <memory>
+
 #define SOL_CHECK_ARGUMENTS 1
 
 #include <iostream>
@@ -7,6 +9,7 @@
 #include <enet/enet.h>
 #include "gl_helper.hpp"
 #include "KeyHandler.h"
+#include "AssetManager.h"
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
@@ -72,6 +75,10 @@ int main() {
     lua.open_libraries(sol::lib::base, sol::lib::io);
 
     lua.script_file("resources/scripts/test.lua", luaErrorCallback);
+
+    auto assetManager = std::make_unique<AssetManager>();
+    auto shader = assetManager->loadShaderProgram("doesnotexist");
+    auto mesh = assetManager->loadMesh("doesnotexist");
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {

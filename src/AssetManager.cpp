@@ -10,19 +10,17 @@
 const char *errVertShaderSrc = R"(
 #version 330 core
 uniform mat3 MVP;
-layout(position = 0) in vec3 vPos;
+layout(location = 0) in vec3 vPos;
 void main() {
     gl_Position = vec4(MVP * vPos, 1);
-}
-)";
+})";
 
 const char *errFragShaderSrc = R"(
 #version 330 core
 out vec4 fragColour;
 void main() {
     fragColour = vec4(1, 0.41, 0.7, 1);
-}
-)";
+})";
 
 const float errCubeVertices[24] = {
         -1, -1, 1,
@@ -182,7 +180,7 @@ Shader *AssetManager::getErrorShader() {
     glCompileShader(vertShader);
 
     // Fragment shader
-    fragShader = glCreateShader(GL_VERTEX_SHADER);
+    fragShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragShader, 1, &errFragShaderSrc, nullptr);
     glCompileShader(fragShader);
 
