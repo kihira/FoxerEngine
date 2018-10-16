@@ -161,7 +161,7 @@ Mesh *AssetManager::getErrorMesh() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36, &errCubeIndices[0], GL_STATIC_DRAW);
 
-    Mesh *mesh = new Mesh(vao, {vboVertices, vboIndices}, 12, GL_TRIANGLES, GL_SHORT);
+    Mesh *mesh = new Mesh(vao, {vboVertices, vboIndices}, 12, GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes[ERR_MESH] = mesh;
 
     return mesh;

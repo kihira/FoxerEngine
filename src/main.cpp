@@ -1,5 +1,7 @@
 #include <memory>
 
+#include <memory>
+
 #define SOL_CHECK_ARGUMENTS 1
 
 #include <iostream>
@@ -7,9 +9,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <enet/enet.h>
+#include <glm/glm.hpp>
 #include "gl_helper.hpp"
 #include "KeyHandler.h"
 #include "AssetManager.h"
+#include "render/Camera.h"
+
+// temp
+std::unique_ptr<Camera> camera;
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
@@ -17,6 +24,7 @@ void glfwErrorCallback(int error, const char *desc) {
 
 void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
+    camera->resize(width, height);
 }
 
 sol::protected_function_result luaErrorCallback(lua_State*, sol::protected_function_result pfr) {
@@ -80,9 +88,15 @@ int main() {
     auto shader = assetManager->loadShaderProgram("doesnotexist");
     auto mesh = assetManager->loadMesh("doesnotexist");
 
+    // Create camera
+    camera = std::make_unique<Camera>(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0));
+
     // Main loop
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOTIDY
+
+        shader->use();
+        mesh->render();
         GLERRCHECK();
 
         glfwSwapBuffers(window);

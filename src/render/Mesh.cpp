@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include "Mesh.h"
+#include "../gl_helper.hpp"
 
 Mesh::Mesh(GLuint vao, std::vector<GLuint> vbos, GLuint vertexCount, GLenum mode, GLenum indicesType)
         : vao(vao), vbos(vbos), vertexCount(vertexCount), mode(mode), indicesType(indicesType) {}
@@ -16,4 +17,5 @@ void Mesh::render() {
     else {
         glDrawArrays(mode, 0, vertexCount);
     }
+    GLERRCHECK();
 }
