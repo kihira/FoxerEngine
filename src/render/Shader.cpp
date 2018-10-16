@@ -6,7 +6,10 @@
 #include "Shader.h"
 
 void Shader::use() {
-    if (program == 0) return; // todo fallback to default shader?
+    if (program == 0) {
+        std::cerr << "Something has gone awfully, terribly wrong and you should never ever see this message" << std::endl;
+        return;
+    }
     glUseProgram(program);
 }
 
@@ -30,7 +33,7 @@ void Shader::registerUniform(std::string name) {
     uniforms.insert(std::pair<std::string, GLuint>(name, uniformLoc));
 }
 
-Shader::Shader(GLint program) : program(program) {
+Shader::Shader(GLuint program) : program(program) {
 
 }
 

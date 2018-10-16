@@ -9,7 +9,7 @@ private:
     GLuint program = 0;
     std::map<std::string, GLint> uniforms;
 public:
-    Shader(GLint program);
+    Shader(GLuint program);
     void use();
     /**
      * Pre-emptively looks up a uniforms location and stores it for faster access later
