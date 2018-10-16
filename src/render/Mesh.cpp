@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include "Mesh.h"
 
-Mesh::Mesh(GLuint vao, GLuint vertexCount, GLenum mode, GLenum indicesType)
-        : vao(vao), vertexCount(vertexCount), mode(mode), indicesType(indicesType) {}
+Mesh::Mesh(GLuint vao, std::vector<GLuint> vbos, GLuint vertexCount, GLenum mode, GLenum indicesType)
+        : vao(vao), vbos(vbos), vertexCount(vertexCount), mode(mode), indicesType(indicesType) {}
 
 Mesh::~Mesh() {
     glDeleteVertexArrays(1, &vao);

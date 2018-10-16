@@ -24,7 +24,32 @@ void main() {
 }
 )";
 
-// TODO default fallback mesh
+const float errCubeVertices[24] = {
+        -1, -1, 1,
+        1, -1, 1,
+        1, 1, 1,
+        -1, 1, 1,
+        -1, -1, -1,
+        1, -1, -1,
+        1, 1, -1,
+        -1, 1, -1
+};
+
+const short errCubeIndices[36] = {
+        0, 1, 2, // BACK
+        2, 3, 1,
+        1, 5, 6, // RIGHT
+        6, 2, 1,
+        5, 4, 7, // FRONT
+        7, 6, 5,
+        4, 0, 3, // LEFT
+        3, 7, 4,
+        3, 2, 6, // TOP
+        6, 7, 3,
+        5, 4, 0, // BOTTOM
+        0, 1, 5
+};
+
 Mesh *AssetManager::loadMesh(std::string name) {
     if (meshes.find(name) != meshes.end()) {
         return meshes[name];
@@ -122,7 +147,26 @@ Mesh *AssetManager::getErrorMesh() {
     if (meshes.find(ERR_MESH) != meshes.end()) {
         return meshes[ERR_MESH];
     }
-    return nullptr;
+
+    GLuint vao, vboVertices, vboIndices;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glGenBuffers(1, &vboVertices);
+    glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
+    glBufferData(GL_ARRAY_BUFFER, 24, &errCubeVertices[0], GL_STATIC_READ);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    glGenBuffers(1, &vboIndices);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36, &errCubeIndices[0], GL_STATIC_DRAW);
+
+    Mesh *mesh = new Mesh(vao, {vboVertices, vboIndices}, 12, GL_TRIANGLES, GL_SHORT);
+    meshes[ERR_MESH] = mesh;
+
+    return mesh;
 }
 
 Shader *AssetManager::getErrorShader() {
