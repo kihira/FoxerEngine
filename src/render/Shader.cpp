@@ -30,6 +30,10 @@ void Shader::registerUniform(std::string name) {
     uniforms.insert(std::pair<std::string, GLuint>(name, uniformLoc));
 }
 
+Shader::Shader(GLint program) : program(program) {
+
+}
+
 template<typename T>
 void Shader::setUniform(const std::string &name, T value) {
     auto uniformLoc = uniforms.find(name);

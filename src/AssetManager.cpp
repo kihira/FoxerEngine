@@ -5,6 +5,7 @@
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
 #define ERR_MESH "ERROR"
+#define ERR_SIZE 1024
 
 const char *errVertShaderSrc = R"(
 #version 330 core
@@ -62,11 +63,11 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
 
     // Check if the shader has compiled correctly, means its valid code
     GLint err;
-    GLchar errData[512];
+    GLchar errData[ERR_SIZE];
     glGetShaderiv(shader, GL_COMPILE_STATUS, &err);
     if (!err)
     {
-        glGetShaderInfoLog(shader, 512, nullptr, errData);
+        glGetShaderInfoLog(shader, ERR_SIZE, nullptr, errData);
         std::cerr << "Failed to compile shader " << name << ": " << errData << std::endl;
         return 0;
     }
@@ -92,11 +93,29 @@ Shader *AssetManager::loadShaderProgram(std::string name) {
     file.close();
 
     // Load base shaders
-    GLuint vertShader, fragShader;
+    GLuint vertShader, fragShader, program;
     vertShader = loadShader(vertShaderName, GL_VERTEX_SHADER);
     fragShader = loadShader(fragShaderName, GL_FRAGMENT_SHADER);
 
-    return nullptr;
+    program = glCreateProgram();
+    glAttachShader(program, vertShader);
+    glAttachShader(program, fragShader);
+    glLinkProgram(program);
+
+    GLint err;
+    GLchar errData[ERR_SIZE];
+    glGetProgramiv(program, GL_LINK_STATUS, &err);
+    if (!err) {
+        glGetProgramInfoLog(program, ERR_SIZE, nullptr, errData);
+        std::cerr << "Failed to link shader " << name << ": " << std::endl << errData << std::endl;
+        return getErrorShader();
+    }
+
+    // Store shader and return
+    Shader *shader = new Shader(program);
+    shaderPrograms[name] = shader;
+
+    return shader;
 }
 
 Mesh *AssetManager::getErrorMesh() {
