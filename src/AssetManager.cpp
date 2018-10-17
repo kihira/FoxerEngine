@@ -1,6 +1,7 @@
 #include "AssetManager.h"
 #include <fstream>
 #include <iostream>
+#include "gl_helper.hpp"
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
@@ -9,10 +10,12 @@
 
 const char *errVertShaderSrc = R"(
 #version 330 core
-uniform mat3 MVP;
 layout(location = 0) in vec3 vPos;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 void main() {
-    gl_Position = vec4(MVP * vPos, 1);
+    gl_Position = projection * view * model * vec4(vPos, 1);
 })";
 
 const char *errFragShaderSrc = R"(
@@ -22,7 +25,7 @@ void main() {
     fragColour = vec4(1, 0.41, 0.7, 1);
 })";
 
-const float errCubeVertices[24] = {
+const GLfloat errCubeVertices[] = {
         -1, -1, 1,
         1, -1, 1,
         1, 1, 1,
@@ -33,19 +36,19 @@ const float errCubeVertices[24] = {
         -1, 1, -1
 };
 
-const short errCubeIndices[36] = {
+const GLushort errCubeIndices[] = {
         0, 1, 2, // BACK
-        2, 3, 1,
+        2, 3, 0,
         1, 5, 6, // RIGHT
         6, 2, 1,
-        5, 4, 7, // FRONT
-        7, 6, 5,
+        7, 6, 5, // FRONT
+        5, 4, 7,
         4, 0, 3, // LEFT
         3, 7, 4,
+        4, 5, 1, // BOTTOM
+        1, 0, 4,
         3, 2, 6, // TOP
-        6, 7, 3,
-        5, 4, 0, // BOTTOM
-        0, 1, 5
+        6, 7, 3
 };
 
 Mesh *AssetManager::loadMesh(std::string name) {
@@ -152,16 +155,16 @@ Mesh *AssetManager::getErrorMesh() {
 
     glGenBuffers(1, &vboVertices);
     glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
-    glBufferData(GL_ARRAY_BUFFER, 24, &errCubeVertices[0], GL_STATIC_READ);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(errCubeVertices), errCubeVertices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
     glGenBuffers(1, &vboIndices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36, &errCubeIndices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(errCubeIndices), errCubeIndices, GL_STATIC_DRAW);
 
-    Mesh *mesh = new Mesh(vao, {vboVertices, vboIndices}, 12, GL_TRIANGLES, GL_UNSIGNED_SHORT);
+    Mesh *mesh = new Mesh(vao, {vboVertices}, 36, GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes[ERR_MESH] = mesh;
 
     return mesh;
@@ -195,8 +198,11 @@ Shader *AssetManager::getErrorShader() {
     glDeleteShader(fragShader);
 
     Shader *shader = new Shader(program);
-    shader->registerUniform("MVP");
+    shader->registerUniform("model");
+    shader->registerUniform("view");
+    shader->registerUniform("projection");
     shaderPrograms[ERR_SHADER] = shader;
+    GLERRCHECK();
 
     return shader;
 }
