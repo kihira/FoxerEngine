@@ -5,3 +5,5 @@ entity = {
         print("Hello, my name is " .. entity.name)
     end
 }
+
+engine.addEntity(engine.entity.new("test"))

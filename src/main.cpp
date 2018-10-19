@@ -19,6 +19,7 @@
 
 // temp
 std::unique_ptr<Camera> camera;
+std::vector<Entity *> entities;
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
@@ -29,8 +30,12 @@ void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
     camera->resize(width, height);
 }
 
-sol::protected_function_result luaErrorCallback(lua_State*, sol::protected_function_result pfr) {
+sol::protected_function_result luaErrorCallback(lua_State *, sol::protected_function_result pfr) {
     return pfr;
+}
+
+void addEntity(Entity *entity) {
+    entities.push_back(entity);
 }
 
 int main() {
@@ -91,12 +96,19 @@ int main() {
      */
     sol::state lua;
     lua.open_libraries(sol::lib::base, sol::lib::io);
+    sol::table engine = lua.create_named_table("engine"); // Namespace for interacting with the engine
+
+    // Load functions for lua
+    engine["addEntity"] = addEntity;
+    engine.new_usertype<Entity>(
+            "entity",
+            sol::constructors<Entity(const char *)>(),
+            // Register methods
+            "loadScript", &Entity::loadScript);
 
     auto assetManager = std::make_unique<AssetManager>();
     auto shader = assetManager->loadShaderProgram("doesnotexist");
     auto mesh = assetManager->loadMesh("doesnotexist");
-
-    std::vector<Entity *> entities;
 
     // Test entity
     auto *entity = new Entity("Test");
