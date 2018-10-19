@@ -2,6 +2,7 @@
 #define GAMEENGINE301CR_MESH_H
 
 #include <vector>
+#include <glad/glad.h>
 
 
 class Mesh {

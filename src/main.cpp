@@ -15,6 +15,7 @@
 #include "KeyHandler.h"
 #include "AssetManager.h"
 #include "render/Camera.h"
+#include "Entity.h"
 
 // temp
 std::unique_ptr<Camera> camera;
@@ -79,22 +80,25 @@ int main() {
     glfwSetWindowUserPointer(window, keyHandler);
     glfwSetKeyCallback(window, KeyHandler::keyCallback);
 
-    // Test lua
-    sol::state lua;
-    lua.open_libraries(sol::lib::base, sol::lib::io);
-
-    lua.script_file("resources/scripts/test.lua", luaErrorCallback);
+    /*
+     * Create camera
+     */
+    camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
+    camera->resize(720, 405);
 
     auto assetManager = std::make_unique<AssetManager>();
     Shader *shader = assetManager->loadShaderProgram("doesnotexist");
     Mesh *mesh = assetManager->loadMesh("doesnotexist");
 
+    std::vector<Entity *> entities;
+
+    // Test entity
+    Entity *entity = new Entity("Test");
+    entity->loadScript("assets/scripts/entity.lua");
+    entities.push_back(entity);
+
     glClearColor(0.5, 0.5, 0, 1);
     glDisable(GL_CULL_FACE);
-
-    // Create camera
-    camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
-    camera->resize(720, 405);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
@@ -112,6 +116,10 @@ int main() {
         mesh->render();
 
         GLERRCHECK();
+
+        for (auto &entity: entities) {
+            entity->update();
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();

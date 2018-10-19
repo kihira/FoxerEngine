@@ -1,5 +1,6 @@
 entity = {
     name = "Entity Name",
-    update = function(entity, level)
+    update = function()
+        print("Hello, my name is " .. entity.name)
     end
 }

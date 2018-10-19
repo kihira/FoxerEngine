@@ -9,6 +9,7 @@
 
 class Entity {
 private:
+    std::string name;
     glm::vec3 position;
     glm::vec3 prevPosition;
     glm::vec3 rotation;
@@ -16,8 +17,9 @@ private:
     Mesh *mesh;
     sol::state luaState;
 public:
-    Entity(const char* luaFile);
+    Entity(const char *name);
     void setPositionAndRotation(glm::vec3 &position, glm::vec3 &rotation);
+    void loadScript(const char *luaFile);
     void update();
     void render(Shader *shader);
 };
