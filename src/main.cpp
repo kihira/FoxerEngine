@@ -108,6 +108,10 @@ int main() {
             // Register methods
             "loadScript", &Entity::loadScript);
 
+    engine.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
+        return keyHandler->registerKeyHandlerLua(callback);
+    });
+
     // Test entity
     auto *entity = new Entity("Test");
     entity->loadScript(lua, "assets/scripts/entity.lua");

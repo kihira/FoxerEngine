@@ -6,6 +6,9 @@ entity = {
     end
 }
 
-newEntity = engine.entity.new("test")
-newEntity:loadScript("assets/scripts/entity2.lua")
-engine.addEntity(newEntity)
+function keyHandler(key, scancode, action, mods)
+    print("Key! " .. key)
+    return true;
+end
+
+engine.registerKeyHandler(keyHandler)
