@@ -93,8 +93,8 @@ int main() {
     lua.open_libraries(sol::lib::base, sol::lib::io);
 
     auto assetManager = std::make_unique<AssetManager>();
-    Shader *shader = assetManager->loadShaderProgram("doesnotexist");
-    Mesh *mesh = assetManager->loadMesh("doesnotexist");
+    auto shader = assetManager->loadShaderProgram("doesnotexist");
+    auto mesh = assetManager->loadMesh("doesnotexist");
 
     std::vector<Entity *> entities;
 

@@ -51,7 +51,7 @@ const GLushort errCubeIndices[] = {
         6, 7, 3
 };
 
-Mesh *AssetManager::loadMesh(std::string name) {
+std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
     if (meshes.find(name) != meshes.end()) {
         return meshes[name];
     }
@@ -103,7 +103,7 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
     return shader;
 }
 
-Shader *AssetManager::loadShaderProgram(std::string name) {
+std::shared_ptr<Shader> AssetManager::loadShaderProgram(std::string name) {
     // Read shader definition
     std::ifstream file;
     file.open(ASSETS_FOLDER "shaders/"+name+".txt", std::ios::in);
@@ -138,13 +138,13 @@ Shader *AssetManager::loadShaderProgram(std::string name) {
     }
 
     // Store shader and return
-    Shader *shader = new Shader(program);
+    auto shader = std::make_shared<Shader>(program);
     shaderPrograms[name] = shader;
 
     return shader;
 }
 
-Mesh *AssetManager::getErrorMesh() {
+std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
     if (meshes.find(ERR_MESH) != meshes.end()) {
         return meshes[ERR_MESH];
     }
@@ -164,13 +164,13 @@ Mesh *AssetManager::getErrorMesh() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(errCubeIndices), errCubeIndices, GL_STATIC_DRAW);
 
-    Mesh *mesh = new Mesh(vao, {vboVertices}, 36, GL_TRIANGLES, GL_UNSIGNED_SHORT);
+    auto mesh = std::make_shared<Mesh>(vao, std::vector<GLuint>(vboVertices), 36, GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes[ERR_MESH] = mesh;
 
     return mesh;
 }
 
-Shader *AssetManager::getErrorShader() {
+std::shared_ptr<Shader> AssetManager::getErrorShader() {
     if (shaderPrograms.find(ERR_SHADER) != shaderPrograms.end()) {
         return shaderPrograms[ERR_SHADER];
     }
@@ -197,7 +197,7 @@ Shader *AssetManager::getErrorShader() {
     glDeleteShader(vertShader);
     glDeleteShader(fragShader);
 
-    Shader *shader = new Shader(program);
+    auto shader = std::make_shared<Shader>(program);
     shader->registerUniform("model");
     shader->registerUniform("view");
     shader->registerUniform("projection");
@@ -205,4 +205,21 @@ Shader *AssetManager::getErrorShader() {
     GLERRCHECK();
 
     return shader;
+}
+
+// TODO this technically won't work as we're modifying an iterable
+void AssetManager::cleanup() {
+    for (auto &mesh : meshes) {
+        if (mesh.second.use_count() <= 1) {
+            mesh.second.reset();
+            meshes.erase(mesh.first);
+        }
+    }
+
+    for (auto &shader : shaderPrograms) {
+        if (shader.second.use_count() <= 1) {
+            shader.second.reset();
+            shaderPrograms.erase(shader.first);
+        }
+    }
 }

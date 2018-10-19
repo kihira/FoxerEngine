@@ -38,8 +38,8 @@ void Entity::loadScript(sol::state &luaState, const char *file) {
 
     // Load data from lua file and bind functions
     sol::table entityTable = luaState["entity"];
-    name = entityTable.get_or("name", name);
+    name = entityTable["name"].get_or(name);
     updateFn = entityTable["update"];
 
-    std::string mesh = entityTable.get_or("mesh", "ERROR"); // todo
+    std::string mesh = entityTable["mesh"].get_or(std::string("ERROR")); // todo
 }

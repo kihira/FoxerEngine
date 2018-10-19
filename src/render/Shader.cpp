@@ -36,8 +36,10 @@ void Shader::registerUniform(std::string name) {
     uniforms.insert(std::pair<std::string, GLuint>(name, uniformLoc));
 }
 
-Shader::Shader(GLuint program) : program(program) {
+Shader::Shader(GLuint program) : program(program) {}
 
+Shader::~Shader() {
+    glDeleteProgram(program);
 }
 
 template<typename T>

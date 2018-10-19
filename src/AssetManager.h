@@ -10,14 +10,21 @@
 class AssetManager {
 private:
     std::map<std::string, GLuint> shaders;
-    std::map<std::string, Shader *> shaderPrograms;
-    std::map<std::string, Mesh *> meshes;
-    Mesh *getErrorMesh();
-    Shader *getErrorShader();
+    std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
+    std::map<std::string, std::shared_ptr<Mesh>> meshes;
+    std::shared_ptr<Mesh> getErrorMesh();
+    std::shared_ptr<Shader> getErrorShader();
 public:
-    Mesh *loadMesh(std::string name);
+    std::shared_ptr<Mesh> loadMesh(std::string name);
     GLuint loadShader(const std::string &name, GLenum shaderType);
-    Shader *loadShaderProgram(std::string name);
+    std::shared_ptr<Shader> loadShaderProgram(std::string name);
+    /**
+     * Goes through all currently loaded assets and removes any that are not currently used.
+     *
+     * This is done by checking the reference count to each asset and if it is <= 1 (so referenced only from the
+     * AssetManager), then it removes it
+     */
+    void cleanup();
 };
 
 
