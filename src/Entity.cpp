@@ -1,4 +1,6 @@
+#include <glm/gtc/matrix_transform.hpp>
 #include "Entity.h"
+#include "vectors.h"
 
 void Entity::setPositionAndRotation(glm::vec3 &position, glm::vec3 &rotation) {
     prevPosition = Entity::position;
@@ -42,4 +44,15 @@ void Entity::loadScript(sol::state &luaState, const char *file) {
     updateFn = entityTable["update"];
 
     std::string mesh = entityTable["mesh"].get_or(std::string("ERROR")); // todo
+}
+
+void Entity::render(Shader *shader) {
+    transform = glm::translate(glm::mat4(1.f), position);
+    transform = glm::rotate(transform, rotation.x, vector::RIGHT);
+    transform = glm::rotate(transform, rotation.y, vector::UP);
+    transform = glm::rotate(transform, rotation.z, vector::BACKWARD);
+    transform = glm::scale(transform, scale);
+
+    shader->setUniform("model", transform);
+    mesh->render();
 }

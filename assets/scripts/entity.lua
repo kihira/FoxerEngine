@@ -6,4 +6,6 @@ entity = {
     end
 }
 
-engine.addEntity(engine.entity.new("test"))
+newEntity = engine.entity.new("test")
+newEntity:loadScript("assets/scripts/entity2.lua")
+engine.addEntity(newEntity)

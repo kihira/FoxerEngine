@@ -91,6 +91,8 @@ int main() {
     camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
     camera->resize(720, 405);
 
+    auto assetManager = std::make_unique<AssetManager>();
+
     /*
      * Load global lua space
      */
@@ -106,10 +108,6 @@ int main() {
             // Register methods
             "loadScript", &Entity::loadScript);
 
-    auto assetManager = std::make_unique<AssetManager>();
-    auto shader = assetManager->loadShaderProgram("doesnotexist");
-    auto mesh = assetManager->loadMesh("doesnotexist");
-
     // Test entity
     auto *entity = new Entity("Test");
     entity->loadScript(lua, "assets/scripts/entity.lua");
@@ -121,18 +119,6 @@ int main() {
     // Main loop
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOTIDY
-        GLERRCHECK();
-
-        glm::mat4 model(1.f);
-        model = glm::rotate(model, glm::radians(35.f), glm::vec3(0.f, 0.f, 1.f));
-        model = glm::rotate(model, (float) glfwGetTime(), glm::vec3(0.f, 1.f, 0.f));
-
-        shader->use();
-        shader->setUniform("model", model);
-        shader->setUniform("view", camera->getView());
-        shader->setUniform("projection", camera->getProjection());
-        mesh->render();
-
         GLERRCHECK();
 
         for (auto &entity: entities) {

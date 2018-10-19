@@ -9,12 +9,14 @@
 
 class Entity {
 private:
-    std::string name;
     glm::vec3 position;
     glm::vec3 prevPosition;
     glm::vec3 rotation;
     glm::vec3 prevRotation;
-    Mesh *mesh;
+    glm::vec3 scale;
+    glm::mat4 transform;
+    std::string name;
+    std::shared_ptr<Mesh> mesh;
     /*
      * Lua bindings
      */
