@@ -76,8 +76,8 @@ int main() {
     /*
      * Setup key handler
      */
-    KeyHandler *keyHandler = new KeyHandler();
-    glfwSetWindowUserPointer(window, keyHandler);
+    auto keyHandler = std::make_unique<KeyHandler>();
+    glfwSetWindowUserPointer(window, keyHandler.get());
     glfwSetKeyCallback(window, KeyHandler::keyCallback);
 
     /*
@@ -86,6 +86,12 @@ int main() {
     camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
     camera->resize(720, 405);
 
+    /*
+     * Load global lua space
+     */
+    sol::state lua;
+    lua.open_libraries(sol::lib::base, sol::lib::io);
+
     auto assetManager = std::make_unique<AssetManager>();
     Shader *shader = assetManager->loadShaderProgram("doesnotexist");
     Mesh *mesh = assetManager->loadMesh("doesnotexist");
@@ -93,8 +99,8 @@ int main() {
     std::vector<Entity *> entities;
 
     // Test entity
-    Entity *entity = new Entity("Test");
-    entity->loadScript("assets/scripts/entity.lua");
+    auto *entity = new Entity("Test");
+    entity->loadScript(lua, "assets/scripts/entity.lua");
     entities.push_back(entity);
 
     glClearColor(0.5, 0.5, 0, 1);

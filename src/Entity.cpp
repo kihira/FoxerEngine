@@ -22,9 +22,9 @@ void Entity::update() {
 Entity::Entity(const char *name) : name(name) {
 }
 
-void Entity::loadScript(const char * luaFile) {
+void Entity::loadScript(sol::state &luaState, const char *file) {
     luaState.open_libraries(sol::lib::base, sol::lib::io);
-    auto loadResult = luaState.load_file(luaFile);
+    auto loadResult = luaState.load_file(file);
     if (loadResult.status() != sol::load_status::ok) {
         std::cerr << "Failed to load lua file for entity " << name << std::endl;
         return;
@@ -40,4 +40,6 @@ void Entity::loadScript(const char * luaFile) {
     sol::table entityTable = luaState["entity"];
     name = entityTable.get_or("name", name);
     updateFn = entityTable["update"];
+
+    std::string mesh = entityTable.get_or("mesh", "ERROR"); // todo
 }

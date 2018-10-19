@@ -23,7 +23,7 @@ private:
 public:
     Entity(const char *name);
     void setPositionAndRotation(glm::vec3 &position, glm::vec3 &rotation);
-    void loadScript(const char *luaFile);
+    void loadScript(sol::state &luaState, const char *file);
     void update();
     void render(Shader *shader);
 };
