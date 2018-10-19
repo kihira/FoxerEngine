@@ -15,7 +15,11 @@ private:
     glm::vec3 rotation;
     glm::vec3 prevRotation;
     Mesh *mesh;
+    /*
+     * Lua bindings
+     */
     sol::state luaState;
+    sol::protected_function updateFn;
 public:
     Entity(const char *name);
     void setPositionAndRotation(glm::vec3 &position, glm::vec3 &rotation);
