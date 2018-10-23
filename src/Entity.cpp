@@ -2,6 +2,8 @@
 #include "Entity.h"
 #include "vectors.h"
 
+Entity::Entity(const char *name) : name(name) {}
+
 void Entity::update() {
     if (updateFn != sol::lua_nil) {
         auto updateResult = updateFn();
@@ -11,31 +13,6 @@ void Entity::update() {
                       << err.what() << std::endl;
         }
     }
-}
-
-Entity::Entity(const char *name) : name(name) {
-}
-
-void Entity::loadScript(sol::state &luaState, const char *file) {
-    luaState.open_libraries(sol::lib::base, sol::lib::io);
-    auto loadResult = luaState.load_file(file);
-    if (loadResult.status() != sol::load_status::ok) {
-        std::cerr << "Failed to load lua file for entity " << name << std::endl;
-        return;
-    }
-    sol::protected_function_result loadRunResult = loadResult();
-    if (!loadRunResult.valid()) {
-        sol::error err = loadRunResult;
-        std::cerr << "Failed to run lua file for entity " << name << ": " << std::endl
-                  << err.what() << std::endl;
-    }
-
-    // Load data from lua file and bind functions
-    sol::table entityTable = luaState["entity"];
-    name = entityTable["name"].get_or(name);
-    updateFn = entityTable["update"];
-
-    std::string mesh = entityTable["mesh"].get_or(std::string("ERROR")); // todo
 }
 
 void Entity::render(Shader *shader) {
@@ -63,4 +40,12 @@ const glm::vec3 &Entity::getRotation() const {
 
 void Entity::setRotation(const glm::vec3 &rotation) {
     Entity::rotation = rotation;
+}
+
+void Entity::setUpdateFn(const sol::protected_function &updateFn) {
+    Entity::updateFn = updateFn;
+}
+
+void Entity::setMesh(const std::shared_ptr<Mesh> &mesh) {
+    Entity::mesh = mesh;
 }

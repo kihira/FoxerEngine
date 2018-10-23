@@ -223,3 +223,35 @@ void AssetManager::cleanup() {
         }
     }
 }
+
+void AssetManager::registerEntity(std::string fileName) {
+    auto loadResult = lua.load_file(ASSETS_FOLDER "lua/" + fileName);
+    if (loadResult.status() != sol::load_status::ok) {
+        std::cerr << "Failed to load lua file for entity " << fileName << std::endl;
+        return;
+    }
+    sol::protected_function_result loadRunResult = loadResult();
+    if (!loadRunResult.valid()) {
+        sol::error err = loadRunResult;
+        std::cerr << "Failed to run lua file for entity " << fileName << ": " << std::endl
+                  << err.what() << std::endl;
+    }
+
+    // Load data from lua file and bind functions
+    sol::table entityTable = lua["entity"];
+    std::string name = entityTable["name"].get_or(fileName);
+    auto entity = std::make_shared<Entity>(name);
+    entity->setUpdateFn(entityTable["update"]);
+
+    // Attempt to load mesh for entity
+    std::string mesh = entityTable["mesh"].get_or(std::string("ERROR")); // todo
+    entity->setMesh(loadMesh(mesh));
+
+    entityPrototypes.insert(std::make_pair(name, entity));
+}
+
+std::shared_ptr<Entity> AssetManager::getEntity(std::string name) {
+    // TODO check if exists and return error if it does not
+    // TODO return a copy of this
+    return entityPrototypes["name"];
+}

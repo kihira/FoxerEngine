@@ -4,14 +4,19 @@
 
 #include <string>
 #include <glad/glad.h>
+#include <sol.hpp>
 #include "render/Mesh.h"
 #include "render/Shader.h"
+#include "Entity.h"
 
 class AssetManager {
 private:
+    sol::state lua;
     std::map<std::string, GLuint> shaders;
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
     std::map<std::string, std::shared_ptr<Mesh>> meshes;
+    std::map<std::string, std::shared_ptr<Entity>> entityPrototypes;
+    std::vector<std::shared_ptr<Entity>> entities;
 
     /**
      * Returns a default cube mesh that is used to show there is an error
@@ -46,6 +51,19 @@ public:
      * @return The shader program
      */
     std::shared_ptr<Shader> loadShaderProgram(std::string name);
+
+    /**
+     * Registers an entity class that can then be spawned later on
+     * @param fileName
+     */
+    void registerEntity(std::string fileName);
+
+    /**
+     * Returns a new copy of the prototype for the entity
+     * @param name The name of the entity
+     * @return
+     */
+    std::shared_ptr<Entity> getEntity(std::string name);
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

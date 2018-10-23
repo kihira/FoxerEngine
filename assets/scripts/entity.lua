@@ -1,5 +1,5 @@
 entity = {
-    name = "Entity Name",
+    name = "Test",
     mesh = "doesnotexist",
     update = function()
         print("Hello, my name is " .. entity.name)

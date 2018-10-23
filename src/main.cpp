@@ -101,31 +101,29 @@ int main() {
     sol::table engine = lua.create_named_table("engine"); // Namespace for interacting with the engine
 
     // Load functions for lua
+    engine["registerEntity"] = &AssetManager::registerEntity;
     engine["addEntity"] = addEntity;
-    engine["registerEntity"];
 
     // Register entity type
     engine.new_usertype<Entity>(
             "entity",
-            sol::constructors<Entity(const char *)>(),
-            // Register methods
-            "loadScript", &Entity::loadScript,
-            "setPosition", &Entity::setPosition,
-            "getPosition", &Entity::getPosition,
-            "setRotation", &Entity::setRotation,
-            "getRotation", &Entity::getRotation);
+            // sol::constructors<Entity(const char *)>(),
+            "spawn", sol::factories(&AssetManager::getEntity), // Provides a method for retrieving a copy of a prototype
+            // Register properties
+            "position", sol::property(&Entity::getPosition, &Entity::setPosition),
+            "rotation", sol::property(&Entity::getRotation, &Entity::setRotation)
+            );
 
     engine.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
         return keyHandler->registerKeyHandlerLua(callback);
     });
 
-    // Test entity
-    auto *entity = new Entity("Test");
-    entity->loadScript(lua, "assets/scripts/entity.lua");
-    entities.push_back(entity);
-
     glClearColor(0.5, 0.5, 0, 1);
     glDisable(GL_CULL_FACE);
+
+    /*
+     * Load level
+     */
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {

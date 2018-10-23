@@ -24,8 +24,6 @@ private:
 public:
     Entity(const char *name);
 
-    void loadScript(sol::state &luaState, const char *file);
-
     void update();
 
     void render(Shader *shader);
@@ -37,6 +35,10 @@ public:
     const glm::vec3 &getRotation() const;
 
     void setRotation(const glm::vec3 &rotation);
+
+    void setUpdateFn(const sol::protected_function &updateFn);
+
+    void setMesh(const std::shared_ptr<Mesh> &mesh);
 };
 
 
