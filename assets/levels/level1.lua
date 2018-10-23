@@ -1,10 +1,9 @@
 level = {
     name = "Test Level 1",
-    players = 2
+    players = 2,
+    update = function()
+    end
 }
 
-function onload() 
-end
-
-function update()
-end
+engine.registerEntity
+engine.registerEntity

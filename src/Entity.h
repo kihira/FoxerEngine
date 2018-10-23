@@ -20,14 +20,23 @@ private:
     /*
      * Lua bindings
      */
-    sol::state luaState;
     sol::protected_function updateFn;
 public:
     Entity(const char *name);
-    void setPositionAndRotation(glm::vec3 &position, glm::vec3 &rotation);
+
     void loadScript(sol::state &luaState, const char *file);
+
     void update();
+
     void render(Shader *shader);
+
+    const glm::vec3 &getPosition() const;
+
+    void setPosition(const glm::vec3 &position);
+
+    const glm::vec3 &getRotation() const;
+
+    void setRotation(const glm::vec3 &rotation);
 };
 
 

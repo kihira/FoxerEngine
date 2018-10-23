@@ -2,14 +2,6 @@
 #include "Entity.h"
 #include "vectors.h"
 
-void Entity::setPositionAndRotation(glm::vec3 &position, glm::vec3 &rotation) {
-    prevPosition = Entity::position;
-    prevRotation = Entity::rotation;
-
-    Entity::position = position;
-    Entity::rotation = rotation;
-}
-
 void Entity::update() {
     if (updateFn != sol::lua_nil) {
         auto updateResult = updateFn();
@@ -55,4 +47,20 @@ void Entity::render(Shader *shader) {
 
     shader->setUniform("model", transform);
     mesh->render();
+}
+
+const glm::vec3 &Entity::getPosition() const {
+    return position;
+}
+
+void Entity::setPosition(const glm::vec3 &position) {
+    Entity::position = position;
+}
+
+const glm::vec3 &Entity::getRotation() const {
+    return rotation;
+}
+
+void Entity::setRotation(const glm::vec3 &rotation) {
+    Entity::rotation = rotation;
 }

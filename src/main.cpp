@@ -102,11 +102,18 @@ int main() {
 
     // Load functions for lua
     engine["addEntity"] = addEntity;
+    engine["registerEntity"];
+
+    // Register entity type
     engine.new_usertype<Entity>(
             "entity",
             sol::constructors<Entity(const char *)>(),
             // Register methods
-            "loadScript", &Entity::loadScript);
+            "loadScript", &Entity::loadScript,
+            "setPosition", &Entity::setPosition,
+            "getPosition", &Entity::getPosition,
+            "setRotation", &Entity::setRotation,
+            "getRotation", &Entity::getRotation);
 
     engine.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
         return keyHandler->registerKeyHandlerLua(callback);
