@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "vectors.h"
 
-Entity::Entity(const char *name) : name(name) {}
+Entity::Entity(std::string name) : name(name) {}
 
 void Entity::update() {
     if (updateFn != sol::lua_nil) {

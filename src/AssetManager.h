@@ -30,6 +30,10 @@ private:
      */
     std::shared_ptr<Shader> getErrorShader();
 public:
+    AssetManager();
+
+    sol::state &getLua();
+
     /**
      * Retrieves a loaded mesh or attempts to load it from disk
      * @param name
@@ -55,8 +59,9 @@ public:
     /**
      * Registers an entity class that can then be spawned later on
      * @param fileName
+     * @param tableName The table name of the entity in the file
      */
-    void registerEntity(std::string fileName);
+    void registerEntity(std::string fileName, std::string tableName);
 
     /**
      * Returns a new copy of the prototype for the entity

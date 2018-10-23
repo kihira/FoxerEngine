@@ -5,5 +5,5 @@ level = {
     end
 }
 
-engine.registerEntity("entity")
+engine.registerEntity("entity", "testEntity")
 engine.entity.spawn("Test");

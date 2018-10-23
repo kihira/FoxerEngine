@@ -1,4 +1,4 @@
-entity = {
+testEntity = {
     name = "Test",
     mesh = "doesnotexist",
     update = function()

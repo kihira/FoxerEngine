@@ -224,7 +224,7 @@ void AssetManager::cleanup() {
     }
 }
 
-void AssetManager::registerEntity(std::string fileName) {
+void AssetManager::registerEntity(std::string fileName, std::string tableName) {
     auto loadResult = lua.load_file(ASSETS_FOLDER "lua/" + fileName);
     if (loadResult.status() != sol::load_status::ok) {
         std::cerr << "Failed to load lua file for entity " << fileName << std::endl;
@@ -238,20 +238,28 @@ void AssetManager::registerEntity(std::string fileName) {
     }
 
     // Load data from lua file and bind functions
-    sol::table entityTable = lua["entity"];
+    sol::table entityTable = lua[tableName];
     std::string name = entityTable["name"].get_or(fileName);
     auto entity = std::make_shared<Entity>(name);
     entity->setUpdateFn(entityTable["update"]);
 
     // Attempt to load mesh for entity
-    std::string mesh = entityTable["mesh"].get_or(std::string("ERROR")); // todo
+    std::string mesh = entityTable["mesh"].get_or(std::string("ERROR"));
     entity->setMesh(loadMesh(mesh));
 
-    entityPrototypes.insert(std::make_pair(name, entity));
+    entityPrototypes.insert(std::make_pair(tableName, entity));
 }
 
 std::shared_ptr<Entity> AssetManager::getEntity(std::string name) {
     // TODO check if exists and return error if it does not
     // TODO return a copy of this
     return entityPrototypes["name"];
+}
+
+AssetManager::AssetManager() {
+    lua.open_libraries(sol::lib::base, sol::lib::io);
+}
+
+sol::state &AssetManager::getLua() {
+    return lua;
 }

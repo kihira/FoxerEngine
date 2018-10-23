@@ -93,22 +93,18 @@ int main() {
 
     auto assetManager = std::make_unique<AssetManager>();
 
-    /*
-     * Load global lua space
-     */
-    sol::state lua;
-    lua.open_libraries(sol::lib::base, sol::lib::io);
-    sol::table engine = lua.create_named_table("engine"); // Namespace for interacting with the engine
+    sol::table engine = assetManager->getLua().create_named_table("engine"); // Namespace for interacting with the engine
 
     // Load functions for lua
     engine["registerEntity"] = &AssetManager::registerEntity;
-    engine["addEntity"] = addEntity;
+    engine["spawn"] = addEntity;
 
     // Register entity type
     engine.new_usertype<Entity>(
             "entity",
             // sol::constructors<Entity(const char *)>(),
-            "spawn", sol::factories(&AssetManager::getEntity), // Provides a method for retrieving a copy of a prototype
+            "noconstructor", sol::no_constructor, // No constructor as we use factory
+            "spawn", [&assetManager](std::string name){return assetManager->getEntity(name);}, // Provides a method for retrieving a copy of a prototype
             // Register properties
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation)

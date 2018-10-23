@@ -22,7 +22,7 @@ private:
      */
     sol::protected_function updateFn;
 public:
-    Entity(const char *name);
+    Entity(std::string name);
 
     void update();
 
