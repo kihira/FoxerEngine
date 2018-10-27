@@ -1,9 +1,4 @@
 #include <memory>
-
-#include <memory>
-
-#define SOL_CHECK_ARGUMENTS 1
-
 #include <iostream>
 #include <sol.hpp>
 #include <glad/glad.h>

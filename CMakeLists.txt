@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 
 # Source files
-set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/render/Mesh.cpp src/render/Mesh.h src/render/Shader.cpp src/render/Shader.h src/gl_helper.hpp src/network/NetworkManager.cpp src/network/NetworkManager.h src/KeyHandler.cpp src/KeyHandler.h src/render/Camera.cpp src/render/Camera.h src/vectors.h src/level.cpp src/level.h)
+set(SOURCES src/main.cpp src/Entity.cpp src/Entity.h src/AssetManager.cpp src/AssetManager.h src/render/Mesh.cpp src/render/Mesh.h src/render/Shader.cpp src/render/Shader.h src/gl_helper.hpp src/network/NetworkManager.cpp src/network/NetworkManager.h src/KeyHandler.cpp src/KeyHandler.h src/render/Camera.cpp src/render/Camera.h src/vectors.h src/level.cpp src/level.h src/assert.h)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
@@ -78,3 +78,5 @@ add_custom_command(
         TARGET ${PROJECT_NAME}
         POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
         DEPENDS ${DESTINATION_RESOURCES})
+
+add_definitions(-DASSERTIONS_ENABLED=1)
