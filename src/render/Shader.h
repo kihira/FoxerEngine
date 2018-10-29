@@ -27,6 +27,8 @@ public:
      */
     template <typename T>
     void setUniform(const std::string &name, T value);
+
+    GLuint getProgram() const;
 };
 
 

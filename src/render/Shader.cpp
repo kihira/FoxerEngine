@@ -6,12 +6,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader.h"
 #include "../gl_helper.hpp"
+#include "../assert.h"
 
 void Shader::use() {
-    if (program == 0) {
-        std::cerr << "Something has gone awfully, terribly wrong and you should never ever see this message" << std::endl;
-        return;
-    }
     glUseProgram(program);
     GLERRCHECK();
 }
@@ -36,7 +33,9 @@ void Shader::registerUniform(std::string name) {
     uniforms.insert(std::pair<std::string, GLuint>(name, uniformLoc));
 }
 
-Shader::Shader(GLuint program) : program(program) {}
+Shader::Shader(GLuint program) : program(program) {
+    ASSERT(program > 0);
+}
 
 Shader::~Shader() {
     glDeleteProgram(program);
@@ -51,6 +50,10 @@ void Shader::setUniform(const std::string &name, T value) {
     }
 
     std::cerr << "Unsupported uniform type" << std::endl;
+}
+
+GLuint Shader::getProgram() const {
+    return program;
 }
 
 template <>
