@@ -4,6 +4,8 @@
 
 #if ASSERTIONS_ENABLED
 
+#include <cassert>
+
 #ifdef __APPLE__
 #define ASSERT(expr) assert(expr)
 #else

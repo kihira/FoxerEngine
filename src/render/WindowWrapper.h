@@ -4,21 +4,34 @@
 
 #include <GLFW/glfw3.h>
 
+// Use custom definitions to avoid passing around GLFW window
 typedef void (* FramebufferSizeFn)(int width, int height);
+typedef void (* KeyFn)(int key, int scancode, int action, int mods);
 
 
 /**
  * A wrapper class that goes around GLFWwindow.
- * This provides a slightly nicer interface and more C++ compatability
+ * This provides a slightly nicer interface and easier handling of GLFW callbacks
  */
 class WindowWrapper {
 private:
     GLFWwindow *window;
     FramebufferSizeFn framebufferSizeCallback;
+    KeyFn keyCallback;
 public:
-    WindowWrapper(GLFWwindow *window);
+    explicit WindowWrapper(GLFWwindow *window);
 
+    /**
+     * Registers a function that will be called when the framebuffer size changes
+     * @param callback
+     */
     void registerFramebufferSizeCallback(FramebufferSizeFn callback);
+
+    /**
+     * Registers a function that will be called when a key is pressed
+     * @param callback
+     */
+    void registerKeyCallback(KeyFn callback);
 
     GLFWwindow *getWindow() const;
 
