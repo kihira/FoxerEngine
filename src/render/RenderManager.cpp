@@ -10,7 +10,7 @@ void RenderManager::useShader(std::shared_ptr<Shader> shader) {
 }
 
 void RenderManager::startUp() {
-    // todo glfwSetErrorCallback(glfwErrorCallback);
+    glfwSetErrorCallback(glfwErrorCallback);
 
     /*
      * InitializeGLFW
@@ -31,14 +31,14 @@ void RenderManager::startUp() {
 #endif
 
     // Create GLFW window
-    window = glfwCreateWindow(720, 405, "301CR Engine", nullptr, nullptr);
-    if (!window) {
+    windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(720, 405, "301CR Engine", nullptr, nullptr));
+    if (!windowWrapper->getWindow()) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    glfwMakeContextCurrent(window);
-    // todo glfwSetFramebufferSizeCallback(window, [&](GLFWwindow *window, int width, int height) { this->glfwFramebufferSizeCallback(window, width, height); });
+    windowWrapper->registerFramebufferSizeCallback(RenderManager::glfwFramebufferSizeCallback);
+    glfwMakeContextCurrent(windowWrapper->getWindow());
     glfwSwapInterval(1);
 
     // Init OpenGL and GLAD
@@ -67,7 +67,7 @@ void RenderManager::frameStart() {
 }
 
 void RenderManager::frameEnd() {
-    glfwSwapBuffers(window);
+    windowWrapper->swapBuffers();
     glfwPollEvents();
 }
 
@@ -75,19 +75,28 @@ void RenderManager::glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
 }
 
-void RenderManager::glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
+void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
     glViewport(0, 0, width, height);
-    camera->resize(width, height);
-}
-
-GLFWwindow *RenderManager::getWindow() const {
-    return window;
+    instance()->camera->resize(width, height);
 }
 
 void RenderManager::update() {
 
 }
 
-inline bool RenderManager::shouldClose() {
-    return glfwWindowShouldClose(window);
+int RenderManager::shouldClose() {
+    return windowWrapper->shouldClose();
+}
+
+std::shared_ptr<RenderManager> RenderManager::instance_;
+
+std::shared_ptr<RenderManager> RenderManager::instance() {
+    if (RenderManager::instance_ == nullptr) {
+        RenderManager::instance_ = std::make_shared<RenderManager>();
+    }
+    return RenderManager::instance_;
+}
+
+const std::unique_ptr<WindowWrapper> &RenderManager::getWindowWrapper() const {
+    return windowWrapper;
 }

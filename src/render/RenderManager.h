@@ -7,17 +7,22 @@
 #include <GLFW/glfw3.h>
 #include "Shader.h"
 #include "Camera.h"
+#include "WindowWrapper.h"
 
 class RenderManager {
 private:
-    GLFWwindow *window;
+    std::unique_ptr<WindowWrapper> windowWrapper;
     std::unique_ptr<Camera> camera;
-    GLuint currentShader;
+    GLuint currentShader = 0;
 
-    void glfwErrorCallback(int error, const char *desc);
+    static std::shared_ptr<RenderManager> instance_;
 
-    void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height);
+    static void glfwErrorCallback(int error, const char *desc);
+
+    static void glfwFramebufferSizeCallback(int width, int height);
 public:
+    static std::shared_ptr<RenderManager> instance();
+
     void startUp();
 
     void shutDown();
@@ -32,11 +37,11 @@ public:
      * Checks whether the GLFW window is attempting to close
      * @return
      */
-    bool shouldClose();
-
-    GLFWwindow *getWindow() const;
+    int shouldClose();
 
     void useShader(std::shared_ptr<Shader> shader);
+
+    const std::unique_ptr<WindowWrapper> &getWindowWrapper() const;
 };
 
 

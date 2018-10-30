@@ -18,9 +18,10 @@ int main() {
     /*
      * Setup key handler
      */
-    auto keyHandler = std::make_unique<KeyHandler>();
-    glfwSetWindowUserPointer(renderManager->getWindow(), keyHandler.get());
-    glfwSetKeyCallback(renderManager->getWindow(), KeyHandler::keyCallback);
+    // todo
+//    auto keyHandler = std::make_unique<KeyHandler>();
+//    glfwSetWindowUserPointer(renderManager->getWindow(), keyHandler.get());
+//    glfwSetKeyCallback(renderManager->getWindow(), KeyHandler::keyCallback);
 
     sol::table engineTable = assetManager->getLua().create_named_table("engine"); // Namespace for interacting with the engine
     sol::table entitiesTable = assetManager->getLua().create_named_table("entities");
@@ -39,9 +40,9 @@ int main() {
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation)
             );
 
-    engineTable.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
-        return keyHandler->registerKeyHandlerLua(callback);
-    });
+//    engineTable.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
+//        return keyHandler->registerKeyHandlerLua(callback);
+//    });
 
     // Main loop
     while (!renderManager->shouldClose()) {
