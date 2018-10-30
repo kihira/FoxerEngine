@@ -1,8 +1,10 @@
+#include <utility>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include "Entity.h"
 #include "vectors.h"
 
-Entity::Entity(const unsigned short id, std::string name) : id(id), name(name) {}
+Entity::Entity(const unsigned short id, std::string name) : id(id), name(std::move(name)) {}
 
 void Entity::update() {
     if (updateFn != sol::lua_nil) {

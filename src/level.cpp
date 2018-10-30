@@ -11,3 +11,7 @@ void Level::update() {
         }
     }
 }
+
+void Level::setUpdateFn(const sol::protected_function &updateFn) {
+    Level::updateFn = updateFn;
+}

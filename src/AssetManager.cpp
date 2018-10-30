@@ -208,24 +208,11 @@ std::shared_ptr<Shader> AssetManager::getErrorShader() {
     return shader;
 }
 
-// TODO this technically won't work as we're modifying an iterable
-void AssetManager::cleanup() {
-    for (auto &mesh : meshes) {
-        if (mesh.second.use_count() <= 1) {
-            mesh.second.reset();
-            meshes.erase(mesh.first);
-        }
-    }
-
-    for (auto &shader : shaderPrograms) {
-        if (shader.second.use_count() <= 1) {
-            shader.second.reset();
-            shaderPrograms.erase(shader.first);
-        }
-    }
-}
-
 std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, std::string tableName) {
+    if (entityPrototypes.find(tableName) != entityPrototypes.end()) {
+        return entityPrototypes[tableName];
+    }
+
     auto loadResult = lua.load_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
     if (loadResult.status() != sol::load_status::ok) {
         std::cerr << "Failed to load lua file for entity " << fileName << std::endl;
@@ -252,6 +239,30 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     return entity;
 }
 
+std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
+    if (levels.find(name) != levels.end()) {
+        return levels[name];
+    }
+
+    auto result = lua.script_file(ASSETS_FOLDER "levels/" + name + ".lua");
+    if (!result.valid()) {
+        sol::error err = result;
+        std::cerr << "Failed to run lua file for level " << name << ": " << std::endl
+                  << err.what() << std::endl;
+    }
+
+    // Load data from lua file
+    sol::table levelTable = lua["level"];
+
+    auto level = std::make_shared<Level>();
+    level->setUpdateFn(levelTable["update"]);
+
+    levels.insert(std::make_pair(name, level));
+
+    return std::shared_ptr<Level>();
+}
+
+
 sol::state &AssetManager::getLua() {
     return lua;
 }
@@ -262,4 +273,21 @@ void AssetManager::startUp() {
 
 void AssetManager::shutDown() {
     cleanup();
+}
+
+// TODO this technically won't work as we're modifying an iterable
+void AssetManager::cleanup() {
+    for (auto &mesh : meshes) {
+        if (mesh.second.use_count() <= 1) {
+            mesh.second.reset();
+            meshes.erase(mesh.first);
+        }
+    }
+
+    for (auto &shader : shaderPrograms) {
+        if (shader.second.use_count() <= 1) {
+            shader.second.reset();
+            shaderPrograms.erase(shader.first);
+        }
+    }
 }

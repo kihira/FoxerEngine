@@ -58,12 +58,8 @@ int main() {
 
     // Register entity prototypes
     entityManager->registerPrototype("player", assetManager->loadEntityPrototype("entity", "testEntity"));
-    auto entity = entityManager->spawn("player");
 
-    assetManager->getLua().script(R"(
-player2 = engine.spawnEntity("player")
-player2.name = "Player2"
-)");
+    auto level = assetManager->loadLevel("level1");
 
     // Main loop
     while (!renderManager->shouldClose()) {

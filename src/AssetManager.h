@@ -8,6 +8,7 @@
 #include "render/Mesh.h"
 #include "render/Shader.h"
 #include "Entity.h"
+#include "level.h"
 
 class AssetManager {
 private:
@@ -16,6 +17,7 @@ private:
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
     std::map<std::string, std::shared_ptr<Mesh>> meshes;
     std::map<std::string, std::shared_ptr<Entity>> entityPrototypes;
+    std::map<std::string, std::shared_ptr<Level>> levels;
 
     /**
      * Returns a default cube mesh that is used to show there is an error
@@ -65,6 +67,8 @@ public:
      * @return The prototype entity that can be used for spawning
      */
     std::shared_ptr<Entity> loadEntityPrototype(std::string fileName, std::string tableName);
+
+    std::shared_ptr<Level> loadLevel(std::string name);
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

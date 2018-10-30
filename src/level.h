@@ -12,6 +12,8 @@ private:
     sol::protected_function updateFn;
 public:
     void update();
+
+    void setUpdateFn(const sol::protected_function &updateFn);
 };
 
 
