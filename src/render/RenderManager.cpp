@@ -7,3 +7,11 @@ void RenderManager::useShader(std::shared_ptr<Shader> shader) {
 
     glUseProgram(shader->getProgram());
 }
+
+void RenderManager::startUp() {
+
+}
+
+void RenderManager::shutDown() {
+
+}

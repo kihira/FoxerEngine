@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "vectors.h"
 
-Entity::Entity(std::string name) : name(name) {}
+Entity::Entity(const unsigned short id, std::string name) : id(id), name(name) {}
 
 void Entity::update() {
     if (updateFn != sol::lua_nil) {
@@ -48,4 +48,14 @@ void Entity::setUpdateFn(const sol::protected_function &updateFn) {
 
 void Entity::setMesh(const std::shared_ptr<Mesh> &mesh) {
     Entity::mesh = mesh;
+}
+
+std::shared_ptr<Entity> Entity::clone(const unsigned short id) {
+    auto newEntity = std::make_shared<Entity>(id, name);
+
+    newEntity->setPosition(position);
+    newEntity->setRotation(rotation);
+    newEntity->setUpdateFn(updateFn);
+    newEntity->setMesh(mesh);
+    return newEntity;
 }

@@ -60,15 +60,9 @@ public:
      * Registers an entity class that can then be spawned later on
      * @param fileName
      * @param tableName The table name of the entity in the file
+     * @return The prototype entity that can be used for spawning
      */
-    void registerEntity(std::string fileName, std::string tableName);
-
-    /**
-     * Returns a new copy of the prototype for the entity
-     * @param name The name of the entity
-     * @return
-     */
-    std::shared_ptr<Entity> getEntity(std::string name);
+    std::shared_ptr<Entity> getEntityPrototype(std::string fileName, std::string tableName);
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

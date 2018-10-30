@@ -11,10 +11,10 @@
 #include "AssetManager.h"
 #include "render/Camera.h"
 #include "Entity.h"
+#include "EntityManager.h"
 
 // temp
 std::unique_ptr<Camera> camera;
-std::vector<Entity *> entities;
 
 void glfwErrorCallback(int error, const char *desc) {
     std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
@@ -27,10 +27,6 @@ void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
 
 sol::protected_function_result luaErrorCallback(lua_State *, sol::protected_function_result pfr) {
     return pfr;
-}
-
-void addEntity(Entity *entity) {
-    entities.push_back(entity);
 }
 
 int main() {
@@ -87,25 +83,26 @@ int main() {
     camera->resize(720, 405);
 
     auto assetManager = std::make_unique<AssetManager>();
+    auto entityManager = std::make_unique<EntityManager>();
 
-    sol::table engine = assetManager->getLua().create_named_table("engine"); // Namespace for interacting with the engine
+    sol::table engineTable = assetManager->getLua().create_named_table("engine"); // Namespace for interacting with the engine
+    sol::table entitiesTable = assetManager->getLua().create_named_table("entities");
 
     // Load functions for lua
-    engine["registerEntity"] = &AssetManager::registerEntity;
-    engine["spawn"] = addEntity;
+    engineTable["registerEntityPrototype"] = &AssetManager::getEntityPrototype;
 
     // Register entity type
-    engine.new_usertype<Entity>(
+    entitiesTable.new_usertype<Entity>(
             "entity",
             // sol::constructors<Entity(const char *)>(),
             "noconstructor", sol::no_constructor, // No constructor as we use factory
-            "spawn", [&assetManager](std::string name){return assetManager->getEntity(name);}, // Provides a method for retrieving a copy of a prototype
+            "spawn", [&entityManager](std::string name){return entityManager->spawn(name);}, // Provides a method for retrieving a copy of a prototype
             // Register properties
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation)
             );
 
-    engine.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
+    engineTable.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
         return keyHandler->registerKeyHandlerLua(callback);
     });
 
@@ -121,9 +118,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOTIDY
         GLERRCHECK();
 
-        for (auto &entity: entities) {
-            entity->update();
-        }
+        entityManager->update();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

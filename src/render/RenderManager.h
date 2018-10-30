@@ -10,6 +10,10 @@ class RenderManager {
 private:
     GLuint currentShader;
 public:
+    void startUp();
+
+    void shutDown();
+
     void useShader(std::shared_ptr<Shader> shader);
 };
 
