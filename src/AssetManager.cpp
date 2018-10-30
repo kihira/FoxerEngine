@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include "gl_helper.hpp"
+#include "assert.h"
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
@@ -251,10 +252,14 @@ std::shared_ptr<Entity> AssetManager::getEntityPrototype(std::string fileName, s
     return entity;
 }
 
-AssetManager::AssetManager() {
+sol::state &AssetManager::getLua() {
+    return lua;
+}
+
+void AssetManager::startUp() {
     lua.open_libraries(sol::lib::base, sol::lib::io);
 }
 
-sol::state &AssetManager::getLua() {
-    return lua;
+void AssetManager::shutDown() {
+    cleanup();
 }

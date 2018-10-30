@@ -30,7 +30,10 @@ private:
      */
     std::shared_ptr<Shader> getErrorShader();
 public:
-    AssetManager();
+
+    void startUp();
+
+    void shutDown();
 
     sol::state &getLua();
 

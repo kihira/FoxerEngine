@@ -11,6 +11,7 @@ int main() {
     auto assetManager = std::make_unique<AssetManager>();
     auto entityManager = std::make_unique<EntityManager>();
 
+    assetManager->startUp();
     renderManager->startUp();
     entityManager->startUp();
 
@@ -55,6 +56,7 @@ int main() {
     // Shutdown subsystems
     entityManager->shutDown();
     renderManager->shutDown();
+    assetManager->shutDown();
 
     return 0;
 }
