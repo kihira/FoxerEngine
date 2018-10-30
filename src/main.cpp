@@ -52,6 +52,13 @@ int main() {
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation)
             );
 
+    // Register level type
+    engineTable.new_usertype<Level>(
+            "level",
+            "noconstructor", sol::no_constructor,
+            "name", sol::property(&Level::getName, &Level::setName)
+            );
+
 //    engineTable.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
 //        return keyHandler->registerKeyHandlerLua(callback);
 //    });

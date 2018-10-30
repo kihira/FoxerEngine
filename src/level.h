@@ -13,7 +13,12 @@ private:
 public:
     void update();
 
+    const std::string &getName() const;
+
+    void setName(const std::string &name);
+
     void setUpdateFn(const sol::protected_function &updateFn);
+
 };
 
 
