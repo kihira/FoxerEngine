@@ -1,6 +1,7 @@
 
 #include <glm/glm.hpp>
 #include "EntityManager.h"
+#include "assert.h"
 
 void EntityManager::startUp() {
 
@@ -10,6 +11,16 @@ void EntityManager::shutDown() {
 
 }
 
+// todo it's a little confusing having individual entities using the term id and also id per prototype...
+void EntityManager::registerPrototype(std::string id, std::shared_ptr<Entity> prototype) {
+    if (prototypes.find(id) != prototypes.end()) {
+        std::cerr << "An entity with the id " << id << " already exists" << std::endl;
+        return;
+    }
+
+    prototypes.insert(std::make_pair(id, prototype));
+}
+
 std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
     if (prototypes.find(name) == prototypes.end()) {
         std::cerr << "Unable to find entity prototype with name: " << name << std::endl;
@@ -17,8 +28,10 @@ std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
     }
 
     auto prototype = prototypes[name];
+    ASSERT(prototype != nullptr);
     auto id = getEntityId();
     auto entity = prototype->clone(id);
+    ASSERT(entity != nullptr);
 
     entities.insert(std::make_pair(id, entity));
     return entity;
@@ -42,5 +55,7 @@ inline unsigned short EntityManager::getEntityId() {
 }
 
 void EntityManager::update() {
-
+    for (auto entity : entities) {
+        entity.second->update();
+    }
 }

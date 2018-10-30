@@ -225,8 +225,8 @@ void AssetManager::cleanup() {
     }
 }
 
-std::shared_ptr<Entity> AssetManager::getEntityPrototype(std::string fileName, std::string tableName) {
-    auto loadResult = lua.load_file(ASSETS_FOLDER "lua/" + fileName);
+std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, std::string tableName) {
+    auto loadResult = lua.load_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
     if (loadResult.status() != sol::load_status::ok) {
         std::cerr << "Failed to load lua file for entity " << fileName << std::endl;
         return nullptr; // todo should return an error entity

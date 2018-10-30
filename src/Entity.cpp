@@ -6,7 +6,7 @@ Entity::Entity(const unsigned short id, std::string name) : id(id), name(name) {
 
 void Entity::update() {
     if (updateFn != sol::lua_nil) {
-        auto updateResult = updateFn();
+        auto updateResult = updateFn(this);
         if (!updateResult.valid()) {
             sol::error err = updateResult;
             std::cerr << "Error updating Entity (" << name << "):" << std::endl
@@ -38,6 +38,10 @@ const glm::vec3 &Entity::getRotation() const {
     return rotation;
 }
 
+const std::string &Entity::getName() const {
+    return name;
+}
+
 void Entity::setRotation(const glm::vec3 &rotation) {
     Entity::rotation = rotation;
 }
@@ -58,4 +62,8 @@ std::shared_ptr<Entity> Entity::clone(const unsigned short id) {
     newEntity->setUpdateFn(updateFn);
     newEntity->setMesh(mesh);
     return newEntity;
+}
+
+void Entity::setName(const std::string &name) {
+    Entity::name = name;
 }

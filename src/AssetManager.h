@@ -16,7 +16,6 @@ private:
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
     std::map<std::string, std::shared_ptr<Mesh>> meshes;
     std::map<std::string, std::shared_ptr<Entity>> entityPrototypes;
-    std::vector<std::shared_ptr<Entity>> entities;
 
     /**
      * Returns a default cube mesh that is used to show there is an error
@@ -60,12 +59,12 @@ public:
     std::shared_ptr<Shader> loadShaderProgram(std::string name);
 
     /**
-     * Registers an entity class that can then be spawned later on
-     * @param fileName
+     * Loads an entity class that can then be spawned later on
+     * @param fileName The name of the file EXCLUDING the extension
      * @param tableName The table name of the entity in the file
      * @return The prototype entity that can be used for spawning
      */
-    std::shared_ptr<Entity> getEntityPrototype(std::string fileName, std::string tableName);
+    std::shared_ptr<Entity> loadEntityPrototype(std::string fileName, std::string tableName);
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

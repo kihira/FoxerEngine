@@ -29,6 +29,8 @@ public:
 
     void update();
 
+    void registerPrototype(std::string id, std::shared_ptr<Entity> prototype);
+
     std::shared_ptr<Entity> spawn(std::string name);
 
     /**

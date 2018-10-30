@@ -43,11 +43,15 @@ public:
 
     const glm::vec3 &getRotation() const;
 
+    const std::string &getName() const;
+
     void setRotation(const glm::vec3 &rotation);
 
     void setUpdateFn(const sol::protected_function &updateFn);
 
     void setMesh(const std::shared_ptr<Mesh> &mesh);
+
+    void setName(const std::string &name);
 };
 
 
