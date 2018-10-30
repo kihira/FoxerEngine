@@ -1,89 +1,25 @@
 #include <memory>
 #include <iostream>
 #include <sol.hpp>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <enet/enet.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include "gl_helper.hpp"
+#include "render/RenderManager.h"
 #include "KeyHandler.h"
 #include "AssetManager.h"
-#include "render/Camera.h"
-#include "Entity.h"
 #include "EntityManager.h"
 
-// temp
-std::unique_ptr<Camera> camera;
-
-void glfwErrorCallback(int error, const char *desc) {
-    std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
-}
-
-void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height) {
-    glViewport(0, 0, width, height);
-    camera->resize(width, height);
-}
-
-sol::protected_function_result luaErrorCallback(lua_State *, sol::protected_function_result pfr) {
-    return pfr;
-}
-
 int main() {
-    glfwSetErrorCallback(glfwErrorCallback);
+    auto renderManager = std::make_unique<RenderManager>();
+    auto assetManager = std::make_unique<AssetManager>();
+    auto entityManager = std::make_unique<EntityManager>();
 
-    /*
-     * InitializeGLFW
-     */
-    std::cout << "GLFW " << glfwGetVersionString() << std::endl;
-    if (!glfwInit()) {
-        std::cerr << "Failed to init GLFW" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    atexit(glfwTerminate);
-
-    // Required OpenGL 3.2 Core at least
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#if __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
-#endif
-
-    // Create GLFW window
-    GLFWwindow *window = glfwCreateWindow(720, 405, "301CR Engine", nullptr, nullptr);
-    if (!window) {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, glfwFramebufferSizeCallback);
-    glfwSwapInterval(1);
-
-    // Init OpenGL and GLAD
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize OpenGL context" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
+    renderManager->startUp();
+    entityManager->startUp();
 
     /*
      * Setup key handler
      */
     auto keyHandler = std::make_unique<KeyHandler>();
-    glfwSetWindowUserPointer(window, keyHandler.get());
-    glfwSetKeyCallback(window, KeyHandler::keyCallback);
-
-    /*
-     * Create camera
-     */
-    camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
-    camera->resize(720, 405);
-
-    auto assetManager = std::make_unique<AssetManager>();
-    auto entityManager = std::make_unique<EntityManager>();
+    glfwSetWindowUserPointer(renderManager->getWindow(), keyHandler.get());
+    glfwSetKeyCallback(renderManager->getWindow(), KeyHandler::keyCallback);
 
     sol::table engineTable = assetManager->getLua().create_named_table("engine"); // Namespace for interacting with the engine
     sol::table entitiesTable = assetManager->getLua().create_named_table("entities");
@@ -106,23 +42,19 @@ int main() {
         return keyHandler->registerKeyHandlerLua(callback);
     });
 
-    glClearColor(0.5, 0.5, 0, 1);
-    glDisable(GL_CULL_FACE);
-
-    /*
-     * Load level
-     */
-
-    // Main loop
-    while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOTIDY
-        GLERRCHECK();
+    // Main loop todo should not really call glfw here
+    while (!glfwWindowShouldClose(renderManager->getWindow())) {
+        renderManager->frameStart();
 
         entityManager->update();
+        renderManager->update();
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        renderManager->frameEnd();
     }
+
+    // Shutdown subsystems
+    entityManager->shutDown();
+    renderManager->shutDown();
 
     return 0;
 }

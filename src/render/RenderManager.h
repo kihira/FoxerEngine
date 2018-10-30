@@ -4,15 +4,31 @@
 
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "Shader.h"
+#include "Camera.h"
 
 class RenderManager {
 private:
+    GLFWwindow *window;
+    std::unique_ptr<Camera> camera;
     GLuint currentShader;
+
+    void glfwErrorCallback(int error, const char *desc);
+
+    void glfwFramebufferSizeCallback(GLFWwindow *window, int width, int height);
 public:
     void startUp();
 
     void shutDown();
+
+    void frameStart();
+
+    void frameEnd();
+
+    void update();
+
+    GLFWwindow *getWindow() const;
 
     void useShader(std::shared_ptr<Shader> shader);
 };
