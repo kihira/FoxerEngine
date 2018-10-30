@@ -20,6 +20,7 @@ private:
     ENetAddress address;
     ENetHost *host;
     ENetPeer *peer;
+    bool isServer; // Whether we are a server or not
     std::map<enet_uint8, PacketMeta> packetHandlers;
     static void packetFreeCallback(ENetPacket *packet);
     ENetPacket *buildPacket(PacketMeta meta, void *data, size_t dataLength);

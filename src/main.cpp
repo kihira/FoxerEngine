@@ -71,6 +71,7 @@ int main(int argc, char **argv) {
     // Load initial level
     auto level = assetManager->loadLevel("level1");
 
+    // Start as server or connect to one
     if (argc == 2) {
         networkManager->startServer();
     } else {

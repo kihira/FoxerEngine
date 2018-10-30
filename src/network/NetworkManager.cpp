@@ -7,6 +7,7 @@ void NetworkManager::startServer() {
     address.port = 1234;
 
     host = enet_host_create(&address, 16, 2, 0, 0);
+    isServer = true;
 
     if (host == nullptr) {
         std::cerr << "Failed to start server on " << address.host << ":" << address.port << std::endl;
@@ -27,8 +28,11 @@ void NetworkManager::update() {
     while (enet_host_service(host, &event, 0) > 0) {
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT: {
-                peer = event.peer;
-                std::cout << "Connected to server" << std::endl;
+                if (isServer) {
+                    std::cout << "Client connected to server" << std::endl;
+                } else {
+                    std::cout << "Connected to server" << std::endl;
+                }
                 break;
             }
             case ENET_EVENT_TYPE_RECEIVE: {
@@ -38,8 +42,12 @@ void NetworkManager::update() {
                 break;
             }
             case ENET_EVENT_TYPE_DISCONNECT:
-                std::cout << "Disconnected from server" << std::endl;
-                peer = nullptr;
+                if (isServer) {
+                    std::cout << "Client disconnected from server" << std::endl;
+                } else {
+                    std::cout << "Disconnected from server" << std::endl;
+                    peer = nullptr;
+                }
                 break;
             case ENET_EVENT_TYPE_NONE:
                 break;
