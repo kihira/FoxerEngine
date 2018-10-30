@@ -28,6 +28,12 @@ public:
 
     void update();
 
+    /**
+     * Checks whether the GLFW window is attempting to close
+     * @return
+     */
+    bool shouldClose();
+
     GLFWwindow *getWindow() const;
 
     void useShader(std::shared_ptr<Shader> shader);

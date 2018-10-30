@@ -42,8 +42,8 @@ int main() {
         return keyHandler->registerKeyHandlerLua(callback);
     });
 
-    // Main loop todo should not really call glfw here
-    while (!glfwWindowShouldClose(renderManager->getWindow())) {
+    // Main loop
+    while (!renderManager->shouldClose()) {
         renderManager->frameStart();
 
         entityManager->update();

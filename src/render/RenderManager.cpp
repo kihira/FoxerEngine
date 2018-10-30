@@ -87,3 +87,7 @@ GLFWwindow *RenderManager::getWindow() const {
 void RenderManager::update() {
 
 }
+
+inline bool RenderManager::shouldClose() {
+    return glfwWindowShouldClose(window);
+}
