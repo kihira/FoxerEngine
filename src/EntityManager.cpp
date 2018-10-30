@@ -59,3 +59,12 @@ void EntityManager::update() {
         entity.second->update();
     }
 }
+
+std::shared_ptr<EntityManager> EntityManager::instance_;
+
+std::shared_ptr<EntityManager> EntityManager::instance() {
+    if (EntityManager::instance_ == nullptr) {
+        EntityManager::instance_ = std::make_shared<EntityManager>();
+    }
+    return EntityManager::instance_;
+}

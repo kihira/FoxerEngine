@@ -24,12 +24,14 @@ private:
     static void packetFreeCallback(ENetPacket *packet);
     ENetPacket *buildPacket(PacketMeta meta, void *data, size_t dataLength);
 public:
-    NetworkManager();
+    void startUp();
+
+    void shutDown();
+
     void startServer();
     void stopServer();
     void update();
-    void shutdown();
-    void registerPacket(enet_uint8 packetID, PacketMeta meta);
+    void registerPacket(PacketMeta meta);
     void sendToServer(enet_uint8 packetID, void *data, size_t dataLength);
     void sendToAllClients(enet_uint8 packetID, void *data, size_t dataLength);
     void connectToServer(const char *address, enet_uint16 port);

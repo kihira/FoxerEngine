@@ -21,7 +21,10 @@ private:
      * Gets a new entity ID that is not currently in use;
      */
     unsigned short getEntityId();
+
+    static std::shared_ptr<EntityManager> instance_;
 public:
+    static std::shared_ptr<EntityManager> instance();
 
     void startUp();
 

@@ -5,15 +5,19 @@
 #include "KeyHandler.h"
 #include "AssetManager.h"
 #include "EntityManager.h"
+#include "network/NetworkManager.h"
 
-int main() {
-    auto renderManager = std::make_unique<RenderManager>();
+int main(int argc, char **argv) {
     auto assetManager = std::make_unique<AssetManager>();
-    auto entityManager = std::make_unique<EntityManager>();
+    auto networkManager = std::make_unique<NetworkManager>();
 
+    // todo need to clean this mess up
     assetManager->startUp();
-    renderManager->startUp();
-    entityManager->startUp();
+    RenderManager::instance()->startUp();
+    EntityManager::instance()->startUp();
+    networkManager->startUp();
+
+    networkManager->registerPacket({0, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){ EntityManager::instance()->handleEntityPacket(packetID, data, dataLength); }});
 
     /*
      * Setup key handler
@@ -27,9 +31,7 @@ int main() {
 
     // Load functions for lua
     engineTable.set_function("registerEntityPrototype", [&assetManager](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return assetManager->loadEntityPrototype(fileName, tableName); });
-    engineTable.set_function("spawnEntity", [&entityManager](std::string id) -> std::shared_ptr<Entity> { return entityManager->spawn(id); });
-    // TODO could also do this but need to remove unique ptr
-    // engineTable.set_function("spawnEntity", &EntityManager::spawn, entityManager);
+    engineTable.set_function("spawnEntity", &EntityManager::spawn, EntityManager::instance());
 
     // Register vec3 type
     engineTable.new_usertype<glm::vec3>(
@@ -45,7 +47,7 @@ int main() {
             "entity",
             // sol::constructors<Entity(const char *)>(),
             "noconstructor", sol::no_constructor, // No constructor as we use factory
-            "spawn", [&entityManager](std::string name){return entityManager->spawn(name);}, // Provides a method for retrieving a copy of a prototype
+            "spawn", [](std::string name){return EntityManager::instance()->spawn(name);}, // Provides a method for retrieving a copy of a prototype
             // Register properties
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
@@ -64,23 +66,32 @@ int main() {
 //    });
 
     // Register entity prototypes
-    entityManager->registerPrototype("player", assetManager->loadEntityPrototype("entity", "testEntity"));
+    EntityManager::instance()->registerPrototype("player", assetManager->loadEntityPrototype("entity", "testEntity"));
 
+    // Load initial level
     auto level = assetManager->loadLevel("level1");
 
+    if (argc == 2) {
+        networkManager->startServer();
+    } else {
+        networkManager->connectToServer("localhost", 1234);
+    }
+
     // Main loop
-    while (!renderManager->shouldClose()) {
-        renderManager->frameStart();
+    while (!RenderManager::instance()->shouldClose()) {
+        RenderManager::instance()->frameStart();
 
-        entityManager->update();
-        renderManager->update();
+        EntityManager::instance()->update();
+        RenderManager::instance()->update();
+        networkManager->update();
 
-        renderManager->frameEnd();
+        RenderManager::instance()->frameEnd();
     }
 
     // Shutdown subsystems
-    entityManager->shutDown();
-    renderManager->shutDown();
+    networkManager->shutDown();
+    EntityManager::instance()->shutDown();
+    RenderManager::instance()->shutDown();
     assetManager->shutDown();
 
     return 0;

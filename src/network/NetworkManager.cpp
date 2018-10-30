@@ -2,15 +2,6 @@
 #include <iostream>
 #include "NetworkManager.h"
 
-NetworkManager::NetworkManager() {
-    if (enet_initialize() != 0) {
-        std::cerr << "Failed to initialise ENet" << std::endl;
-        exit(-1);
-    }
-
-    std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
-}
-
 void NetworkManager::startServer() {
     address.host = ENET_HOST_ANY;
     address.port = 1234;
@@ -37,6 +28,7 @@ void NetworkManager::update() {
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT: {
                 peer = event.peer;
+                std::cout << "Connected to server" << std::endl;
                 break;
             }
             case ENET_EVENT_TYPE_RECEIVE: {
@@ -46,6 +38,7 @@ void NetworkManager::update() {
                 break;
             }
             case ENET_EVENT_TYPE_DISCONNECT:
+                std::cout << "Disconnected from server" << std::endl;
                 peer = nullptr;
                 break;
             case ENET_EVENT_TYPE_NONE:
@@ -54,21 +47,13 @@ void NetworkManager::update() {
     }
 }
 
-void NetworkManager::shutdown() {
-    if (host != nullptr) {
-        stopServer();
-    }
-
-    enet_deinitialize();
-}
-
-void NetworkManager::registerPacket(enet_uint8 packetID, PacketMeta meta) {
-    if (packetHandlers.find(packetID) != packetHandlers.end()) {
-        std::cerr << "A packet with the ID " << packetID << " has already been registered!" << std::endl;
+void NetworkManager::registerPacket(PacketMeta meta) {
+    if (packetHandlers.find(meta.id) != packetHandlers.end()) {
+        std::cerr << "A packet with the ID " << meta.id << " has already been registered!" << std::endl;
         return;
     }
 
-    packetHandlers.insert(std::pair<int, PacketMeta>(packetID, meta));
+    packetHandlers.insert(std::pair<int, PacketMeta>(meta.id, meta));
 }
 
 void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLength) {
@@ -93,6 +78,7 @@ void NetworkManager::connectToServer(const char *address, enet_uint16 port) {
     enet_address_set_host(&this->address, address);
     this->address.port = port;
 
+    host = enet_host_create(nullptr, 1, 2, 0, 0);
     peer = enet_host_connect(host, &this->address, 2, 0);
 
     if (peer == nullptr) {
@@ -111,4 +97,21 @@ ENetPacket *NetworkManager::buildPacket(PacketMeta meta, void *data, size_t data
     packet->freeCallback = NetworkManager::packetFreeCallback;
 
     return packet;
+}
+
+void NetworkManager::startUp() {
+    if (enet_initialize() != 0) {
+        std::cerr << "Failed to initialise ENet" << std::endl;
+        exit(-1);
+    }
+
+    std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
+}
+
+void NetworkManager::shutDown() {
+    if (host != nullptr) {
+        stopServer();
+    }
+
+    enet_deinitialize();
 }
