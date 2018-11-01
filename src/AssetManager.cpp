@@ -291,3 +291,7 @@ void AssetManager::cleanup() {
         }
     }
 }
+
+AssetManager::AssetManager() {} // noop
+
+AssetManager::~AssetManager() {} // noop

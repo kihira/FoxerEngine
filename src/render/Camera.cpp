@@ -3,12 +3,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(const glm::vec3 &position, const glm::vec3 &target, float fov, float near, float far) :
-    position(position), target(target), fov(fov), near(near), far(far) {
+    position(position), target(target), fov(fov), near_(near), far_(far) {
     updateViewMatrix();
 }
 
 void Camera::resize(int width, int height) {
-    projection = glm::perspective(glm::radians(fov), (float) width / (float) height, near, far);
+    projection = glm::perspective(glm::radians(fov), (float) width / (float) height, near_, far_);
 }
 
 const glm::mat4 &Camera::getProjection() const {

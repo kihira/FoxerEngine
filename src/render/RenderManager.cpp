@@ -1,6 +1,7 @@
 
 #include "RenderManager.h"
 #include "../gl_helper.hpp"
+#include "../Managers.h"
 
 // todo should this just be called from the Shader itself?
 void RenderManager::useShader(std::shared_ptr<Shader> shader) {
@@ -77,7 +78,7 @@ void RenderManager::glfwErrorCallback(int error, const char *desc) {
 
 void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
     glViewport(0, 0, width, height);
-    instance()->camera->resize(width, height);
+    gRenderManager.camera->resize(width, height);
 }
 
 void RenderManager::update() {
@@ -86,15 +87,6 @@ void RenderManager::update() {
 
 int RenderManager::shouldClose() {
     return windowWrapper->shouldClose();
-}
-
-std::shared_ptr<RenderManager> RenderManager::instance_;
-
-std::shared_ptr<RenderManager> RenderManager::instance() {
-    if (RenderManager::instance_ == nullptr) {
-        RenderManager::instance_ = std::make_shared<RenderManager>();
-    }
-    return RenderManager::instance_;
 }
 
 const std::unique_ptr<WindowWrapper> &RenderManager::getWindowWrapper() const {

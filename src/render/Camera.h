@@ -12,8 +12,9 @@ private:
     glm::vec3 position;
     glm::vec3 target;
     float fov;
-    float near;
-    float far;
+    // Something else is declaring these as blank preprocessor directives so gotta do this
+    float near_;
+    float far_;
 
     void updateViewMatrix();
 public:

@@ -5,6 +5,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <memory>
 #include "Shader.h"
 #include "Camera.h"
 #include "WindowWrapper.h"
@@ -15,14 +16,10 @@ private:
     std::unique_ptr<Camera> camera;
     GLuint currentShader = 0;
 
-    static std::shared_ptr<RenderManager> instance_;
-
     static void glfwErrorCallback(int error, const char *desc);
 
     static void glfwFramebufferSizeCallback(int width, int height);
 public:
-    static std::shared_ptr<RenderManager> instance();
-
     void startUp();
 
     void shutDown();

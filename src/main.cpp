@@ -6,18 +6,15 @@
 #include "AssetManager.h"
 #include "EntityManager.h"
 #include "network/NetworkManager.h"
+#include "Managers.h"
 
 int main(int argc, char **argv) {
-    auto assetManager = std::make_unique<AssetManager>();
-    auto networkManager = std::make_unique<NetworkManager>();
+    gAssetManager.startUp();
+    gRenderManager.startUp();
+    gEntityManager.startUp();
+    gNetworkManager.startUp();
 
-    // todo need to clean this mess up
-    assetManager->startUp();
-    RenderManager::instance()->startUp();
-    EntityManager::instance()->startUp();
-    networkManager->startUp();
-
-    networkManager->registerPacket({0, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){ EntityManager::instance()->handleEntityPacket(packetID, data, dataLength); }});
+    gNetworkManager.registerPacket({0, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){ gEntityManager.handleEntityPacket(packetID, data, dataLength); }});
 
     /*
      * Setup key handler
@@ -27,10 +24,10 @@ int main(int argc, char **argv) {
 //    glfwSetWindowUserPointer(renderManager->getWindow(), keyHandler.get());
 //    glfwSetKeyCallback(renderManager->getWindow(), KeyHandler::keyCallback);
 
-    sol::table engineTable = assetManager->getLua().create_named_table("engine"); // Namespace for interacting with the engine
+    sol::table engineTable = gAssetManager.getLua().create_named_table("engine"); // Namespace for interacting with the engine
 
     // Load functions for lua
-    engineTable.set_function("registerEntityPrototype", [&assetManager](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return assetManager->loadEntityPrototype(fileName, tableName); });
+    engineTable.set_function("registerEntityPrototype", [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); });
     engineTable.set_function("spawnEntity", &EntityManager::spawn, EntityManager::instance());
 
     // Register vec3 type
@@ -66,34 +63,34 @@ int main(int argc, char **argv) {
 //    });
 
     // Register entity prototypes
-    EntityManager::instance()->registerPrototype("player", assetManager->loadEntityPrototype("entity", "testEntity"));
+    EntityManager::instance()->registerPrototype("player", gAssetManager.loadEntityPrototype("entity", "testEntity"));
 
     // Load initial level
-    auto level = assetManager->loadLevel("level1");
+    auto level = gAssetManager.loadLevel("level1");
 
     // Start as server or connect to one
     if (argc == 2) {
-        networkManager->startServer();
+        gNetworkManager.startServer();
     } else {
-        networkManager->connectToServer("localhost", 1234);
+        gNetworkManager.connectToServer("localhost", 1234);
     }
 
     // Main loop
-    while (!RenderManager::instance()->shouldClose()) {
-        RenderManager::instance()->frameStart();
+    while (!gRenderManager.shouldClose()) {
+        gRenderManager.frameStart();
 
-        EntityManager::instance()->update();
-        RenderManager::instance()->update();
-        networkManager->update();
+        gEntityManager.update();
+        gRenderManager.update();
+        gNetworkManager.update();
 
-        RenderManager::instance()->frameEnd();
+        gRenderManager.frameEnd();
     }
 
     // Shutdown subsystems
-    networkManager->shutDown();
-    EntityManager::instance()->shutDown();
-    RenderManager::instance()->shutDown();
-    assetManager->shutDown();
+    gNetworkManager.shutDown();
+    gEntityManager.shutDown();
+    gRenderManager.shutDown();
+    gAssetManager.shutDown();
 
     return 0;
 }
