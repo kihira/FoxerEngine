@@ -7,12 +7,14 @@
 #include "network/NetworkManager.h"
 #include "render/RenderManager.h"
 #include "entity/EntityManager.h"
+#include "physics/PhysicsManager.h"
 
 namespace {
     AssetManager gAssetManager;
     RenderManager gRenderManager;
     EntityManager gEntityManager;
     NetworkManager gNetworkManager;
+    PhysicsManager gPhysicsManager;
 }
 
 #endif //GAMEENGINE301CR_MANAGERS_H

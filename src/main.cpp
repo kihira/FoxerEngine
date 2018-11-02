@@ -11,8 +11,9 @@
 int main(int argc, char **argv) {
     gAssetManager.startUp();
     gRenderManager.startUp();
-    gEntityManager.startUp();
     gNetworkManager.startUp();
+    gPhysicsManager.startUp();
+    gEntityManager.startUp();
 
     gNetworkManager.registerPacket({0, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){ gEntityManager.handleEntityPacket(packetID, data, dataLength); }});
 
@@ -79,16 +80,18 @@ int main(int argc, char **argv) {
     while (!gRenderManager.shouldClose()) {
         gRenderManager.frameStart();
 
+        gPhysicsManager.update();
+        gNetworkManager.update();
         gEntityManager.update();
         gRenderManager.update();
-        gNetworkManager.update();
 
         gRenderManager.frameEnd();
     }
 
     // Shutdown subsystems
-    gNetworkManager.shutDown();
     gEntityManager.shutDown();
+    gPhysicsManager.shutDown();
+    gNetworkManager.shutDown();
     gRenderManager.shutDown();
     gAssetManager.shutDown();
 

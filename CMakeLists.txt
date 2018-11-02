@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 
 # Source files
-set(SOURCES src/main.cpp src/entity/Entity.cpp src/entity/Entity.h src/AssetManager.cpp src/AssetManager.h src/render/Mesh.cpp src/render/Mesh.h src/render/Shader.cpp src/render/Shader.h src/gl_helper.hpp src/network/NetworkManager.cpp src/network/NetworkManager.h src/KeyHandler.cpp src/KeyHandler.h src/render/Camera.cpp src/render/Camera.h src/vectors.h src/level.cpp src/level.h src/assert.h src/render/RenderManager.cpp src/render/RenderManager.h src/entity/EntityManager.cpp src/entity/EntityManager.h src/render/WindowWrapper.cpp src/render/WindowWrapper.h src/entity/Player.cpp src/entity/Player.h src/Managers.h)
+set(SOURCES src/main.cpp src/entity/Entity.cpp src/entity/Entity.h src/AssetManager.cpp src/AssetManager.h src/render/Mesh.cpp src/render/Mesh.h src/render/Shader.cpp src/render/Shader.h src/gl_helper.hpp src/network/NetworkManager.cpp src/network/NetworkManager.h src/KeyHandler.cpp src/KeyHandler.h src/render/Camera.cpp src/render/Camera.h src/vectors.h src/level.cpp src/level.h src/assert.h src/render/RenderManager.cpp src/render/RenderManager.h src/entity/EntityManager.cpp src/entity/EntityManager.h src/render/WindowWrapper.cpp src/render/WindowWrapper.h src/entity/Player.cpp src/entity/Player.h src/Managers.h src/physics/PhysicsManager.cpp src/physics/PhysicsManager.h src/physics/PhysicsComponent.cpp src/physics/PhysicsComponent.h src/entity/Component.h src/network/NetworkComponent.cpp src/network/NetworkComponent.h)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
