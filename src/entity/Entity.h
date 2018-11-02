@@ -3,8 +3,8 @@
 
 #include <glm/glm.hpp>
 #include <sol.hpp>
-#include "render/Mesh.h"
-#include "render/Shader.h"
+#include "../render/Mesh.h"
+#include "../render/Shader.h"
 
 
 class Entity {

@@ -1,7 +1,7 @@
 
 #include <glm/glm.hpp>
 #include "EntityManager.h"
-#include "assert.h"
+#include "../assert.h"
 
 void EntityManager::startUp() {
 

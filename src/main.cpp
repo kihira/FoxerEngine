@@ -4,7 +4,7 @@
 #include "render/RenderManager.h"
 #include "KeyHandler.h"
 #include "AssetManager.h"
-#include "EntityManager.h"
+#include "entity/EntityManager.h"
 #include "network/NetworkManager.h"
 #include "Managers.h"
 

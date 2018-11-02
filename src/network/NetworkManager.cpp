@@ -123,3 +123,5 @@ void NetworkManager::shutDown() {
 
     enet_deinitialize();
 }
+
+NetworkManager::NetworkManager() {}

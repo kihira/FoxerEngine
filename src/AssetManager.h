@@ -7,7 +7,7 @@
 #include <sol.hpp>
 #include "render/Mesh.h"
 #include "render/Shader.h"
-#include "Entity.h"
+#include "entity/Entity.h"
 #include "level.h"
 
 class AssetManager {
