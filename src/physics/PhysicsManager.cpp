@@ -1,5 +1,6 @@
 
 #include "PhysicsManager.h"
+#include <easy/profiler.h>
 
 void PhysicsManager::startUp() {
     b2Vec2 gravity(0.f, -10.f);
@@ -11,6 +12,7 @@ void PhysicsManager::shutDown() {
 }
 
 void PhysicsManager::update() {
+    EASY_FUNCTION(profiler::colors::Magenta);
     world->Step(timeStep, velocityIterations, positionIterations);
 }
 

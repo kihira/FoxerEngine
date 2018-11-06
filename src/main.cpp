@@ -1,6 +1,7 @@
 #include <memory>
 #include <iostream>
 #include <sol.hpp>
+#include <easy/profiler.h>
 #include "render/RenderManager.h"
 #include "KeyHandler.h"
 #include "AssetManager.h"
@@ -9,6 +10,10 @@
 #include "Managers.h"
 
 int main(int argc, char **argv) {
+#ifndef NDEBUG // Enable profiler in debug mode
+    EASY_PROFILER_ENABLE;
+#endif
+
     gAssetManager.startUp();
     gRenderManager.startUp();
     gNetworkManager.startUp();
@@ -94,6 +99,10 @@ int main(int argc, char **argv) {
     gNetworkManager.shutDown();
     gRenderManager.shutDown();
     gAssetManager.shutDown();
+
+#ifndef NDEBUG // Dump profile data
+    profiler::dumpBlocksToFile("./profile_data.prof");
+#endif
 
     return 0;
 }

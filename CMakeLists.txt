@@ -5,6 +5,11 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 
+# Enable building with profiler in debug
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+    add_definitions(-DBUILD_WITH_EASY_PROFILER)
+endif()
+
 # Source files
 set(SOURCES src/main.cpp src/entity/Entity.cpp src/entity/Entity.h src/AssetManager.cpp src/AssetManager.h src/render/Mesh.cpp src/render/Mesh.h src/render/Shader.cpp src/render/Shader.h src/gl_helper.hpp src/network/NetworkManager.cpp src/network/NetworkManager.h src/KeyHandler.cpp src/KeyHandler.h src/render/Camera.cpp src/render/Camera.h src/vectors.h src/level.cpp src/level.h src/assert.h src/render/RenderManager.cpp src/render/RenderManager.h src/entity/EntityManager.cpp src/entity/EntityManager.h src/render/WindowWrapper.cpp src/render/WindowWrapper.h src/entity/Player.cpp src/entity/Player.h src/Managers.h src/physics/PhysicsManager.cpp src/physics/PhysicsManager.h src/physics/PhysicsComponent.cpp src/physics/PhysicsComponent.h src/entity/Component.h src/network/NetworkComponent.cpp src/network/NetworkComponent.h)
 
@@ -69,6 +74,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/sol)
 
 # Imgui
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/imgui)
+
+# Easy Profiler
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/easyprofiler/include)
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/macos/libeasy_profiler.dylib)
 
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)

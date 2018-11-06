@@ -6,6 +6,7 @@
 - ENet 1.3.13
 - Box2D 2.3.1
 - ImGui 1.65
+- easy_profiler 2.0.1 [MIT](https://github.com/yse/easy_profiler/blob/develop/LICENSE.MIT)
 
 ## Build
 All the libraries are contained within the repo and building the project

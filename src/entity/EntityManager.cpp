@@ -1,5 +1,6 @@
 
 #include <glm/glm.hpp>
+#include <easy/profiler.h>
 #include "EntityManager.h"
 #include "../assert.h"
 
@@ -55,6 +56,7 @@ inline unsigned short EntityManager::getEntityId() {
 }
 
 void EntityManager::update() {
+    EASY_FUNCTION();
     for (auto entity : entities) {
         entity.second->update();
     }

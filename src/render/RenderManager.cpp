@@ -1,4 +1,5 @@
 
+#include <easy/profiler.h>
 #include "RenderManager.h"
 #include "../gl_helper.hpp"
 #include "../Managers.h"

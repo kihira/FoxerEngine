@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <easy/profiler.h>
 #include "NetworkManager.h"
 
 void NetworkManager::startServer() {
@@ -24,6 +25,7 @@ void NetworkManager::stopServer() {
 }
 
 void NetworkManager::update() {
+    EASY_FUNCTION();
     ENetEvent event;
     while (enet_host_service(host, &event, 0) > 0) {
         switch (event.type) {
