@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
     gNetworkManager.startUp();
     gPhysicsManager.startUp();
     gEntityManager.startUp();
+    gSoundManager.startUp();
 
     gNetworkManager.registerPacket({0, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){ gEntityManager.handleEntityPacket(packetID, data, dataLength); }});
 
@@ -94,6 +95,7 @@ int main(int argc, char **argv) {
     }
 
     // Shutdown subsystems
+    gSoundManager.startUp();
     gEntityManager.shutDown();
     gPhysicsManager.shutDown();
     gNetworkManager.shutDown();

@@ -8,6 +8,7 @@
 #include "render/RenderManager.h"
 #include "entity/EntityManager.h"
 #include "physics/PhysicsManager.h"
+#include "SoundManager.h"
 
 namespace {
     AssetManager gAssetManager;
@@ -15,6 +16,7 @@ namespace {
     EntityManager gEntityManager;
     NetworkManager gNetworkManager;
     PhysicsManager gPhysicsManager;
+    SoundManager gSoundManager;
 }
 
 #endif //GAMEENGINE301CR_MANAGERS_H
