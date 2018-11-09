@@ -2,24 +2,20 @@
 #include <iostream>
 #include <sol.hpp>
 #include <easy/profiler.h>
-#include "render/RenderManager.h"
-#include "KeyHandler.h"
-#include "AssetManager.h"
-#include "entity/EntityManager.h"
-#include "network/NetworkManager.h"
 #include "Managers.h"
+#include "KeyHandler.h"
 
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
     EASY_PROFILER_ENABLE;
 #endif
 
-    gAssetManager.startUp();
     gRenderManager.startUp();
     gNetworkManager.startUp();
     gPhysicsManager.startUp();
     gEntityManager.startUp();
     gSoundManager.startUp();
+    gAssetManager.startUp();
 
     gNetworkManager.registerPacket({0, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){ gEntityManager.handleEntityPacket(packetID, data, dataLength); }});
 
@@ -35,7 +31,7 @@ int main(int argc, char **argv) {
 
     // Load functions for lua
     engineTable.set_function("registerEntityPrototype", [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); });
-    engineTable.set_function("spawnEntity", &EntityManager::spawn, EntityManager::instance());
+    engineTable.set_function("spawnEntity", &EntityManager::spawn, gEntityManager);
 
     // Register vec3 type
     engineTable.new_usertype<glm::vec3>(
@@ -51,7 +47,7 @@ int main(int argc, char **argv) {
             "entity",
             // sol::constructors<Entity(const char *)>(),
             "noconstructor", sol::no_constructor, // No constructor as we use factory
-            "spawn", [](std::string name){return EntityManager::instance()->spawn(name);}, // Provides a method for retrieving a copy of a prototype
+            "spawn", [](std::string name){return gEntityManager.spawn(name);}, // Provides a method for retrieving a copy of a prototype
             // Register properties
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
@@ -70,10 +66,10 @@ int main(int argc, char **argv) {
 //    });
 
     // Register entity prototypes
-    EntityManager::instance()->registerPrototype("player", gAssetManager.loadEntityPrototype("entity", "testEntity"));
+    gEntityManager.registerPrototype("dummyTarget", gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget"));
 
     // Load initial level
-    auto level = gAssetManager.loadLevel("level1");
+    // auto level = gAssetManager.loadLevel("level1");
 
     // Start as server or connect to one
     if (argc == 2) {
@@ -95,12 +91,12 @@ int main(int argc, char **argv) {
     }
 
     // Shutdown subsystems
+    gAssetManager.shutDown();
     gSoundManager.startUp();
     gEntityManager.shutDown();
     gPhysicsManager.shutDown();
     gNetworkManager.shutDown();
     gRenderManager.shutDown();
-    gAssetManager.shutDown();
 
 #ifndef NDEBUG // Dump profile data
     profiler::dumpBlocksToFile("./profile_data.prof");

@@ -5,6 +5,7 @@
 #include <sol.hpp>
 #include "../render/Mesh.h"
 #include "../render/Shader.h"
+#include "Component.h"
 
 
 class Entity {
@@ -23,12 +24,11 @@ private:
 
     const unsigned short id;
     std::string name;
+    std::vector<Component *> components;
 public:
     Entity(unsigned short id, std::string name);
 
     void update();
-
-    void render(Shader *shader);
 
     /**
      * Creates a copy of the entity. This should not be called directly unless you are EntityManager
@@ -52,6 +52,8 @@ public:
     void setMesh(const std::shared_ptr<Mesh> &mesh);
 
     void setName(const std::string &name);
+
+    void addComponent(Component *component);
 };
 
 

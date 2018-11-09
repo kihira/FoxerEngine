@@ -3,6 +3,7 @@
 #include <iostream>
 #include "gl_helper.hpp"
 #include "assert.h"
+#include "Managers.h"
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
@@ -213,23 +214,37 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         return entityPrototypes[tableName];
     }
 
-    auto loadResult = lua.load_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
-    if (loadResult.status() != sol::load_status::ok) {
-        std::cerr << "Failed to load lua file for entity " << fileName << std::endl;
-        return nullptr; // todo should return an error entity
-    }
-    sol::protected_function_result loadRunResult = loadResult();
-    if (!loadRunResult.valid()) {
-        sol::error err = loadRunResult;
-        std::cerr << "Failed to run lua file for entity " << fileName << ": " << std::endl
-                  << err.what() << std::endl;
-    }
+    lua.script_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
+//    auto loadResult = lua.load_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
+//    if (loadResult.status() != sol::load_status::ok) {
+//        std::cerr << "Failed to load lua file for entity " << fileName << std::endl;
+//        return nullptr; // todo should return an error entity
+//    }
+//    sol::protected_function_result loadRunResult = loadResult();
+//    if (!loadRunResult.valid()) {
+//        sol::error err = loadRunResult;
+//        std::cerr << "Failed to run lua file for entity " << fileName << ": " << std::endl
+//                  << err.what() << std::endl;
+//    }
 
     // Load data from lua file and bind functions
     sol::table entityTable = lua[tableName];
     std::string name = entityTable["name"].get_or(fileName);
     auto entity = std::make_shared<Entity>(0, name);
     entity->setUpdateFn(entityTable["update"]);
+
+    // Physics
+    if (entityTable["collider"] != sol::lua_nil) {
+        auto physicsTable = entityTable["collider"];
+        auto physicsComponent = gPhysicsManager.createComponent(b2BodyType::b2_kinematicBody); // todo
+        // todo switch to using a builder/factory?
+        physicsComponent->setActive(physicsTable["active"].get_or(true));
+        physicsComponent->setAngularDamping(physicsTable["angularDamping"].get_or(0.f));
+        physicsComponent->setLinearDamping(physicsTable["linearDamping"].get_or(0.f));
+        physicsComponent->setGravityScale(physicsTable["gravityScale"].get_or(1.f));
+        physicsComponent->setUserData(entity.get());
+        entity->addComponent(physicsComponent);
+    }
 
     // Attempt to load mesh for entity
     std::string mesh = entityTable["mesh"].get_or(std::string("ERROR"));
@@ -292,6 +307,6 @@ void AssetManager::cleanup() {
     }
 }
 
-AssetManager::AssetManager() {} // noop
+AssetManager::AssetManager() = default; // noop
 
-AssetManager::~AssetManager() {} // noop
+AssetManager::~AssetManager() = default; // noop

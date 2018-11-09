@@ -3,21 +3,19 @@
 #ifndef GAMEENGINE301CR_MANAGERS_H
 #define GAMEENGINE301CR_MANAGERS_H
 
-#include "AssetManager.h"
+#include "physics/PhysicsManager.h"
 #include "network/NetworkManager.h"
 #include "render/RenderManager.h"
 #include "entity/EntityManager.h"
-#include "physics/PhysicsManager.h"
 #include "SoundManager.h"
+#include "AssetManager.h"
 
-namespace {
-    AssetManager gAssetManager;
-    RenderManager gRenderManager;
-    EntityManager gEntityManager;
-    NetworkManager gNetworkManager;
-    PhysicsManager gPhysicsManager;
-    SoundManager gSoundManager;
-}
+static RenderManager gRenderManager;
+static EntityManager gEntityManager;
+static NetworkManager gNetworkManager;
+static PhysicsManager gPhysicsManager;
+static SoundManager gSoundManager;
+static AssetManager gAssetManager;
 
 #endif //GAMEENGINE301CR_MANAGERS_H
 

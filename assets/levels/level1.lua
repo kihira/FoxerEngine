@@ -3,6 +3,8 @@ level = {
     players = 2,
     update = function(self)
     end
+    load = function(self)
+    end
 }
 
 -- example of loading entity
