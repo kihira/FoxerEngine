@@ -65,6 +65,8 @@ int main(int argc, char **argv) {
 //        return keyHandler->registerKeyHandlerLua(callback);
 //    });
 
+    std::cout << gPhysicsManager.createBody(b2BodyDef()) << std::endl;
+
     // Register entity prototypes
     gEntityManager.registerPrototype("dummyTarget", gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget"));
 

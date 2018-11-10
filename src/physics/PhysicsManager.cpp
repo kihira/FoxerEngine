@@ -28,20 +28,3 @@ b2Joint *PhysicsManager::createJoint(const b2JointDef &jointDef) {
 void PhysicsManager::deregisterComponent(PhysicsComponent *component) {
     //todo components.erase(components.find(component));
 }
-
-PhysicsComponent *PhysicsManager::createComponent(b2BodyType type, glm::vec3 position, glm::vec3 rotation, bool bullet, bool fixedRotation) {
-    b2BodyDef bodyDef;
-    bodyDef.type = type;
-    bodyDef.position.Set(position.x, position.z);
-    bodyDef.angle = rotation.y;
-    bodyDef.bullet = bullet;
-    bodyDef.fixedRotation = fixedRotation;
-
-    auto component = new PhysicsComponent(createBody(bodyDef));
-    components.push_back(component);
-    return component;
-}
-
-PhysicsManager::~PhysicsManager() = default;
-
-PhysicsManager::PhysicsManager() = default;

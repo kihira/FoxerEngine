@@ -19,8 +19,6 @@ private:
     b2Body *body;
     b2Fixture *fixture;
 public:
-    explicit PhysicsComponent(const std::shared_ptr<Entity> &entity);
-
     explicit PhysicsComponent(b2Body *body);
 
     void update() override;

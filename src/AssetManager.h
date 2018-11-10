@@ -31,10 +31,6 @@ private:
      */
     std::shared_ptr<Shader> getErrorShader();
 public:
-    AssetManager();
-
-    virtual ~AssetManager();
-
     void startUp();
 
     void shutDown();

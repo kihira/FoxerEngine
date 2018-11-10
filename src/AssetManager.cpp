@@ -1,9 +1,8 @@
-#include "AssetManager.h"
+#include "Managers.h"
 #include <fstream>
 #include <iostream>
 #include "gl_helper.hpp"
 #include "assert.h"
-#include "Managers.h"
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
@@ -236,9 +235,17 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     // Physics
     if (entityTable["collider"] != sol::lua_nil) {
         auto physicsTable = entityTable["collider"];
-        auto physicsComponent = gPhysicsManager.createComponent(b2BodyType::b2_kinematicBody); // todo
+        b2BodyDef bodyDef;
+        bodyDef.active = physicsTable["active"].get_or(true);
+        bodyDef.type = b2BodyType::b2_kinematicBody;
+        bodyDef.position.Set(entity->getPosition().x, entity->getPosition().z);
+        bodyDef.angle = entity->getRotation().y;
+        bodyDef.bullet = false;
+        bodyDef.fixedRotation = false;
+
+        // BUG refering to gPhysicsManager here is refering to something other then the main one
+        auto physicsComponent = new PhysicsComponent(gPhysicsManager.createBody(bodyDef));
         // todo switch to using a builder/factory?
-        physicsComponent->setActive(physicsTable["active"].get_or(true));
         physicsComponent->setAngularDamping(physicsTable["angularDamping"].get_or(0.f));
         physicsComponent->setLinearDamping(physicsTable["linearDamping"].get_or(0.f));
         physicsComponent->setGravityScale(physicsTable["gravityScale"].get_or(1.f));
@@ -306,7 +313,3 @@ void AssetManager::cleanup() {
         }
     }
 }
-
-AssetManager::AssetManager() = default; // noop
-
-AssetManager::~AssetManager() = default; // noop

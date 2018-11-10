@@ -15,10 +15,6 @@ private:
     b2World *world; // A pointer is used so we can create a default constructor
     std::vector<PhysicsComponent *> components;
 public:
-    PhysicsManager();
-
-    ~PhysicsManager();
-
     void startUp();
 
     void shutDown();
@@ -28,8 +24,6 @@ public:
     b2Body *createBody(const b2BodyDef &bodyDef);
 
     b2Joint *createJoint(const b2JointDef &jointDef);
-
-    PhysicsComponent *createComponent(b2BodyType type, glm::vec3 position = glm::vec3(0.f), glm::vec3 rotation = glm::vec3(0.f), bool bullet = false, bool fixedRotation = false);
 
     void deregisterComponent(PhysicsComponent *component);
 };
