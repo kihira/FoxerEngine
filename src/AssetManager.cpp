@@ -3,6 +3,7 @@
 #include <iostream>
 #include "gl_helper.hpp"
 #include "assert.h"
+#include "render/RenderComponent.h"
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
@@ -51,6 +52,8 @@ const GLushort errCubeIndices[] = {
         3, 2, 6, // TOP
         6, 7, 3
 };
+
+const std::string errorName = "ERROR";
 
 AssetManager::AssetManager() = default; // noop
 
@@ -226,17 +229,6 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     }
 
     lua.script_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
-//    auto loadResult = lua.load_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
-//    if (loadResult.status() != sol::load_status::ok) {
-//        std::cerr << "Failed to load lua file for entity " << fileName << std::endl;
-//        return nullptr; // todo should return an error entity
-//    }
-//    sol::protected_function_result loadRunResult = loadResult();
-//    if (!loadRunResult.valid()) {
-//        sol::error err = loadRunResult;
-//        std::cerr << "Failed to run lua file for entity " << fileName << ": " << std::endl
-//                  << err.what() << std::endl;
-//    }
 
     // Load data from lua file and bind functions
     sol::table entityTable = lua[tableName];
@@ -244,30 +236,51 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     auto entity = std::make_shared<Entity>(0, name);
     entity->setUpdateFn(entityTable["update"]);
 
-    // Physics
+    // Create Physics Component
     if (entityTable["collider"] != sol::lua_nil) {
         auto physicsTable = entityTable["collider"];
+
+        // todo switch to using a builder/factory?
         b2BodyDef bodyDef;
         bodyDef.active = physicsTable["active"].get_or(true);
-        bodyDef.type = b2BodyType::b2_kinematicBody;
-        bodyDef.position.Set(entity->getPosition().x, entity->getPosition().z);
         bodyDef.angle = entity->getRotation().y;
-        bodyDef.bullet = false;
-        bodyDef.fixedRotation = false;
+        bodyDef.angularDamping = physicsTable["angularDamping"].get_or(0.f);
+        bodyDef.bullet = physicsTable["bullet"].get_or(false);
+        bodyDef.linearDamping = physicsTable["linearDamping"].get_or(0.f);
+        bodyDef.gravityScale = physicsTable["gravityScale"].get_or(1.f);
+        bodyDef.type = static_cast<b2BodyType>(physicsTable["type"].get_or(0));
+        bodyDef.position.Set(entity->getPosition().x, entity->getPosition().z);
+        bodyDef.fixedRotation = physicsTable["fixedRotation"].get_or(false);
+        bodyDef.userData = entity.get();
+        auto body = gPhysicsManager.createBody(bodyDef);
 
-        // BUG refering to gPhysicsManager here is refering to something other then the main one
-        auto physicsComponent = new PhysicsComponent(gPhysicsManager.createBody(bodyDef));
-        // todo switch to using a builder/factory?
-        physicsComponent->setAngularDamping(physicsTable["angularDamping"].get_or(0.f));
-        physicsComponent->setLinearDamping(physicsTable["linearDamping"].get_or(0.f));
-        physicsComponent->setGravityScale(physicsTable["gravityScale"].get_or(1.f));
-        physicsComponent->setUserData(entity.get());
+        b2PolygonShape shape;
+        shape.SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
+
+        b2FixtureDef fixtureDef;
+        fixtureDef.userData = entity.get();
+        fixtureDef.density = physicsTable["density"].get_or(0.f);
+        fixtureDef.friction = physicsTable["friction"].get_or(.2f);
+        fixtureDef.restitution = physicsTable["restitution"].get_or(0.f);
+        fixtureDef.shape = &shape;
+        // fixtureDef.isSensor = physicsTable["isSensor"].get_or(false);
+        // fixtureDef.filter;
+        auto fixture = body->CreateFixture(&fixtureDef);
+
+        auto physicsComponent = new PhysicsComponent(entity, body, fixture);
         entity->addComponent(physicsComponent);
     }
 
-    // Attempt to load mesh for entity
-    std::string mesh = entityTable["mesh"].get_or(std::string("ERROR"));
-    entity->setMesh(loadMesh(mesh));
+    // Create Render Component
+    if (entityTable["render"] != sol::lua_nil) {
+        auto meshId = entityTable["render"]["mesh"].get_or(errorName);
+        auto shaderId = entityTable["render"]["shader"].get_or(errorName);
+        auto mesh = loadMesh(meshId);
+        auto shader = loadShaderProgram(shaderId);
+        auto renderComponent = new RenderComponent(entity, shader, mesh);
+
+        entity->addComponent(renderComponent);
+    }
 
     entityPrototypes.insert(std::make_pair(tableName, entity));
     return entity;

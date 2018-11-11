@@ -15,11 +15,10 @@
  // todo possible future idea is to save bodyDef to binary as it's just a struct, allowing serialising it
 class PhysicsComponent : public Component {
 private:
-    std::shared_ptr<Entity> entity;
     b2Body *body;
     b2Fixture *fixture;
 public:
-    explicit PhysicsComponent(b2Body *body);
+    PhysicsComponent(const std::shared_ptr<Entity> &entity, b2Body *body, b2Fixture *fixture);
 
     void update() override;
 

@@ -17,17 +17,6 @@ void Entity::update() {
     }
 }
 
-//void Entity::render(Shader *shader) {
-//    transform = glm::translate(glm::mat4(1.f), position);
-//    transform = glm::rotate(transform, rotation.x, vector::RIGHT);
-//    transform = glm::rotate(transform, rotation.y, vector::UP);
-//    transform = glm::rotate(transform, rotation.z, vector::BACKWARD);
-//    transform = glm::scale(transform, scale);
-//
-//    shader->setUniform("model", transform);
-//    mesh->render();
-//}
-
 const glm::vec3 &Entity::getPosition() const {
     return position;
 }
