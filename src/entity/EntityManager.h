@@ -22,15 +22,35 @@ private:
      */
     unsigned short getEntityId();
 public:
+    EntityManager();
+
+    ~EntityManager();
+
+    /**
+     * Initialises the EntityManager
+     */
     void startUp();
 
+    /**
+     * De-initialises the EntityManager
+     */
     void shutDown();
 
     void update();
 
+    /**
+     * Registers an entity prototype that can be used when spawning new entities of the same type
+     * @param id The ID of the entity that can be used to spawn
+     * @param prototype The prototype instance of the entity
+     */
     void registerPrototype(std::string id, std::shared_ptr<Entity> prototype);
 
-    std::shared_ptr<Entity> spawn(std::string name);
+    /**
+     * Spawns an entity from it's registered prototype with that ID
+     * @param id The ID of the entity
+     * @return The newly created entity
+     */
+    std::shared_ptr<Entity> spawn(std::string id);
 
     /**
      * This is the callback for when the NetworkManager receives an entity update packet

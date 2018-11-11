@@ -15,14 +15,34 @@ private:
     b2World *world; // A pointer is used so we can create a default constructor
     std::vector<PhysicsComponent *> components;
 public:
+    PhysicsManager();
+
+    ~PhysicsManager();
+
+    /**
+     * Initialises the PhysicsManager
+     */
     void startUp();
 
+    /**
+     * De-initialises the PhysicsManager
+     */
     void shutDown();
 
     void update();
 
+    /**
+     * Creates a physics body
+     * @param bodyDef The body definition
+     * @return A pointer to the created body
+     */
     b2Body *createBody(const b2BodyDef &bodyDef);
 
+    /**
+     * Creates a joint
+     * @param jointDef The joint definition
+     * @return A pointer to the created joint
+     */
     b2Joint *createJoint(const b2JointDef &jointDef);
 
     void deregisterComponent(PhysicsComponent *component);

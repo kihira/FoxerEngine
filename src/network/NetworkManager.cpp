@@ -3,6 +3,27 @@
 #include <easy/profiler.h>
 #include "NetworkManager.h"
 
+NetworkManager::NetworkManager() = default; // noop
+
+NetworkManager::~NetworkManager() = default; // noop
+
+void NetworkManager::startUp() {
+    if (enet_initialize() != 0) {
+        std::cerr << "Failed to initialise ENet" << std::endl;
+        exit(-1);
+    }
+
+    std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
+}
+
+void NetworkManager::shutDown() {
+    if (host != nullptr) {
+        stopServer();
+    }
+
+    enet_deinitialize();
+}
+
 void NetworkManager::startServer() {
     address.host = ENET_HOST_ANY;
     address.port = 1234;
@@ -108,22 +129,3 @@ ENetPacket *NetworkManager::buildPacket(PacketMeta meta, void *data, size_t data
 
     return packet;
 }
-
-void NetworkManager::startUp() {
-    if (enet_initialize() != 0) {
-        std::cerr << "Failed to initialise ENet" << std::endl;
-        exit(-1);
-    }
-
-    std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
-}
-
-void NetworkManager::shutDown() {
-    if (host != nullptr) {
-        stopServer();
-    }
-
-    enet_deinitialize();
-}
-
-NetworkManager::NetworkManager() {}

@@ -20,8 +20,18 @@ private:
 
     static void glfwFramebufferSizeCallback(int width, int height);
 public:
+    RenderManager();
+
+    ~RenderManager();
+
+    /**
+     * Initialises the RenderManager
+     */
     void startUp();
 
+    /**
+     * De-initialises the RenderManager
+     */
     void shutDown();
 
     void frameStart();

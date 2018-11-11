@@ -2,6 +2,10 @@
 #include "PhysicsManager.h"
 #include <easy/profiler.h>
 
+PhysicsManager::PhysicsManager() = default; // noop
+
+PhysicsManager::~PhysicsManager() = default; // noop
+
 void PhysicsManager::startUp() {
     b2Vec2 gravity(0.f, -10.f);
     world = new b2World(gravity);

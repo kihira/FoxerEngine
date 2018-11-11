@@ -31,8 +31,18 @@ private:
      */
     std::shared_ptr<Shader> getErrorShader();
 public:
+    AssetManager();
+
+    ~AssetManager();
+
+    /**
+     * Initialises the AssetManager
+     */
     void startUp();
 
+    /**
+     * De-initialises the AssetManager
+     */
     void shutDown();
 
     sol::state &getLua();

@@ -52,6 +52,18 @@ const GLushort errCubeIndices[] = {
         6, 7, 3
 };
 
+AssetManager::AssetManager() = default; // noop
+
+AssetManager::~AssetManager() = default; // noop
+
+void AssetManager::startUp() {
+    lua.open_libraries(sol::lib::base, sol::lib::io);
+}
+
+void AssetManager::shutDown() {
+    cleanup();
+}
+
 std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
     if (meshes.find(name) != meshes.end()) {
         return meshes[name];
@@ -287,14 +299,6 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
 
 sol::state &AssetManager::getLua() {
     return lua;
-}
-
-void AssetManager::startUp() {
-    lua.open_libraries(sol::lib::base, sol::lib::io);
-}
-
-void AssetManager::shutDown() {
-    cleanup();
 }
 
 // TODO this technically won't work as we're modifying an iterable

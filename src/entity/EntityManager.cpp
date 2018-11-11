@@ -4,6 +4,10 @@
 #include "EntityManager.h"
 #include "../assert.h"
 
+EntityManager::EntityManager() = default; // noop
+
+EntityManager::~EntityManager() = default; // noop
+
 void EntityManager::startUp() {
 
 }

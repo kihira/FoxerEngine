@@ -4,12 +4,9 @@
 #include "../gl_helper.hpp"
 #include "../Managers.h"
 
-// todo should this just be called from the Shader itself?
-void RenderManager::useShader(std::shared_ptr<Shader> shader) {
-    if (shader->getProgram() == currentShader) return;
+RenderManager::RenderManager() = default;
 
-    glUseProgram(shader->getProgram());
-}
+RenderManager::~RenderManager() = default;
 
 void RenderManager::startUp() {
     glfwSetErrorCallback(glfwErrorCallback);
@@ -61,6 +58,13 @@ void RenderManager::startUp() {
 
 void RenderManager::shutDown() {
 
+}
+
+// todo should this just be called from the Shader itself?
+void RenderManager::useShader(std::shared_ptr<Shader> shader) {
+    if (shader->getProgram() == currentShader) return;
+
+    glUseProgram(shader->getProgram());
 }
 
 void RenderManager::frameStart() {
