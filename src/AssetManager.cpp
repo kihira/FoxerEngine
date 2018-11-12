@@ -254,17 +254,39 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         bodyDef.userData = entity.get();
         auto body = gPhysicsManager.createBody(bodyDef);
 
-        b2PolygonShape shape;
-        shape.SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
-
+        // Create fixture def
         b2FixtureDef fixtureDef;
         fixtureDef.userData = entity.get();
         fixtureDef.density = physicsTable["density"].get_or(0.f);
         fixtureDef.friction = physicsTable["friction"].get_or(.2f);
         fixtureDef.restitution = physicsTable["restitution"].get_or(0.f);
-        fixtureDef.shape = &shape;
         // fixtureDef.isSensor = physicsTable["isSensor"].get_or(false);
         // fixtureDef.filter;
+
+        // Create shape
+        int shapeType = physicsTable["shape"].get_or(0.f);
+        switch (shapeType) {
+            case 0: {
+                b2CircleShape shape;
+                shape.m_radius = physicsTable["radius"].get_or(.5f);
+                fixtureDef.shape = &shape;
+                break;
+            }
+            case 1: {
+                b2PolygonShape shape;
+                shape.SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
+                fixtureDef.shape = &shape;
+                break;
+            }
+            case 2: {
+                // todo
+//                b2EdgeShape shape;
+//                shape.Set();
+//                fixtureDef.shape = &shape;
+                break;
+            }
+        }
+
         auto fixture = body->CreateFixture(&fixtureDef);
 
         auto physicsComponent = new PhysicsComponent(entity, body, fixture);
