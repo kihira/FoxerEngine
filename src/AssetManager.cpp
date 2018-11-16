@@ -264,7 +264,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         // fixtureDef.filter;
 
         // Create shape
-        int shapeType = physicsTable["shape"].get_or(0.f);
+        int shapeType = physicsTable["shape"].get_or(0);
         switch (shapeType) {
             case 0: {
                 b2CircleShape shape;

@@ -41,17 +41,13 @@ void Entity::setUpdateFn(const sol::protected_function &updateFn) {
     Entity::updateFn = updateFn;
 }
 
-void Entity::setMesh(const std::shared_ptr<Mesh> &mesh) {
-    Entity::mesh = mesh;
-}
-
+// todo need to clone components
 std::shared_ptr<Entity> Entity::clone(const unsigned short id) {
     auto newEntity = std::make_shared<Entity>(id, name);
 
     newEntity->setPosition(position);
     newEntity->setRotation(rotation);
     newEntity->setUpdateFn(updateFn);
-    newEntity->setMesh(mesh);
     return newEntity;
 }
 
@@ -61,4 +57,16 @@ void Entity::setName(const std::string &name) {
 
 void Entity::addComponent(Component *component) {
     components.push_back(component);
+}
+
+const glm::vec3 &Entity::getPrevPosition() const {
+    return prevPosition;
+}
+
+const glm::vec3 &Entity::getPrevRotation() const {
+    return prevRotation;
+}
+
+const unsigned short Entity::getId() const {
+    return id;
 }

@@ -20,7 +20,7 @@ private:
     ENetAddress address;
     ENetHost *host;
     ENetPeer *peer;
-    bool isServer; // Whether we are a server or not
+    bool server; // Whether we are a server or not
     std::map<enet_uint8, PacketMeta> packetHandlers;
 
     /**
@@ -88,6 +88,12 @@ public:
      * @param port The port of the server
      */
     void connectToServer(const char *address, enet_uint16 port);
+
+    /**
+     * Whether we are a server or not
+     * @return
+     */
+    bool isServer();
 };
 
 

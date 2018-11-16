@@ -6,8 +6,11 @@
 #include <cstddef>
 #include "Entity.h"
 
-struct EntityPacketData {
-    unsigned short packetID;
+#define ENTITY_UPDATE_ID 1
+#define ENTITY_SPAWN_ID 2
+
+struct EntityUpdtePacketData {
+    unsigned short entityId;
     glm::vec3 position;
     glm::vec3 rotation;
 };
@@ -54,10 +57,19 @@ public:
 
     /**
      * This is the callback for when the NetworkManager receives an entity update packet
+     * @param packetID
      * @param data
      * @param dataLength
      */
-    void handleEntityPacket(int packetID, void *data, size_t dataLength);
+    void handleEntityUpdatePacket(int packetID, void *data, size_t dataLength);
+
+    /**
+     * Callback for when an entity spawn packet is received
+     * @param packetID
+     * @param data
+     * @param dataLength
+     */
+    void handleEntitySpawnPacket(int packetID, void *data, size_t dataLength);
 };
 
 

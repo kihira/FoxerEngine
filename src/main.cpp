@@ -17,8 +17,6 @@ int main(int argc, char **argv) {
     gSoundManager.startUp();
     gAssetManager.startUp();
 
-    gNetworkManager.registerPacket({0, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){ gEntityManager.handleEntityPacket(packetID, data, dataLength); }});
-
     /*
      * Setup key handler
      */
@@ -60,12 +58,6 @@ int main(int argc, char **argv) {
             "noconstructor", sol::no_constructor,
             "name", sol::property(&Level::getName, &Level::setName)
             );
-
-//    engineTable.set_function("registerKeyHandler", [&keyHandler](sol::function callback) -> void {
-//        return keyHandler->registerKeyHandlerLua(callback);
-//    });
-
-    std::cout << gPhysicsManager.createBody(b2BodyDef()) << std::endl;
 
     // Register entity prototypes
     gEntityManager.registerPrototype("dummyTarget", gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget"));

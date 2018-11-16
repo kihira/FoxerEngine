@@ -1,15 +1,23 @@
 
 #include <glm/glm.hpp>
 #include <easy/profiler.h>
-#include "EntityManager.h"
+#include "../Managers.h"
 #include "../assert.h"
+#include "EntityManager.h"
+
 
 EntityManager::EntityManager() = default; // noop
 
 EntityManager::~EntityManager() = default; // noop
 
 void EntityManager::startUp() {
-
+    // Register entity handling packets
+    gNetworkManager.registerPacket({ENTITY_UPDATE_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
+        gEntityManager.handleEntityUpdatePacket(packetID, data, dataLength);
+    }});
+    gNetworkManager.registerPacket({ENTITY_SPAWN_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
+        gEntityManager.handleEntitySpawnPacket(packetID, data, dataLength);
+    }});
 }
 
 void EntityManager::shutDown() {
@@ -42,15 +50,6 @@ std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
     return entity;
 }
 
-void EntityManager::handleEntityPacket(int packetID, void *data, size_t dataLength) {
-    EntityPacketData packetData = *(EntityPacketData *)data;
-
-    if (entities.find(packetData.packetID) == entities.end()) return;
-    auto entity = entities[packetData.packetID];
-    entity->setPosition(packetData.position);
-    entity->setRotation(packetData.rotation);
-}
-
 inline unsigned short EntityManager::getEntityId() {
     unsigned short id = 0;
     while (entities.find(id) != entities.end()) {
@@ -61,7 +60,20 @@ inline unsigned short EntityManager::getEntityId() {
 
 void EntityManager::update() {
     EASY_FUNCTION();
-    for (auto entity : entities) {
+    for (const auto &entity : entities) {
         entity.second->update();
     }
+}
+
+void EntityManager::handleEntityUpdatePacket(int packetID, void *data, size_t dataLength) {
+    EntityUpdtePacketData packetData = *(EntityUpdtePacketData *)data;
+
+    if (entities.find(packetData.entityId) == entities.end()) return;
+    auto entity = entities[packetData.entityId];
+    entity->setPosition(packetData.position);
+    entity->setRotation(packetData.rotation);
+}
+
+void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dataLength) {
+    // todo implement spawn packet
 }

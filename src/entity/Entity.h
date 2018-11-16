@@ -15,8 +15,6 @@ private:
     glm::vec3 rotation;
     glm::vec3 prevRotation;
     glm::vec3 scale;
-    glm::mat4 transform;
-    std::shared_ptr<Mesh> mesh;
     /*
      * Lua bindings
      */
@@ -49,9 +47,13 @@ public:
 
     void setUpdateFn(const sol::protected_function &updateFn);
 
-    void setMesh(const std::shared_ptr<Mesh> &mesh);
-
     void setName(const std::string &name);
+
+    const glm::vec3 &getPrevPosition() const;
+
+    const glm::vec3 &getPrevRotation() const;
+
+    const unsigned short getId() const;
 
     void addComponent(Component *component);
 };
