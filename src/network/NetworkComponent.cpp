@@ -8,16 +8,16 @@ void NetworkComponent::update() {
 
     if (entity->getPrevPosition() != entity->getPosition() ||
         entity->getPrevRotation() != entity->getRotation()) {
-        EntityUpdtePacketData data = {
+        EntityUpdatePacketData data = {
                 entity->getId(),
                 entity->getPosition(),
                 entity->getRotation()
         };
 
         if (gNetworkManager.isServer()) {
-            gNetworkManager.sendToAllClients(ENTITY_UPDATE_ID, &data, sizeof(EntityUpdtePacketData));
+            gNetworkManager.sendToAllClients(ENTITY_UPDATE_ID, &data, sizeof(EntityUpdatePacketData));
         } else {
-            gNetworkManager.sendToServer(ENTITY_UPDATE_ID, &data, sizeof(EntityUpdtePacketData));
+            gNetworkManager.sendToServer(ENTITY_UPDATE_ID, &data, sizeof(EntityUpdatePacketData));
         }
     }
 }

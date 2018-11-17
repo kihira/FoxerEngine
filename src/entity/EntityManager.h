@@ -9,10 +9,15 @@
 #define ENTITY_UPDATE_ID 1
 #define ENTITY_SPAWN_ID 2
 
-struct EntityUpdtePacketData {
+struct EntityUpdatePacketData {
     unsigned short entityId;
     glm::vec3 position;
     glm::vec3 rotation;
+};
+
+struct EntitySpawnPacketData {
+    std::string prototypeName;
+    unsigned short entityId;
 };
 
 class EntityManager {

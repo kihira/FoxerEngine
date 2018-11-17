@@ -66,14 +66,24 @@ void EntityManager::update() {
 }
 
 void EntityManager::handleEntityUpdatePacket(int packetID, void *data, size_t dataLength) {
-    EntityUpdtePacketData packetData = *(EntityUpdtePacketData *)data;
+    EntityUpdatePacketData packetData = *(EntityUpdatePacketData *)data;
 
-    if (entities.find(packetData.entityId) == entities.end()) return;
+    if (entities.find(packetData.entityId) == entities.end()) {
+        std::cerr << "Received entity update for " packetData.entityId << " but entity does not exist" << std::endl;
+        return;
+    }
     auto entity = entities[packetData.entityId];
     entity->setPosition(packetData.position);
     entity->setRotation(packetData.rotation);
 }
 
 void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dataLength) {
-    // todo implement spawn packet
+    if (gNetworkManager.isServer()) return; // Shouldn't process spawn packets on server
+    EntitySpawnPacketData packetData = *(EntitySpawnPacketData *)data;
+
+    if (prototypes.find(packetData.prototypeName) == prototypes.end()) {
+        std::cerr << "Attempted to spawn a " << packetData.prototypeName << " but no prototype was found" << std::endl;
+        return;
+    }
+    auto entity = prototypes[packetData.prototypeName]->clone(packetData.entityId);
 }
