@@ -1,13 +1,18 @@
+#define STBI_ONLY_PNG
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "Managers.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <stb_image.h>
 #include "gl_helper.hpp"
 #include "assert.h"
 #include "render/RenderComponent.h"
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
-#define ERR_MESH "ERROR"
+#define ERR_MESH "ERROR"s
 #define ERR_SIZE 1024
 
 const char *errVertShaderSrc = R"(
@@ -72,6 +77,12 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
         return meshes[name];
     }
 
+    // Load texture(s)
+    int width, height, channels;
+    auto imageData = stbi_load("file name", &width, &height, &channels, STBI_rgb);
+
+    stbi_image_free(imageData);
+
     // Attempt to load file
     std::ifstream file;
     file.open(ASSETS_FOLDER "meshes/" + name + ".obj", std::ios::in);
@@ -79,6 +90,46 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
         std::cerr << "Error opening mesh file: " << name << std::endl;
         return getErrorMesh();
     }
+
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> vertices;
+
+    std::string line;
+    while (getline(file, line)) {
+        if (line[0] == 'v' && line[1] == 'n') { // Vertex normal
+            glm::vec3 normal;
+            char *next;
+            float t = strtof(line.c_str(), &next);
+            sscanf(line.c_str(), "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+            normals.push_back(normal);
+        } else if (line[0] == 'v') { // Vertex
+            glm::vec3 vertex;
+            sscanf(line.c_str(), "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+            vertices.push_back(vertex);
+        } else if (line[0] == 'f') { // Face
+
+        }
+    }
+
+    GLuint vao, vertexBuffer, indicesBuffer;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glGenBuffers(1, &vertexBuffer);
+    glGenBuffers(1, &indicesBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+
+    GLsizei vertexSize = sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2);
+
+    // Position
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, nullptr);
+
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, nullptr);
+
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_READ);
 
     return nullptr;
 }

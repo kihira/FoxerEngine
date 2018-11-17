@@ -90,6 +90,9 @@ else()
     target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/soloud/lib/soloud_static_x86.lib)
 endif()
 
+# stb headers
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/stb)
+
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
 set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)

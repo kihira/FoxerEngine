@@ -30,6 +30,8 @@ private:
      * @return
      */
     std::shared_ptr<Shader> getErrorShader();
+
+
 public:
     AssetManager();
 
