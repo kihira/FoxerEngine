@@ -9,8 +9,9 @@ int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
     EASY_PROFILER_ENABLE;
 #endif
+    bool server = argc == 2; // Whether we are a server or not
 
-    gRenderManager.startUp();
+    if (!server) gRenderManager.startUp();
     gNetworkManager.startUp();
     gPhysicsManager.startUp();
     gEntityManager.startUp();
@@ -73,24 +74,34 @@ int main(int argc, char **argv) {
     }
 
     // Main loop
-    while (!gRenderManager.shouldClose()) {
-        gRenderManager.frameStart();
+    if (server) {
+        while (true) {
+            gPhysicsManager.update();
+            gNetworkManager.update();
+            gEntityManager.update();
+        }
 
-        gPhysicsManager.update();
-        gNetworkManager.update();
-        gEntityManager.update();
-        gRenderManager.update();
+    } else {
+        while (!gRenderManager.shouldClose()) {
+            gRenderManager.frameStart();
 
-        gRenderManager.frameEnd();
+            gPhysicsManager.update();
+            gNetworkManager.update();
+            gEntityManager.update();
+            gRenderManager.update();
+            gSoundManager.update();
+
+            gRenderManager.frameEnd();
+        }
     }
 
     // Shutdown subsystems
     gAssetManager.shutDown();
-    gSoundManager.startUp();
+    gSoundManager.shutDown();
     gEntityManager.shutDown();
     gPhysicsManager.shutDown();
     gNetworkManager.shutDown();
-    gRenderManager.shutDown();
+    if (!server) gRenderManager.shutDown();
 
 #ifndef NDEBUG // Dump profile data
     profiler::dumpBlocksToFile("./profile_data.prof");

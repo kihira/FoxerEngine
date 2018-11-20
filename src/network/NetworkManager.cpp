@@ -23,7 +23,7 @@ void NetworkManager::startUp() {
         ENET_PACKET_FLAG_RELIABLE,
         [](int packetID, void *data, size_t dataLength) {
             // todo set local client id
-            std::cout << "Client ID is: " << ((ClientData *)data)->clientId << std::endl;
+            std::cout << "Client ID is: " << +(*((ClientData *)data)).clientId << std::endl;
         }
     });
 }
@@ -65,15 +65,15 @@ void NetworkManager::update() {
             case ENET_EVENT_TYPE_CONNECT: {
                 if (server) {
                     // Generate client id and store it
-                    auto clientData = new ClientData();
-                    clientData->clientId = getNewClientId();
-                    event.peer->data = clientData;
-                    clients[clientData->clientId] = event.peer;
+                    auto clientData = ClientData();
+                    clientData.clientId = getNewClientId();
+                    event.peer->data = &clientData;
+                    clients[clientData.clientId] = event.peer;
 
                     // Tell client of its id
-                    sendToClient(clientData->clientId, CLIENT_DATA_ID, clientData, sizeof(ClientData));
+                    sendToClient(clientData.clientId, CLIENT_DATA_ID, &clientData, sizeof(ClientData));
 
-                    std::cout << "Client (" << clientData->clientId << ") connected to server" << std::endl;
+                    std::cout << "Client (" << +clientData.clientId << ") connected to server" << std::endl;
                 } else {
                     std::cout << "Connected to server" << std::endl;
                 }
@@ -81,7 +81,7 @@ void NetworkManager::update() {
             }
             case ENET_EVENT_TYPE_RECEIVE: {
                 enet_uint8 packetID = event.packet->data[0];
-                packetHandlers[packetID].packetHandler(packetID, &event.packet->data[1], event.packet->dataLength - sizeof(enet_uint8));
+                packetHandlers[packetID].packetHandler(packetID, event.packet->data + sizeof(enet_uint8), event.packet->dataLength - sizeof(enet_uint8));
                 enet_packet_destroy(event.packet);
                 break;
             }
@@ -142,7 +142,7 @@ void NetworkManager::sendToClient(enet_uint8 clientId, enet_uint8 packetID, void
 
 void NetworkManager::packetFreeCallback(ENetPacket *packet) {
     // todo this isn't entirely working with new even though we copy the memory
-    // free(packet->data);
+    free(packet->data);
 }
 
 void NetworkManager::connectToServer(const char *address, enet_uint16 port) {
@@ -161,7 +161,7 @@ ENetPacket *NetworkManager::buildPacket(PacketMeta meta, void *data, size_t data
     // Append packet ID to the start of the packet so we know what to do with it on the other end
     void *newData = malloc(sizeof(enet_uint8) + dataLength);
     memcpy(newData, &meta.id, sizeof(enet_uint8));
-    memcpy(&newData + sizeof(enet_uint8), data, dataLength);
+    memcpy(static_cast<char*>(newData) + sizeof(enet_uint8), data, dataLength);
     dataLength += sizeof(enet_uint8);
 
     ENetPacket *packet = enet_packet_create(newData, dataLength, meta.packetFlag);

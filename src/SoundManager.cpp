@@ -12,3 +12,7 @@ void SoundManager::startUp() {
 void SoundManager::shutDown() {
     soloud.deinit();
 }
+
+void SoundManager::update() {
+
+}
