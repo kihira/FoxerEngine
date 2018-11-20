@@ -22,6 +22,7 @@ void NetworkManager::startUp() {
         0,
         ENET_PACKET_FLAG_RELIABLE,
         [](int packetID, void *data, size_t dataLength) {
+            // todo set local client id
             std::cout << "Client ID is: " << ((ClientData *)data)->clientId << std::endl;
         }
     });
@@ -58,6 +59,7 @@ void NetworkManager::stopServer() {
 
 void NetworkManager::update() {
     EASY_FUNCTION();
+    ENetEvent event;
     while (enet_host_service(host, &event, 0) > 0) {
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT: {
@@ -128,7 +130,7 @@ void NetworkManager::sendToAllClients(enet_uint8 packetID, void *data, size_t da
     enet_host_broadcast(host, meta.channel, packet);
 }
 
-void NetworkManager::sendToClient(u_char clientId, enet_uint8 packetID, void *data, size_t dataLength) {
+void NetworkManager::sendToClient(enet_uint8 clientId, enet_uint8 packetID, void *data, size_t dataLength) {
     ASSERT(isServer());
 
     PacketMeta meta = packetHandlers[packetID];
@@ -139,7 +141,8 @@ void NetworkManager::sendToClient(u_char clientId, enet_uint8 packetID, void *da
 
 
 void NetworkManager::packetFreeCallback(ENetPacket *packet) {
-    free(packet->data);
+    // todo this isn't entirely working with new even though we copy the memory
+    // free(packet->data);
 }
 
 void NetworkManager::connectToServer(const char *address, enet_uint16 port) {
@@ -171,7 +174,7 @@ bool NetworkManager::isServer() {
     return server;
 }
 
-u_char NetworkManager::getNewClientId() {
+enet_uint8 NetworkManager::getNewClientId() {
     lastClientId++;
     return lastClientId;
 }

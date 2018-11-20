@@ -18,7 +18,7 @@ struct PacketMeta {
 };
 
 struct ClientData {
-    u_char clientId;
+    enet_uint8 clientId;
 };
 
 class NetworkManager {
@@ -27,9 +27,8 @@ private:
     ENetHost *host;
     ENetPeer *peer;
     bool server; // Whether we are a server or not
-    u_char lastClientId = 1;
-    ENetEvent event;
-    std::map<u_char, ENetPeer *> clients; // List of clients mapped between their peer and id
+    enet_uint8 lastClientId = 1;
+    std::map<enet_uint8, ENetPeer *> clients; // List of clients mapped between their peer and id
     std::map<enet_uint8, PacketMeta> packetHandlers;
 
     /**
@@ -45,7 +44,7 @@ private:
      * Returns a client ID that is currently not in use
      * @return
      */
-    u_char getNewClientId();
+    enet_uint8 getNewClientId();
 
     static void packetFreeCallback(ENetPacket *packet);
 public:
@@ -103,7 +102,7 @@ public:
      * @param data A pointer to the data that should be sent
      * @param dataLength The length of the data to be sent in bytes
      */
-    void sendToClient(u_char clientId, enet_uint8 packetID, void *data, size_t dataLength);
+    void sendToClient(enet_uint8 clientId, enet_uint8 packetID, void *data, size_t dataLength);
 
     /**
      * As a client, attempts to connect to the provided address and port

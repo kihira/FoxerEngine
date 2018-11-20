@@ -69,7 +69,7 @@ void EntityManager::handleEntityUpdatePacket(int packetID, void *data, size_t da
     EntityUpdatePacketData packetData = *(EntityUpdatePacketData *)data;
 
     if (entities.find(packetData.entityId) == entities.end()) {
-        std::cerr << "Received entity update for " packetData.entityId << " but entity does not exist" << std::endl;
+        std::cerr << "Received entity update for " << packetData.entityId << " but entity does not exist" << std::endl;
         return;
     }
     auto entity = entities[packetData.entityId];
