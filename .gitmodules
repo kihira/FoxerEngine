@@ -13,3 +13,6 @@
 [submodule "libs/easy_profiler"]
 	path = libs/easy_profiler
 	url = https://github.com/yse/easy_profiler.git
+[submodule "libs/enet"]
+	path = libs/enet
+	url = https://github.com/lsalzman/enet

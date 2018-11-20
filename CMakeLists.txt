@@ -44,17 +44,8 @@ add_subdirectory(${LIBRARIES_ROOT}/glfw)
 target_link_libraries(${PROJECT_NAME} glfw)
 
 # Enet
-if (WIN32)
-	if (MINGW)
-    	target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet.lib)
-    	target_link_libraries(${PROJECT_NAME} ws2_32 winmm) # Winsock32 libraries required by enet
-	else()
-		target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet64.lib)
-	endif()
-else()
-    add_subdirectory(${LIBRARIES_ROOT}/enet)
-    target_link_libraries(${PROJECT_NAME} enet)
-endif()
+add_subdirectory(${LIBRARIES_ROOT}/enet)
+target_link_libraries(${PROJECT_NAME} enet)
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/enet/include)
 
 # Box2D
