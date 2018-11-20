@@ -26,10 +26,15 @@ private:
     ENetAddress address;
     ENetHost *host;
     ENetPeer *peer;
+    std::map<enet_uint8, PacketMeta> packetHandlers;
+
+    // Server only data
     bool server; // Whether we are a server or not
     enet_uint8 lastClientId = 1;
     std::map<enet_uint8, ENetPeer *> clients; // List of clients mapped between their peer and id
-    std::map<enet_uint8, PacketMeta> packetHandlers;
+
+    // Client only data
+    enet_uint8 clientId;
 
     /**
      * Builds a ENet packet from the data provided so it is able to be sent

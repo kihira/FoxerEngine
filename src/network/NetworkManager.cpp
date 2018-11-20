@@ -1,8 +1,10 @@
 
 #include <iostream>
 #include <easy/profiler.h>
-#include "NetworkManager.h"
+#include "../Managers.h"
 #include "../assert.h"
+#include "NetworkManager.h"
+
 
 NetworkManager::NetworkManager() = default; // noop
 
@@ -22,8 +24,9 @@ void NetworkManager::startUp() {
         0,
         ENET_PACKET_FLAG_RELIABLE,
         [](int packetID, void *data, size_t dataLength) {
-            // todo set local client id
-            std::cout << "Client ID is: " << +(*((ClientData *)data)).clientId << std::endl;
+            enet_uint8 clientId = (*((ClientData *)data)).clientId;
+            gNetworkManager.clientId = clientId;
+            std::cout << "Client ID is: " << +clientId << std::endl;
         }
     });
 }
@@ -141,7 +144,6 @@ void NetworkManager::sendToClient(enet_uint8 clientId, enet_uint8 packetID, void
 
 
 void NetworkManager::packetFreeCallback(ENetPacket *packet) {
-    // todo this isn't entirely working with new even though we copy the memory
     free(packet->data);
 }
 
