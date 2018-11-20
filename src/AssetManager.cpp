@@ -3,12 +3,13 @@
 
 #include "Managers.h"
 #include <fstream>
-#include <iostream>
-#include <sstream>
 #include <stb_image.h>
 #include "gl_helper.hpp"
 #include "assert.h"
 #include "render/RenderComponent.h"
+#include "Box2D/Collision/Shapes/b2CircleShape.h"
+#include "Box2D/Collision/Shapes/b2PolygonShape.h"
+#include "Box2D/Dynamics/b2Fixture.h"
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
@@ -317,6 +318,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         fixtureDef.restitution = physicsTable["restitution"].get_or(0.f);
         // fixtureDef.isSensor = physicsTable["isSensor"].get_or(false);
         // fixtureDef.filter;
+		b2Fixture *fixture; // Have to define it here and assign it in the switch statements otherwise MSVC complains a lot
 
         // Create shape
         int shapeType = physicsTable["shape"].get_or(0);
@@ -325,12 +327,14 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
                 b2CircleShape shape;
                 shape.m_radius = physicsTable["radius"].get_or(.5f);
                 fixtureDef.shape = &shape;
+				fixture = body->CreateFixture(&fixtureDef);
                 break;
             }
             case 1: {
                 b2PolygonShape shape;
                 shape.SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
                 fixtureDef.shape = &shape;
+				fixture = body->CreateFixture(&fixtureDef);
                 break;
             }
             case 2: {
@@ -341,8 +345,6 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
                 break;
             }
         }
-
-        auto fixture = body->CreateFixture(&fixtureDef);
 
         auto physicsComponent = new PhysicsComponent(entity, body, fixture);
         entity->addComponent(physicsComponent);

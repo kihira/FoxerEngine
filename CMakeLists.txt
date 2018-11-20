@@ -18,7 +18,11 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Lua
 if (WIN32)
-    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/lua53.lib)
+	if (MSVC)
+		target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/msvc/lua53.lib)
+	else()
+		target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/mingw/lua53.lib)
+	endif()
 else()
     target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/lua/lib/liblua53.a)
 endif()
@@ -41,8 +45,12 @@ target_link_libraries(${PROJECT_NAME} glfw)
 
 # Enet
 if (WIN32)
-    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet.lib)
-    target_link_libraries(${PROJECT_NAME} ws2_32 winmm) # Winsock32 libraries required by enet
+	if (MINGW)
+    	target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet.lib)
+    	target_link_libraries(${PROJECT_NAME} ws2_32 winmm) # Winsock32 libraries required by enet
+	else()
+		target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/enet/enet64.lib)
+	endif()
 else()
     add_subdirectory(${LIBRARIES_ROOT}/enet)
     target_link_libraries(${PROJECT_NAME} enet)
@@ -52,7 +60,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/enet/includ
 # Box2D
 add_subdirectory(${LIBRARIES_ROOT}/box2d)
 target_link_libraries(${PROJECT_NAME} Box2D)
-target_include_directories(${PROJECT_NAME} PRIVATE ${Box2D_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/box2d/)
 
 # FMOD
 #if (APPLE)
@@ -77,20 +85,29 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/sol)
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/imgui)
 
 # Easy Profiler
-target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/easyprofiler/include)
-if (WIN32)
-    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/win64/easy_profiler.lib)
-elseif(APPLE)
-    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/macos/libeasy_profiler.dylib)
-endif()
-
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-msse3")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-msse3")
+set(EASY_PROFILER_NO_GUI ON)
+set(EASY_PROFILER_NO_SAMPLES ON)
+add_subdirectory(${LIBRARIES_ROOT}/easyprofiler)
+target_link_libraries(${PROJECT_NAME} easy_profiler)
+#target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/easyprofiler/include)
+#if (WIN32)
+#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/win64/easy_profiler.lib)
+#elseif(APPLE)
+#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/macos/libeasy_profiler.dylib)
+#endif()
 
 # Soloud
 set(SOLOUD_BACKEND_SDL2 OFF)
 set(SOLOUD_STATIC ON)
 if (WIN32)
+	if (MSVC)
+		# https://cmake.org/pipermail/cmake/2009-September/032204.html
+		#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /arch:SSE2")
+		#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
+	else()
+	    set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-msse3")
+		set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-msse3")
+	endif()
     set(SOLOUD_BACKEND_WASAPI ON)
 elseif(APPLE)
     set(SOLOUD_BACKEND_COREAUDIO ON)
