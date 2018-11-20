@@ -78,7 +78,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/imgui)
 
 # Easy Profiler
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/easyprofiler/include)
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/macos/libeasy_profiler.dylib)
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/win64/easy_profiler.lib)
+elseif(APPLE)
+    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/macos/libeasy_profiler.dylib)
+endif()
 
 # Soloud
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/soloud/include)
