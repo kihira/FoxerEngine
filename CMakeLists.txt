@@ -84,16 +84,20 @@ elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/macos/libeasy_profiler.dylib)
 endif()
 
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-msse3")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-msse3")
+
 # Soloud
-target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/soloud/include)
-if (APPLE)
-    # This was a pain to fix. Needed to manually compile and link this way. Can't just find CoreAudio
-    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/soloud/lib/libsoloud_static_x86_d.a)
-    target_link_libraries(${PROJECT_NAME} "-framework CoreAudio")
-    target_link_libraries(${PROJECT_NAME} "-framework AudioToolbox")
-else()
-    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/soloud/lib/soloud_static_x86.lib)
+set(SOLOUD_BACKEND_SDL2 OFF)
+set(SOLOUD_STATIC ON)
+if (WIN32)
+    set(SOLOUD_BACKEND_WASAPI ON)
+elseif(APPLE)
+    set(SOLOUD_BACKEND_COREAUDIO ON)
 endif()
+add_subdirectory(${LIBRARIES_ROOT}/soloud/contrib)
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/soloud/include)
+target_link_libraries(${PROJECT_NAME} soloud)
 
 # stb headers
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/stb)
