@@ -10,3 +10,6 @@
 [submodule "libs/soloud"]
 	path = libs/soloud
 	url = https://github.com/jarikomppa/soloud.git
+[submodule "libs/easy_profiler"]
+	path = libs/easy_profiler
+	url = https://github.com/yse/easy_profiler.git
