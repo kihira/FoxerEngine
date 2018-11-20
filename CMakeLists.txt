@@ -87,7 +87,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/imgui)
 # Easy Profiler
 set(EASY_PROFILER_NO_GUI ON)
 set(EASY_PROFILER_NO_SAMPLES ON)
-add_subdirectory(${LIBRARIES_ROOT}/easyprofiler)
+add_subdirectory(${LIBRARIES_ROOT}/easy_profiler)
 target_link_libraries(${PROJECT_NAME} easy_profiler)
 #target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/easyprofiler/include)
 #if (WIN32)
