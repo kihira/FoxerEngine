@@ -53,19 +53,6 @@ add_subdirectory(${LIBRARIES_ROOT}/box2d)
 target_link_libraries(${PROJECT_NAME} Box2D)
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/box2d/)
 
-# FMOD
-#if (APPLE)
-#    if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-#        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmodL.dylib)
-#    else()
-#        target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmod.dylib)
-#    endif()
-#else()
-##    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/fmod_vc.lib)
-#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/fmod/lowlevel/lib/libfmod.a)
-#endif()
-#target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/fmod/lowlevel/inc)
-
 # GLM
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/glm)
 
@@ -80,12 +67,6 @@ set(EASY_PROFILER_NO_GUI ON)
 set(EASY_PROFILER_NO_SAMPLES ON)
 add_subdirectory(${LIBRARIES_ROOT}/easy_profiler)
 target_link_libraries(${PROJECT_NAME} easy_profiler)
-#target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/easyprofiler/include)
-#if (WIN32)
-#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/win64/easy_profiler.lib)
-#elseif(APPLE)
-#    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_ROOT}/easyprofiler/macos/libeasy_profiler.dylib)
-#endif()
 
 # Soloud
 set(SOLOUD_BACKEND_SDL2 OFF)
