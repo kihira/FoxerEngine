@@ -6,6 +6,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <memory>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include "Shader.h"
 #include "Camera.h"
 #include "WindowWrapper.h"
@@ -15,6 +17,7 @@ private:
     std::unique_ptr<WindowWrapper> windowWrapper;
     std::unique_ptr<Camera> camera;
     GLuint currentShader = 0;
+    std::shared_ptr<spdlog::logger> logger;
 
     static void glfwErrorCallback(int error, const char *desc);
 

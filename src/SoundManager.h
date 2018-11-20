@@ -3,10 +3,13 @@
 #define GAMEENGINE301CR_SOUNDMANAGER_H
 
 #include <soloud.h>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 
 class SoundManager {
 private:
+    std::shared_ptr<spdlog::logger> logger;
     SoLoud::Soloud soloud;
 public:
     SoundManager();

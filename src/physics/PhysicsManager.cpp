@@ -7,6 +7,8 @@ PhysicsManager::PhysicsManager() = default; // noop
 PhysicsManager::~PhysicsManager() = default; // noop
 
 void PhysicsManager::startUp() {
+    logger = spdlog::stdout_color_mt("physics");
+
     b2Vec2 gravity(0.f, -10.f);
     world = new b2World(gravity);
 }

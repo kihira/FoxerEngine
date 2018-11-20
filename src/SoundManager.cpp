@@ -6,7 +6,10 @@ SoundManager::SoundManager() = default; // noop
 SoundManager::~SoundManager() = default; // noop
 
 void SoundManager::startUp() {
-    soloud.init();
+    logger = spdlog::stdout_color_st("sound");
+    if (!soloud.init()) {
+        logger->error("Failed to initialise SoLoud");
+    }
 }
 
 void SoundManager::shutDown() {

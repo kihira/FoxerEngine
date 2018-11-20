@@ -9,17 +9,18 @@ RenderManager::RenderManager() = default;
 RenderManager::~RenderManager() = default;
 
 void RenderManager::startUp() {
+    logger = spdlog::stdout_color_mt("renderer");
+
     glfwSetErrorCallback(glfwErrorCallback);
 
     /*
      * InitializeGLFW
      */
-    std::cout << "GLFW " << glfwGetVersionString() << std::endl;
+    logger->info("GLFW {}", glfwGetVersionString());
     if (!glfwInit()) {
-        std::cerr << "Failed to init GLFW" << std::endl;
+        logger->error("Failed to init GLFW");
         exit(EXIT_FAILURE);
     }
-    atexit(glfwTerminate);
 
     // Required OpenGL 3.2 Core at least
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -32,7 +33,7 @@ void RenderManager::startUp() {
     // Create GLFW window
     windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(720, 405, "301CR Engine", nullptr, nullptr));
     if (!windowWrapper->getWindow()) {
-        std::cerr << "Failed to create GLFW window" << std::endl;
+        logger->error("Failed to create GLFW window");
         exit(EXIT_FAILURE);
     }
 
@@ -42,10 +43,10 @@ void RenderManager::startUp() {
 
     // Init OpenGL and GLAD
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize OpenGL context" << std::endl;
+        logger->error("Failed to initialize OpenGL context");
         exit(EXIT_FAILURE);
     }
-    std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
+    logger->info("OpenGL {0:d}.{0:d}", GLVersion.major, GLVersion.minor);
 
     // Create camera
     camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
@@ -57,7 +58,8 @@ void RenderManager::startUp() {
 }
 
 void RenderManager::shutDown() {
-
+    glfwDestroyWindow(windowWrapper->getWindow());
+    glfwTerminate();
 }
 
 // todo should this just be called from the Shader itself?
@@ -78,7 +80,7 @@ void RenderManager::frameEnd() {
 }
 
 void RenderManager::glfwErrorCallback(int error, const char *desc) {
-    std::cerr << "GLFW Error 0x" << std::hex << error << ": " << desc << std::endl;
+    spdlog::get("renderer")->error("GLFW Error 0x{0:x}: {}", error, desc);
 }
 
 void RenderManager::glfwFramebufferSizeCallback(int width, int height) {

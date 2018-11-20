@@ -11,12 +11,14 @@ NetworkManager::NetworkManager() = default; // noop
 NetworkManager::~NetworkManager() = default; // noop
 
 void NetworkManager::startUp() {
+    logger = spdlog::stdout_color_mt("network");
+
     if (enet_initialize() != 0) {
-        std::cerr << "Failed to initialise ENet" << std::endl;
-        exit(-1);
+        logger->error("Failed to initialise ENet");
+        exit(EXIT_FAILURE);
     }
 
-    std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
+    logger->info("ENet {0:d}.{0:d}.{0:d}", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
 
     // Register handler for network handshakes
     registerPacket({
@@ -26,7 +28,7 @@ void NetworkManager::startUp() {
         [](int packetID, void *data, size_t dataLength) {
             enet_uint8 clientId = (*((ClientData *)data)).clientId;
             gNetworkManager.clientId = clientId;
-            std::cout << "Client ID is: " << +clientId << std::endl;
+            spdlog::get("network")->debug("Client ID is: {0:d}", clientId);
         }
     });
 }
@@ -47,14 +49,14 @@ void NetworkManager::startServer() {
     server = true;
 
     if (host == nullptr) {
-        std::cerr << "Failed to start server on " << address.host << ":" << address.port << std::endl;
-        exit(-1);
+        logger->error("Failed to start server on {0:d}:{0:d}", address.host, address.port);
+        exit(EXIT_FAILURE);
     }
 }
 
 void NetworkManager::stopServer() {
     if (host == nullptr) {
-        std::cerr << "Cannot stop server that is not running" << std::endl;
+        logger->warn("Cannot stop server that is not running");
     }
 
     enet_host_destroy(host);
@@ -76,9 +78,9 @@ void NetworkManager::update() {
                     // Tell client of its id
                     sendToClient(clientData.clientId, CLIENT_DATA_ID, &clientData, sizeof(ClientData));
 
-                    std::cout << "Client (" << +clientData.clientId << ") connected to server" << std::endl;
+                    logger->info("Client ({0:d}) connected to server", clientData.clientId);
                 } else {
-                    std::cout << "Connected to server" << std::endl;
+                    logger->info("Connected to server");
                 }
                 break;
             }
@@ -90,9 +92,9 @@ void NetworkManager::update() {
             }
             case ENET_EVENT_TYPE_DISCONNECT:
                 if (server) {
-                    std::cout << "Client disconnected from server" << std::endl;
+                    logger->info("Client ({0:d}) disconnected from server", ((ClientData *)event.peer)->clientId);
                 } else {
-                    std::cout << "Disconnected from server" << std::endl;
+                    logger->info("Disconnected from server");
                     peer = nullptr;
                 }
                 break;
@@ -104,7 +106,7 @@ void NetworkManager::update() {
 
 void NetworkManager::registerPacket(PacketMeta meta) {
     if (packetHandlers.find(meta.id) != packetHandlers.end()) {
-        std::cerr << "A packet with the ID " << meta.id << " has already been registered!" << std::endl;
+        logger->error("A packet with the ID {0:d} has already been registered!", meta.id);
         return;
     }
 
@@ -155,7 +157,7 @@ void NetworkManager::connectToServer(const char *address, enet_uint16 port) {
     peer = enet_host_connect(host, &this->address, 2, 0);
 
     if (peer == nullptr) {
-        std::cerr << "Failed to connect to server" << std::endl;
+        logger->error("Failed to connect to server");
     }
 }
 

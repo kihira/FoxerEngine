@@ -4,6 +4,8 @@
 
 
 #include <cstddef>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include "Entity.h"
 
 #define ENTITY_UPDATE_ID 11
@@ -22,6 +24,7 @@ struct EntitySpawnPacketData {
 
 class EntityManager {
 private:
+    std::shared_ptr<spdlog::logger> logger;
     std::map<std::string, std::shared_ptr<Entity>> prototypes;
     std::map<int, std::shared_ptr<Entity>> entities;
 

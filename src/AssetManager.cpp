@@ -65,6 +65,8 @@ AssetManager::AssetManager() = default; // noop
 AssetManager::~AssetManager() = default; // noop
 
 void AssetManager::startUp() {
+    logger = spdlog::stdout_color_mt("asset");
+
     lua.open_libraries(sol::lib::base, sol::lib::io);
 }
 
@@ -87,7 +89,7 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
     std::ifstream file;
     file.open(ASSETS_FOLDER "meshes/" + name + ".obj", std::ios::in);
     if (!file) {
-        std::cerr << "Error opening mesh file: " << name << std::endl;
+        logger->error("Error opening mesh file: {}", name);
         return getErrorMesh();
     }
 
@@ -145,7 +147,7 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
     std::ifstream file;
     file.open(ASSETS_FOLDER "shaders/" + name + ".glsl", std::ios::in);
     if (!file.is_open()) {
-        std::cerr << "Error opening shader file: " << name << std::endl;
+        logger->error("Error opening shader file: {}", name);
         return 0;
     }
 
@@ -163,7 +165,7 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
     if (!err)
     {
         glGetShaderInfoLog(shader, ERR_SIZE, nullptr, errData);
-        std::cerr << "Failed to compile shader " << name << ": " << errData << std::endl;
+        logger->error("Failed to compile shader {}: {}", name, errData);
         return 0;
     }
 
@@ -177,7 +179,7 @@ std::shared_ptr<Shader> AssetManager::loadShaderProgram(std::string name) {
     std::ifstream file;
     file.open(ASSETS_FOLDER "shaders/"+name+".txt", std::ios::in);
     if (!file.is_open()) {
-        std::cerr << "Error opening shader definition file: " << name << std::endl;
+        logger->error("Error opening shader definition file: {}", name);
         return getErrorShader();
     }
 
@@ -202,7 +204,7 @@ std::shared_ptr<Shader> AssetManager::loadShaderProgram(std::string name) {
     glGetProgramiv(program, GL_LINK_STATUS, &err);
     if (!err) {
         glGetProgramInfoLog(program, ERR_SIZE, nullptr, errData);
-        std::cerr << "Failed to link shader " << name << ": " << std::endl << errData << std::endl;
+        logger->error("Failed to link shader {}: {}", name, errData);
         return getErrorShader();
     }
 
@@ -369,8 +371,7 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
     auto result = lua.script_file(ASSETS_FOLDER "levels/" + name + ".lua");
     if (!result.valid()) {
         sol::error err = result;
-        std::cerr << "Failed to run lua file for level " << name << ": " << std::endl
-                  << err.what() << std::endl;
+        logger->error("Failed to run lua file for level {}: {}", name, err.what());
     }
 
     // Load data from lua file

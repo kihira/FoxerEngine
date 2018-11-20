@@ -4,6 +4,8 @@
 
 
 #include <enet/enet.h>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <map>
 
 #define CLIENT_DATA_ID 1
@@ -26,6 +28,7 @@ private:
     ENetAddress address;
     ENetHost *host;
     ENetPeer *peer;
+    std::shared_ptr<spdlog::logger> logger;
     std::map<enet_uint8, PacketMeta> packetHandlers;
 
     // Server only data

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <sol.hpp>
 #include <easy/profiler.h>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include "Managers.h"
 #include "KeyHandler.h"
 
@@ -10,6 +12,9 @@ int main(int argc, char **argv) {
     EASY_PROFILER_ENABLE;
 #endif
     bool server = argc == 2; // Whether we are a server or not
+
+    // Initialise logger
+    auto logger = spdlog::stdout_color_mt("main");
 
     if (!server) gRenderManager.startUp();
     gNetworkManager.startUp();
@@ -67,7 +72,7 @@ int main(int argc, char **argv) {
     // auto level = gAssetManager.loadLevel("level1");
 
     // Start as server or connect to one
-    if (argc == 2) {
+    if (server) {
         gNetworkManager.startServer();
     } else {
         gNetworkManager.connectToServer("localhost", 1234);

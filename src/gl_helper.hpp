@@ -5,9 +5,11 @@
 #include <glad/glad.h>
 #include <string>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 #define GLERRCHECK() GLERRCHECK_fn(__FILE__, __LINE__)
 
+// todo move this into render manager
 namespace {
     void GLERRCHECK_fn(const char *file, int line) {
         GLenum err = glGetError();
@@ -33,7 +35,7 @@ namespace {
                 break;
         }
 
-        std::cerr << "(" << file << ":" << line << ") GL ERROR 0x" << std::hex << err << ": " << error << std::endl;
+        spdlog::get("renderer")->error("({}:{}) GL ERROR 0x{:x}: {}", file, line, err, error);
     }
 }
 

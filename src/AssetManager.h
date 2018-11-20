@@ -5,6 +5,8 @@
 #include <string>
 #include <glad/glad.h>
 #include <sol.hpp>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include "render/Mesh.h"
 #include "render/Shader.h"
 #include "entity/Entity.h"
@@ -12,6 +14,7 @@
 
 class AssetManager {
 private:
+    std::shared_ptr<spdlog::logger> logger;
     sol::state lua;
     std::map<std::string, GLuint> shaders;
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;

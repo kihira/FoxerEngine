@@ -3,12 +3,15 @@
 #define GAMEENGINE301CR_PHYSICSMANAGER_H
 
 #include <Box2D/Box2D.h>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <vector>
 #include "PhysicsComponent.h"
 
 
 class PhysicsManager {
 private:
+    std::shared_ptr<spdlog::logger> logger;
     const int32 velocityIterations = 6;
     const int32 positionIterations = 2;
     const float32 timeStep = 1.f/60.f;

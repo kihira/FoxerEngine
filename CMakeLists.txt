@@ -8,6 +8,7 @@ set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 # Enable building with profiler in debug
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DBUILD_WITH_EASY_PROFILER)
+    add_definitions(-DLOGLEVEL=3)
 endif()
 
 # Source files
@@ -92,6 +93,14 @@ endif()
 
 # stb headers
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/stb)
+
+# spdlog
+set(SPDLOG_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(SPDLOG_BUILD_BENCH OFF CACHE BOOL "" FORCE)
+set(SPDLOG_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(${LIBRARIES_ROOT}/spdlog)
+target_link_libraries(${PROJECT_NAME} spdlog)
 
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
