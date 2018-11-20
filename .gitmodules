@@ -7,3 +7,6 @@
 [submodule "libs/glfw"]
 	path = libs/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "libs/soloud"]
+	path = libs/soloud
+	url = https://github.com/jarikomppa/soloud.git
