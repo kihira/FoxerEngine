@@ -2,6 +2,7 @@
 #include <iostream>
 #include <easy/profiler.h>
 #include "NetworkManager.h"
+#include "../assert.h"
 
 NetworkManager::NetworkManager() = default; // noop
 
@@ -14,6 +15,16 @@ void NetworkManager::startUp() {
     }
 
     std::cout << "ENet " << ENET_VERSION_MAJOR << "." << ENET_VERSION_MINOR << "." << ENET_VERSION_PATCH << std::endl;
+
+    // Register handler for network handshakes
+    registerPacket({
+        CLIENT_DATA_ID,
+        0,
+        ENET_PACKET_FLAG_RELIABLE,
+        [](int packetID, void *data, size_t dataLength) {
+            std::cout << "Client ID is: " << ((ClientData *)data)->clientId << std::endl;
+        }
+    });
 }
 
 void NetworkManager::shutDown() {
@@ -47,12 +58,20 @@ void NetworkManager::stopServer() {
 
 void NetworkManager::update() {
     EASY_FUNCTION();
-    ENetEvent event;
     while (enet_host_service(host, &event, 0) > 0) {
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT: {
                 if (server) {
-                    std::cout << "Client connected to server" << std::endl;
+                    // Generate client id and store it
+                    auto clientData = new ClientData();
+                    clientData->clientId = getNewClientId();
+                    event.peer->data = clientData;
+                    clients[clientData->clientId] = event.peer;
+
+                    // Tell client of its id
+                    sendToClient(clientData->clientId, CLIENT_DATA_ID, clientData, sizeof(ClientData));
+
+                    std::cout << "Client (" << clientData->clientId << ") connected to server" << std::endl;
                 } else {
                     std::cout << "Connected to server" << std::endl;
                 }
@@ -84,10 +103,16 @@ void NetworkManager::registerPacket(PacketMeta meta) {
         return;
     }
 
+    ASSERT(meta.packetHandler != nullptr);
+    ASSERT(meta.packetFlag > 0);
+    ASSERT(meta.packetFlag < 4);
+
     packetHandlers.insert(std::pair<int, PacketMeta>(meta.id, meta));
 }
 
 void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLength) {
+    ASSERT(!isServer());
+
     PacketMeta meta = packetHandlers[packetID];
     ENetPacket *packet = buildPacket(meta, data, dataLength);
 
@@ -95,11 +120,23 @@ void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLe
 }
 
 void NetworkManager::sendToAllClients(enet_uint8 packetID, void *data, size_t dataLength) {
+    ASSERT(isServer());
+
     PacketMeta meta = packetHandlers[packetID];
     ENetPacket *packet = buildPacket(meta, data, dataLength);
 
     enet_host_broadcast(host, meta.channel, packet);
 }
+
+void NetworkManager::sendToClient(u_char clientId, enet_uint8 packetID, void *data, size_t dataLength) {
+    ASSERT(isServer());
+
+    PacketMeta meta = packetHandlers[packetID];
+    ENetPacket *packet = buildPacket(meta, data, dataLength);
+
+    enet_peer_send(clients[clientId], meta.channel, packet);
+}
+
 
 void NetworkManager::packetFreeCallback(ENetPacket *packet) {
     free(packet->data);
@@ -132,4 +169,9 @@ ENetPacket *NetworkManager::buildPacket(PacketMeta meta, void *data, size_t data
 
 bool NetworkManager::isServer() {
     return server;
+}
+
+u_char NetworkManager::getNewClientId() {
+    lastClientId++;
+    return lastClientId;
 }

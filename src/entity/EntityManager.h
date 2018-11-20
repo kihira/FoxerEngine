@@ -6,8 +6,8 @@
 #include <cstddef>
 #include "Entity.h"
 
-#define ENTITY_UPDATE_ID 1
-#define ENTITY_SPAWN_ID 2
+#define ENTITY_UPDATE_ID 11
+#define ENTITY_SPAWN_ID 12
 
 struct EntityUpdatePacketData {
     unsigned short entityId;

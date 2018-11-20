@@ -12,7 +12,7 @@
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
-#define ERR_MESH "ERROR"s
+#define ERR_MESH "ERROR"
 #define ERR_SIZE 1024
 
 const char *errVertShaderSrc = R"(
@@ -96,13 +96,15 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
 
     std::string line;
     while (getline(file, line)) {
-        if (line[0] == 'v' && line[1] == 'n') { // Vertex normal
+        if (line[0] == 'v' && line[1] == 'n') { // normal
             glm::vec3 normal;
             char *next;
             float t = strtof(line.c_str(), &next);
             sscanf(line.c_str(), "%f %f %f\n", &normal.x, &normal.y, &normal.z);
             normals.push_back(normal);
-        } else if (line[0] == 'v') { // Vertex
+        } else if (line[0] == 'v' && line[1] == 't') { // texture coord
+
+        } else if (line[0] == 'v') { // position
             glm::vec3 vertex;
             sscanf(line.c_str(), "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
             vertices.push_back(vertex);
