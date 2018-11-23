@@ -21,3 +21,8 @@ void NetworkComponent::update() {
         }
     }
 }
+
+Component *NetworkComponent::clone(std::shared_ptr<Entity> entity) {
+    auto newComponent = new NetworkComponent(entity);
+    return newComponent;
+}

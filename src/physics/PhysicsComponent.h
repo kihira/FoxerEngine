@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2Fixture.h>
 #include "../entity/Entity.h"
 #include "../entity/Component.h"
 
@@ -15,12 +16,16 @@
  // todo possible future idea is to save bodyDef to binary as it's just a struct, allowing serialising it
 class PhysicsComponent : public Component {
 private:
+    b2BodyDef bodyDef;
+    b2FixtureDef fixtureDef;
     b2Body *body;
     b2Fixture *fixture;
 public:
-    PhysicsComponent(const std::shared_ptr<Entity> &entity, b2Body *body, b2Fixture *fixture);
+    PhysicsComponent(const std::shared_ptr<Entity> &entity, b2BodyDef &bodyDef, b2FixtureDef &fixtureDef);
 
     void update() override;
+
+    Component *clone(std::shared_ptr<Entity> entity) override;
 
     void setUserData(void *data);
 

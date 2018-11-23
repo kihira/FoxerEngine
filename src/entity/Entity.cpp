@@ -41,13 +41,19 @@ void Entity::setUpdateFn(const sol::protected_function &updateFn) {
     Entity::updateFn = updateFn;
 }
 
-// todo need to clone components
 std::shared_ptr<Entity> Entity::clone(const unsigned short id) {
     auto newEntity = std::make_shared<Entity>(id, name);
 
     newEntity->setPosition(position);
     newEntity->setRotation(rotation);
     newEntity->setUpdateFn(updateFn);
+
+    for (auto &component : components) {
+        auto newComponent = component->clone(newEntity);
+        ASSERT(newComponent != nullptr);
+        newEntity->addComponent(newComponent);
+    }
+
     return newEntity;
 }
 

@@ -13,9 +13,11 @@ private:
     std::shared_ptr<Mesh> mesh;
     glm::mat4 transform;
 public:
-    RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> shader, std::shared_ptr<Mesh> mesh);
+    RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> &shader, std::shared_ptr<Mesh> &mesh);
 
     void update() override;
+
+    Component *clone(std::shared_ptr<Entity> entity) override;
 };
 
 

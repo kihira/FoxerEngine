@@ -10,6 +10,9 @@ private:
     bool hasAuthority; // Whether this component has authority over the entity its attached to
 public:
     void update() override;
+
+private:
+    Component *clone(std::shared_ptr<Entity> entity) override;
 };
 
 

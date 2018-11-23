@@ -1,11 +1,12 @@
 
 #include "PhysicsComponent.h"
 #include "../assert.h"
+#include "../Managers.h"
 
-PhysicsComponent::PhysicsComponent(const std::shared_ptr<Entity> &entity, b2Body *body, b2Fixture *fixture) : Component(
-        entity), body(body), fixture(fixture) {
-    ASSERT(body != nullptr);
-    ASSERT(fixture != nullptr);
+PhysicsComponent::PhysicsComponent(const std::shared_ptr<Entity> &entity, b2BodyDef &bodyDef,
+                                   b2FixtureDef &fixtureDef) : Component(entity), bodyDef(bodyDef), fixtureDef(fixtureDef) {
+    body = gPhysicsManager.createBody(bodyDef);
+    fixture = body->CreateFixture(&fixtureDef);
 }
 
 void PhysicsComponent::update() {
@@ -33,5 +34,10 @@ void PhysicsComponent::setGravityScale(float scale) {
 
 void PhysicsComponent::setActive(bool active) {
     body->SetActive(active);
+}
+
+Component *PhysicsComponent::clone(std::shared_ptr<Entity> entity) {
+    auto newComponent = new PhysicsComponent(entity, bodyDef, fixtureDef);
+    return newComponent;
 }
 

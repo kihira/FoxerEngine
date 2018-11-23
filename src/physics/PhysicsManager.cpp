@@ -30,7 +30,3 @@ b2Body *PhysicsManager::createBody(const b2BodyDef &bodyDef) {
 b2Joint *PhysicsManager::createJoint(const b2JointDef &jointDef) {
     return world->CreateJoint(&jointDef);
 }
-
-void PhysicsManager::deregisterComponent(PhysicsComponent *component) {
-    //todo components.erase(components.find(component));
-}

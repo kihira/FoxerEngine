@@ -286,7 +286,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         return entityPrototypes[tableName];
     }
 
-    lua.script_file(ASSETS_FOLDER "scripts/" + fileName + ".lua");
+    lua.script_file(ASSETS_FOLDER "entities/" + fileName + ".lua");
 
     // Load data from lua file and bind functions
     sol::table entityTable = lua[tableName];
@@ -310,7 +310,6 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         bodyDef.position.Set(entity->getPosition().x, entity->getPosition().z);
         bodyDef.fixedRotation = physicsTable["fixedRotation"].get_or(false);
         bodyDef.userData = entity.get();
-        auto body = gPhysicsManager.createBody(bodyDef);
 
         // Create fixture def
         b2FixtureDef fixtureDef;
@@ -320,7 +319,6 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         fixtureDef.restitution = physicsTable["restitution"].get_or(0.f);
         // fixtureDef.isSensor = physicsTable["isSensor"].get_or(false);
         // fixtureDef.filter;
-		b2Fixture *fixture; // Have to define it here and assign it in the switch statements otherwise MSVC complains a lot
 
         // Create shape
         int shapeType = physicsTable["shape"].get_or(0);
@@ -329,14 +327,12 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
                 b2CircleShape shape;
                 shape.m_radius = physicsTable["radius"].get_or(.5f);
                 fixtureDef.shape = &shape;
-				fixture = body->CreateFixture(&fixtureDef);
                 break;
             }
             case 1: {
                 b2PolygonShape shape;
                 shape.SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
                 fixtureDef.shape = &shape;
-				fixture = body->CreateFixture(&fixtureDef);
                 break;
             }
             case 2: {
@@ -348,7 +344,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
             }
         }
 
-        auto physicsComponent = new PhysicsComponent(entity, body, fixture);
+        auto physicsComponent = new PhysicsComponent(entity, bodyDef, fixtureDef);
         entity->addComponent(physicsComponent);
     }
 

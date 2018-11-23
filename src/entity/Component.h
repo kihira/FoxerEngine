@@ -18,6 +18,8 @@ public:
     }
 
     virtual void update() = 0;
+
+    virtual Component *clone(std::shared_ptr<Entity> entity) = 0;
 };
 
 

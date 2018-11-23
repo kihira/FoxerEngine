@@ -5,7 +5,7 @@
 #include "../entity/Entity.h"
 #include "../gl_helper.hpp"
 
-RenderComponent::RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> shader, std::shared_ptr<Mesh> mesh) :
+RenderComponent::RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> &shader, std::shared_ptr<Mesh> &mesh) :
 Component(entity), shader(shader), mesh(mesh) {}
 
 void RenderComponent::update() {
@@ -19,4 +19,9 @@ void RenderComponent::update() {
     shader->setUniform("model", transform);
     mesh->render();
     GLERRCHECK();
+}
+
+Component *RenderComponent::clone(std::shared_ptr<Entity> entity) {
+    auto newComponent = new RenderComponent(entity, shader, mesh);
+    return newComponent;
 }

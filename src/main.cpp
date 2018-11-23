@@ -67,6 +67,7 @@ int main(int argc, char **argv) {
 
     // Register entity prototypes
     gEntityManager.registerPrototype("dummyTarget", gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget"));
+    gEntityManager.spawn("dummyTarget");
 
     // Load initial level
     // auto level = gAssetManager.loadLevel("level1");
