@@ -10,6 +10,8 @@
 #include "Box2D/Collision/Shapes/b2CircleShape.h"
 #include "Box2D/Collision/Shapes/b2PolygonShape.h"
 #include "Box2D/Dynamics/b2Fixture.h"
+#include "AssetManager.h"
+
 
 #define ASSETS_FOLDER "./assets/"
 #define ERR_SHADER "ERROR"
@@ -407,4 +409,45 @@ void AssetManager::cleanup() {
             shaderPrograms.erase(shader.first);
         }
     }
+}
+
+GLuint AssetManager::loadTexture(std::string name) {
+    if (textures.find(name) != textures.end()) {
+        return textures[name];
+    }
+
+    auto table = lua.script_file(ASSETS_FOLDER "textures/" + name + ".lua");
+    if (!table.valid()) {
+        logger->error("Failed to load asset definition for {}", name);
+        return 0;
+    }
+    sol::table data = table;
+    int width, height, channels;
+    auto textureData = stbi_load((ASSETS_FOLDER "textures/" + data["file"].get_or(std::string("error.png"))).c_str(), &width, &height, &channels, 4);
+
+    GLuint textureId;
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+
+    // Load and set image options
+    // todo should do some proper parsing and error checking
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, data["wrapU"].get_or(GL_REPEAT));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, data["wrapV"].get_or(GL_REPEAT));
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, data["minFilter"].get_or(GL_NEAREST));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, data["magFilter"].get_or(GL_LINEAR));
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+
+    if (data["mipmaps"].get_or(true)) {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    GLERRCHECK();
+
+    // Free image data
+    stbi_image_free(textureData);
+
+    textures.insert(std::make_pair(name, textureId));
+    return textureId;
 }

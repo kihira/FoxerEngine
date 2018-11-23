@@ -17,6 +17,7 @@ private:
     std::shared_ptr<spdlog::logger> logger;
     sol::state lua;
     std::map<std::string, GLuint> shaders;
+    std::map<std::string, GLuint> textures;
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
     std::map<std::string, std::shared_ptr<Mesh>> meshes;
     std::map<std::string, std::shared_ptr<Entity>> entityPrototypes;
@@ -83,6 +84,8 @@ public:
     std::shared_ptr<Entity> loadEntityPrototype(std::string fileName, std::string tableName);
 
     std::shared_ptr<Level> loadLevel(std::string name);
+
+    GLuint loadTexture(std::string name);
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.
