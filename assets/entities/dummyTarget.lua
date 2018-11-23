@@ -4,7 +4,7 @@ dummyTarget = {
         gravityScale = 0.3
     },
     render = {
-        mesh = "doesnotexist"
+        mesh = "testMesh"
     },
     update = function(self)
         -- print("Hello, my name is " .. self.name)

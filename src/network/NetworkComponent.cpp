@@ -23,6 +23,10 @@ void NetworkComponent::update() {
 }
 
 Component *NetworkComponent::clone(std::shared_ptr<Entity> entity) {
-    auto newComponent = new NetworkComponent(entity);
+    auto newComponent = new NetworkComponent(entity, hasAuthority);
     return newComponent;
 }
+
+NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, bool hasAuthority) : Component(entity),
+                                                                                               hasAuthority(
+                                                                                                       hasAuthority) {}

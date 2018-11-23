@@ -14,9 +14,12 @@
 
 
 #define ASSETS_FOLDER "./assets/"
+#define ASSETS_EXT ".lua"
 #define ERR_SHADER "ERROR"
 #define ERR_MESH "ERROR"
 #define ERR_SIZE 1024
+
+#define ERR_STR_LOAD_ASSET "Failed to load asset definition for {}"
 
 const char *errVertShaderSrc = R"(
 #version 330 core
@@ -82,15 +85,21 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
         return meshes[name];
     }
 
-    // Load texture(s)
-    int width, height, channels;
-    auto imageData = stbi_load("file name", &width, &height, &channels, STBI_rgb);
+    auto result = lua.script_file(ASSETS_FOLDER "meshes/" + name + ASSETS_EXT);
+    if (!result.valid()) {
+        logger->error(ERR_STR_LOAD_ASSET, name);
+        return getErrorMesh();
+    }
+    sol::table assetData = result;
 
-    stbi_image_free(imageData);
+    if (assetData["texture"] != sol::lua_nil) {
+        // todo use texture somehow
+        loadTexture(assetData["texture"]);
+    }
 
     // Attempt to load file
     std::ifstream file;
-    file.open(ASSETS_FOLDER "meshes/" + name + ".obj", std::ios::in);
+    file.open(ASSETS_FOLDER "meshes/" + assetData["file"].get_or(std::string(ERR_MESH)), std::ios::in);
     if (!file) {
         logger->error("Error opening mesh file: {}", name);
         return getErrorMesh();
@@ -134,11 +143,17 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
 
     // Normal
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, nullptr);
+    glVertexAttribPointer(1, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, (GLvoid *)sizeof(glm::vec3));
+
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec3)));
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_READ);
 
-    return nullptr;
+    auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, (GLuint) 0, GL_TRIANGLES, GL_UNSIGNED_SHORT);
+    meshes.insert(std::make_pair(name, mesh));
+    return mesh;
 }
 
 GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
@@ -180,7 +195,7 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
 std::shared_ptr<Shader> AssetManager::loadShaderProgram(std::string name) {
     // Read shader definition
     std::ifstream file;
-    file.open(ASSETS_FOLDER "shaders/"+name+".txt", std::ios::in);
+    file.open(ASSETS_FOLDER "shaders/" + name + ASSETS_EXT, std::ios::in);
     if (!file.is_open()) {
         logger->error("Error opening shader definition file: {}", name);
         return getErrorShader();
@@ -286,7 +301,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         return entityPrototypes[tableName];
     }
 
-    lua.script_file(ASSETS_FOLDER "entities/" + fileName + ".lua");
+    lua.script_file(ASSETS_FOLDER "entities/" + fileName + ASSETS_EXT);
 
     // Load data from lua file and bind functions
     sol::table entityTable = lua[tableName];
@@ -368,7 +383,7 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
         return levels[name];
     }
 
-    auto result = lua.script_file(ASSETS_FOLDER "levels/" + name + ".lua");
+    auto result = lua.script_file(ASSETS_FOLDER "levels/" + name + ASSETS_EXT);
     if (!result.valid()) {
         sol::error err = result;
         logger->error("Failed to run lua file for level {}: {}", name, err.what());
@@ -412,9 +427,9 @@ GLuint AssetManager::loadTexture(std::string name) {
         return textures[name];
     }
 
-    auto table = lua.script_file(ASSETS_FOLDER "textures/" + name + ".lua");
+    auto table = lua.script_file(ASSETS_FOLDER "textures/" + name + ASSETS_EXT);
     if (!table.valid()) {
-        logger->error("Failed to load asset definition for {}", name);
+        logger->error(ERR_STR_LOAD_ASSET, name);
         return 0;
     }
     sol::table data = table;
