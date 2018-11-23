@@ -10,11 +10,11 @@ private:
     GLuint vao;
     GLuint ibo;
     GLuint vbo;
-    GLuint vertexCount;
+    GLsizei vertexCount;
     GLenum mode;
     GLenum indicesType;
 public:
-    Mesh(GLuint vao, GLuint ibo, GLuint vbo, GLuint vertexCount, GLenum mode, GLenum indicesType = 0);
+    Mesh(GLuint vao, GLuint ibo, GLuint vbo, GLsizei vertexCount, GLenum mode, GLenum indicesType);
 
     virtual ~Mesh();
 

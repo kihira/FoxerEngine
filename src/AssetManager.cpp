@@ -151,7 +151,7 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_READ);
 
-    auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, (GLuint) 0, GL_TRIANGLES, GL_UNSIGNED_SHORT);
+    auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, 0, GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes.insert(std::make_pair(name, mesh));
     return mesh;
 }
@@ -253,7 +253,7 @@ std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(errCubeIndices), errCubeIndices, GL_STATIC_DRAW);
 
-    auto mesh = std::make_shared<Mesh>(vao, std::vector<GLuint>(vboVertices), 36, GL_TRIANGLES, GL_UNSIGNED_SHORT);
+    auto mesh = std::make_shared<Mesh>(vao, vboIndices, vboVertices, 36, GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes[ERR_MESH] = mesh;
 
     return mesh;

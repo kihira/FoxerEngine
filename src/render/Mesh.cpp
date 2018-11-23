@@ -4,7 +4,7 @@
 #include "Mesh.h"
 #include "../gl_helper.hpp"
 
-Mesh::Mesh(GLuint vao, GLuint ibo, GLuint vbo, GLuint vertexCount, GLenum mode, GLenum indicesType)
+Mesh::Mesh(GLuint vao, GLuint ibo, GLuint vbo, GLsizei vertexCount, GLenum mode, GLenum indicesType)
         : vao(vao), ibo(ibo), vbo(vbo), vertexCount(vertexCount), mode(mode), indicesType(indicesType) {}
 
 Mesh::~Mesh() {
