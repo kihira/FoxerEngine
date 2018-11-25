@@ -1,4 +1,4 @@
 return {
-    file = "doesnotexist"
-    texture = "testTexure"
+    file = "doesnotexist",
+    texture = "testTexture"
 }

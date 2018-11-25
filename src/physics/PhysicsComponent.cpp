@@ -6,7 +6,7 @@
 PhysicsComponent::PhysicsComponent(const std::shared_ptr<Entity> &entity, b2BodyDef &bodyDef,
                                    b2FixtureDef &fixtureDef) : Component(entity), bodyDef(bodyDef), fixtureDef(fixtureDef) {
     body = gPhysicsManager.createBody(bodyDef);
-    fixture = body->CreateFixture(&fixtureDef);
+    fixture = body->CreateFixture(&this->fixtureDef);
 }
 
 void PhysicsComponent::update() {

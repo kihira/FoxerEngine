@@ -151,6 +151,8 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_READ);
 
+    GLERRCHECK();
+
     auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, 0, GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes.insert(std::make_pair(name, mesh));
     return mesh;
@@ -186,6 +188,8 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
         logger->error("Failed to compile shader {}: {}", name, errData);
         return 0;
     }
+
+    GLERRCHECK();
 
     // If we've made it this far, it's loaded and compiled so we'll save it
     shaders[name] = shader;
@@ -226,6 +230,8 @@ std::shared_ptr<Shader> AssetManager::loadShaderProgram(std::string name) {
         return getErrorShader();
     }
 
+    GLERRCHECK();
+
     // Store shader and return
     auto shader = std::make_shared<Shader>(program);
     shaderPrograms[name] = shader;
@@ -252,6 +258,8 @@ std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
     glGenBuffers(1, &vboIndices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(errCubeIndices), errCubeIndices, GL_STATIC_DRAW);
+
+    GLERRCHECK();
 
     auto mesh = std::make_shared<Mesh>(vao, vboIndices, vboVertices, 36, GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes[ERR_MESH] = mesh;
@@ -336,18 +344,19 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         // fixtureDef.filter;
 
         // Create shape
+        // Create a pointer here so it doesn't drop out of scope for later when cloning
         int shapeType = physicsTable["shape"].get_or(0);
         switch (shapeType) {
             case 0: {
-                b2CircleShape shape;
-                shape.m_radius = physicsTable["radius"].get_or(.5f);
-                fixtureDef.shape = &shape;
+                b2CircleShape *shape = new b2CircleShape();
+                shape->m_radius = physicsTable["radius"].get_or(.5f);
+                fixtureDef.shape = shape;
                 break;
             }
             case 1: {
-                b2PolygonShape shape;
-                shape.SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
-                fixtureDef.shape = &shape;
+                b2PolygonShape *shape = new b2PolygonShape();
+                shape->SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
+                fixtureDef.shape = shape;
                 break;
             }
             case 2: {
@@ -433,8 +442,14 @@ GLuint AssetManager::loadTexture(std::string name) {
         return 0;
     }
     sol::table data = table;
+    std::string textureFile = data["file"].get_or(std::string("error.png"));
     int width, height, channels;
-    auto textureData = stbi_load((ASSETS_FOLDER "textures/" + data["file"].get_or(std::string("error.png"))).c_str(), &width, &height, &channels, 4);
+    auto textureData = stbi_load((ASSETS_FOLDER "textures/" + textureFile).c_str(), &width, &height, &channels, 4);
+
+    if (textureData == nullptr) {
+        logger->error("Error opening texture file: {}", textureFile);
+        return 0;
+    }
 
     GLuint textureId;
     glGenTextures(1, &textureId);
