@@ -5,12 +5,7 @@
 #include <fstream>
 #include <stb_image.h>
 #include "gl_helper.hpp"
-#include "assert.h"
 #include "render/RenderComponent.h"
-#include "Box2D/Collision/Shapes/b2CircleShape.h"
-#include "Box2D/Collision/Shapes/b2PolygonShape.h"
-#include "Box2D/Dynamics/b2Fixture.h"
-#include "AssetManager.h"
 
 
 #define ASSETS_FOLDER "./assets/"
