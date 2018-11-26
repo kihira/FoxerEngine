@@ -99,6 +99,13 @@ set(SPDLOG_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 add_subdirectory(${LIBRARIES_ROOT}/spdlog)
 target_link_libraries(${PROJECT_NAME} spdlog)
 
+# assimp
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
+set(ASSIMP_BUILD_TESTS OFF)
+set(VIEWER_BUILD OFF)
+add_subdirectory(${LIBRARIES_ROOT}/assimp)
+target_link_libraries(${PROJECT_NAME} assimp)
+
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
 set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)

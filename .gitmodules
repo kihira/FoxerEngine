@@ -16,3 +16,6 @@
 [submodule "libs/enet"]
 	path = libs/enet
 	url = https://github.com/lsalzman/enet
+[submodule "libs/assimp"]
+	path = libs/assimp
+	url = https://github.com/assimp/assimp.git
