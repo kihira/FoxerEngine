@@ -46,7 +46,7 @@ const GLfloat errCubeVertices[] = {
         -1, -1, -1, 1, 1, 1,     0, 0,
         1, -1, -1,  1, 1, 1,     0, 0,
         1, 1, -1,   1, 1, 1,     0, 0,
-        -1, 1, -1,   1, 1, 1,     0, 0
+        -1, 1, -1,  1, 1, 1,     0, 0
 };
 
 const GLushort errCubeIndices[] = {
@@ -486,4 +486,23 @@ GLuint AssetManager::loadTexture(std::string name) {
 
     textures.insert(std::make_pair(name, textureId));
     return textureId;
+}
+
+Settings AssetManager::loadSettings() {
+    auto settings = Settings();
+
+    auto table = lua.script_file(ASSETS_FOLDER "settings" ASSETS_EXT);
+    if (!table.valid()) {
+        logger->error("Failed to load settings file, using defaults");
+        return settings;
+    }
+
+    sol::table data = table;
+    settings.windowTitle = data["window"]["title"].get_or(std::string("Window Title"));
+    settings.windowWidth = data["window"]["width"].get_or(1920);
+    settings.windowHeight = data["window"]["height"].get_or(1080);
+
+    settings.cameraFov = data["camera"]["fov"].get_or(75.f);
+
+    return settings;
 }

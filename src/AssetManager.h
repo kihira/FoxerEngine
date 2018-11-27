@@ -11,6 +11,7 @@
 #include "render/Shader.h"
 #include "entity/Entity.h"
 #include "level.h"
+#include "Settings.h"
 
 class AssetManager {
 private:
@@ -86,6 +87,8 @@ public:
     std::shared_ptr<Level> loadLevel(std::string name);
 
     GLuint loadTexture(std::string name);
+
+    Settings loadSettings();
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

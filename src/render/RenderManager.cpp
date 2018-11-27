@@ -30,8 +30,10 @@ void RenderManager::startUp() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 #endif
 
+    auto settings = gAssetManager.loadSettings();
+
     // Create GLFW window
-    windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(720, 405, "301CR Engine", nullptr, nullptr));
+    windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(settings.windowWidth, settings.windowHeight, settings.windowTitle.c_str(), nullptr, nullptr));
     if (!windowWrapper->getWindow()) {
         logger->error("Failed to create GLFW window");
         exit(EXIT_FAILURE);
@@ -49,10 +51,8 @@ void RenderManager::startUp() {
     logger->info("OpenGL {0:d}.{0:d}", GLVersion.major, GLVersion.minor);
 
     // Create camera
-    camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
-    camera->resize(720, 405);
-    camera->setPosition(glm::vec3(5.f, 5.f, -5.f));
-    camera->setTarget(glm::vec3(0.f));
+    camera = std::make_unique<Camera>(glm::vec3(0, 3, -3), glm::vec3(0, 0, 0), settings.cameraFov);
+    camera->resize(settings.windowWidth, settings.windowHeight);
 
     // Set OpenGL state stuff
     glClearColor(0.5, 0.5, 0, 1);
