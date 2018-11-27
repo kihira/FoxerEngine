@@ -17,6 +17,7 @@ class AssetManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
     sol::state lua;
+    Settings *settings;
     std::map<std::string, GLuint> shaders;
     std::map<std::string, GLuint> textures;
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
@@ -88,7 +89,7 @@ public:
 
     GLuint loadTexture(std::string name);
 
-    Settings loadSettings();
+    Settings *loadSettings();
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

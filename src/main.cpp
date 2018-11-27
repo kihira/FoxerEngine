@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget");
 
     // Load initial level
-    auto level = gAssetManager.loadLevel("level1");
+    auto level = gAssetManager.loadLevel(gAssetManager.loadSettings()->initialLevel);
 
     // Start as server or connect to one
     if (server) {

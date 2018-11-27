@@ -33,7 +33,7 @@ void RenderManager::startUp() {
     auto settings = gAssetManager.loadSettings();
 
     // Create GLFW window
-    windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(settings.windowWidth, settings.windowHeight, settings.windowTitle.c_str(), nullptr, nullptr));
+    windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(settings->windowWidth, settings->windowHeight, settings->windowTitle.c_str(), nullptr, nullptr));
     if (!windowWrapper->getWindow()) {
         logger->error("Failed to create GLFW window");
         exit(EXIT_FAILURE);
@@ -51,8 +51,8 @@ void RenderManager::startUp() {
     logger->info("OpenGL {0:d}.{0:d}", GLVersion.major, GLVersion.minor);
 
     // Create camera
-    camera = std::make_unique<Camera>(glm::vec3(0, 3, -3), glm::vec3(0, 0, 0), settings.cameraFov);
-    camera->resize(settings.windowWidth, settings.windowHeight);
+    camera = std::make_unique<Camera>(glm::vec3(0, 3, -3), glm::vec3(0, 0, 0), settings->cameraFov);
+    camera->resize(settings->windowWidth, settings->windowHeight);
 
     // Set OpenGL state stuff
     glClearColor(0.5, 0.5, 0, 1);

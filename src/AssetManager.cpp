@@ -78,6 +78,8 @@ void AssetManager::startUp() {
 
 void AssetManager::shutDown() {
     cleanup();
+
+    delete settings;
 }
 
 std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
@@ -492,8 +494,11 @@ GLuint AssetManager::loadTexture(std::string name) {
     return textureId;
 }
 
-Settings AssetManager::loadSettings() {
-    auto settings = Settings();
+Settings *AssetManager::loadSettings() {
+    if (AssetManager::settings != nullptr) {
+        return AssetManager::settings;
+    }
+    auto settings = new Settings();
 
     auto table = lua.script_file(ASSETS_FOLDER "settings" ASSETS_EXT);
     if (!table.valid()) {
@@ -502,11 +507,13 @@ Settings AssetManager::loadSettings() {
     }
 
     sol::table data = table;
-    settings.windowTitle = data["window"]["title"].get_or(std::string("Window Title"));
-    settings.windowWidth = data["window"]["width"].get_or(1920);
-    settings.windowHeight = data["window"]["height"].get_or(1080);
+    settings->windowTitle = data["window"]["title"].get_or(std::string("Window Title"));
+    settings->windowWidth = data["window"]["width"].get_or(1920);
+    settings->windowHeight = data["window"]["height"].get_or(1080);
 
-    settings.cameraFov = data["camera"]["fov"].get_or(75.f);
+    settings->cameraFov = data["camera"]["fov"].get_or(75.f);
+
+    settings->initialLevel = data["initialLevel"].get_or(std::string("mainmenu"));
 
     return settings;
 }
