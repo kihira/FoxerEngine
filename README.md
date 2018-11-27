@@ -1,12 +1,16 @@
 ## Libraries
-- GLFW 3.2.1
-- GLM 0.9.9.2
-- Lua 5.3.5
-- Sol2 2.20.3
-- ENet 1.3.13
-- Box2D 2.3.1
-- ImGui 1.65
+- GLFW 3.2.1 [zlib](http://www.glfw.org/license.html)
+- GLM 0.9.9.2 [MIT](https://github.com/g-truc/glm/blob/master/manual.md#section0)
+- Lua 5.3.5 [MIT](https://www.lua.org/license.html)
+- Sol2 2.20.3 [MIT](https://sol2.readthedocs.io/en/latest/licenses.html)
+- ENet 1.3.13 [MIT](http://enet.bespin.org/License.html)
+- Box2D 2.3.1 [zlib](https://github.com/erincatto/Box2D/blob/master/LICENSE)
+- ImGui 1.65 [MIT](https://github.com/ocornut/imgui/blob/master/LICENSE.txt)
 - easy_profiler 2.0.1 [MIT](https://github.com/yse/easy_profiler/blob/develop/LICENSE.MIT)
+- spdlog 1.2.1 [MIT](https://github.com/gabime/spdlog/blob/v1.x/LICENSE)
+- stb_image.h 2.19 [Public Domain](https://github.com/nothings/stb/blob/master/docs/why_public_domain.md)
+- ASSIMP 4.10 [BSD](https://github.com/assimp/assimp/blob/master/LICENSE)
+- soloud 20181119 [zlib](https://github.com/jarikomppa/soloud/blob/master/LICENSE)
 
 ## Build
 All the libraries are contained within the repo and building the project
