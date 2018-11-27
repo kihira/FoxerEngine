@@ -173,9 +173,10 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
 
     std::string shaderSource;
     getline(file, shaderSource, '\0');
+    const GLchar *shaderSrcPtr = shaderSource.c_str();
 
     GLuint shader = glCreateShader(shaderType);
-    // todo glShaderSource(shader, 1, &shaderSource[0], nullptr);
+    glShaderSource(shader, 1, &shaderSrcPtr, nullptr);
     glCompileShader(shader);
 
     // Check if the shader has compiled correctly, means its valid code
@@ -321,7 +322,6 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     if (entityTable["collider"] != sol::lua_nil) {
         auto physicsTable = entityTable["collider"];
 
-        // todo switch to using a builder/factory?
         b2BodyDef bodyDef;
         bodyDef.active = physicsTable["active"].get_or(true);
         bodyDef.angle = entity->getRotation().y;
@@ -348,13 +348,13 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         int shapeType = physicsTable["shape"].get_or(0);
         switch (shapeType) {
             case 0: {
-                b2CircleShape *shape = new b2CircleShape();
+                auto shape = new b2CircleShape();
                 shape->m_radius = physicsTable["radius"].get_or(.5f);
                 fixtureDef.shape = shape;
                 break;
             }
             case 1: {
-                b2PolygonShape *shape = new b2PolygonShape();
+                auto shape = new b2PolygonShape();
                 shape->SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
                 fixtureDef.shape = shape;
                 break;
@@ -400,12 +400,16 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
 
     // Load data from lua file
     sol::table levelTable = lua["level"];
-
     auto level = std::make_shared<Level>();
     level->setUpdateFn(levelTable["update"]);
 
-    levels.insert(std::make_pair(name, level));
+    // Load entities
+    sol::table entitiesTable = levelTable["entities"];
+    for (auto i = entitiesTable.begin(); i != entitiesTable.end(); i++) {
+        // todo spawn entities
+    }
 
+    levels.insert(std::make_pair(name, level));
     return std::shared_ptr<Level>();
 }
 
