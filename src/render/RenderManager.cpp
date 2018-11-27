@@ -48,7 +48,7 @@ void RenderManager::startUp() {
         logger->error("Failed to initialize OpenGL context");
         exit(EXIT_FAILURE);
     }
-    logger->info("OpenGL {0:d}.{0:d}", GLVersion.major, GLVersion.minor);
+    logger->info("OpenGL {:d}.{:d}", GLVersion.major, GLVersion.minor);
 
     // Create camera
     camera = std::make_unique<Camera>(glm::vec3(0, 3, -3), glm::vec3(0, 0, 0), settings->cameraFov);
@@ -107,7 +107,7 @@ void RenderManager::addRenderComponent(RenderComponent *component) {
  */
 
 void RenderManager::glfwErrorCallback(int error, const char *desc) {
-    spdlog::get("renderer")->error("GLFW Error 0x{0:x}: {}", error, desc);
+    spdlog::get("renderer")->error("GLFW Error 0x{:x}: {}", error, desc);
 }
 
 void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
