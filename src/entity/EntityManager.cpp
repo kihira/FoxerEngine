@@ -43,7 +43,7 @@ void EntityManager::registerPrototype(std::string id, std::shared_ptr<Entity> pr
 
 std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
     if (prototypes.find(name) == prototypes.end()) {
-        logger->error("Unable to find entity prototype with name: {}", name);
+        logger->error("Unable to find entity prototype with id: {}", name);
         return nullptr; // todo return error entity
     }
 
@@ -76,7 +76,7 @@ void EntityManager::handleEntityUpdatePacket(int packetID, void *data, size_t da
     EntityUpdatePacketData packetData = *(EntityUpdatePacketData *)data;
 
     if (entities.find(packetData.entityId) == entities.end()) {
-        logger->error("Received entity update for {:d} but entity does not exist", packetData.entityId);
+        logger->error("Received entity update for {d} but entity does not exist", packetData.entityId);
         return;
     }
     auto entity = entities[packetData.entityId];
@@ -93,4 +93,11 @@ void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dat
         return;
     }
     auto entity = prototypes[packetData.prototypeName]->clone(packetData.entityId);
+}
+
+std::shared_ptr<Entity> EntityManager::getEntity(ENTITY_ID id) {
+    if (entities.find(id) == entities.end()) {
+        return nullptr;
+    }
+    return entities[id];
 }

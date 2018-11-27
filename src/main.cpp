@@ -35,8 +35,9 @@ int main(int argc, char **argv) {
     sol::table entityTable = engineTable.create_named("entity");
     engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
     engineTable["entity"]["spawnEntity"] = [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); };
+    engineTable["entity"]["getEntity"] = [](ENTITY_ID id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
 
-    // Input functions
+            // Input functions
     sol::table inputTable = engineTable.create_named("input");
     engineTable["input"]["registerKeyHandler"] = [](sol::function handler) { gInputManager.registerKeyHandler(handler); };
     engineTable["input"]["registerCursorHandler"] = [](sol::function handler) { gInputManager.registerCursorHandler(handler); };
@@ -53,9 +54,7 @@ int main(int argc, char **argv) {
     // Register entity type
     entityTable.new_usertype<Entity>(
             "entity",
-            // sol::constructors<Entity(const char *)>(),
-            "noconstructor", sol::no_constructor, // No constructor as we use factory
-            "spawn", [](std::string name){return gEntityManager.spawn(name);}, // Provides a method for retrieving a copy of a prototype
+            "new", sol::factories([](std::string id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(id); }),
             // Register properties
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),

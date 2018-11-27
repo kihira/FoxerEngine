@@ -10,6 +10,10 @@ testEntity = {
         -- print("Hello, my name is " .. self.name)
     end,
     onSpawn = function(self)
-        print("Oh no, I've spawned!")
+        -- example of registering key handler
+        local keyHandler = function(key, scancode, action, mods)
+            print(key)
+        end
+        engine.input.registerKeyHandler(keyHandler)
     end
 }
