@@ -103,6 +103,10 @@ target_link_libraries(${PROJECT_NAME} spdlog)
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 set(ASSIMP_BUILD_TESTS OFF)
 set(VIEWER_BUILD OFF)
+# disable exporting from assimp and only enabled importing obj files for now
+set(ASSIMP_NO_EXPORT ON)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF)
+set(ASSIMP_BUILD_OBJ_IMPORTER ON)
 add_subdirectory(${LIBRARIES_ROOT}/assimp)
 target_link_libraries(${PROJECT_NAME} assimp)
 
@@ -110,9 +114,11 @@ target_link_libraries(${PROJECT_NAME} assimp)
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
 set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
 
-add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
-        DEPENDS ${DESTINATION_RESOURCES})
+if (WIN32)
+	add_custom_command(
+			TARGET ${PROJECT_NAME}
+			POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
+			DEPENDS ${DESTINATION_RESOURCES})
+endif()
 
 add_definitions(-DASSERTIONS_ENABLED=1)
