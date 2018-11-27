@@ -9,11 +9,6 @@
 #include "../gl_helper.hpp"
 #include "../assert.h"
 
-void Shader::use() {
-    glUseProgram(program);
-    GLERRCHECK();
-}
-
 void Shader::registerUniform(std::string name) {
     if (uniforms.find(name) != uniforms.end()) {
         spdlog::get("main")->warn("Already registered a uniform with the name: {}", name);

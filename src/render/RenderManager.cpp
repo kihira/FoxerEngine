@@ -51,6 +51,8 @@ void RenderManager::startUp() {
     // Create camera
     camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
     camera->resize(720, 405);
+    camera->setPosition(glm::vec3(5.f, 5.f, -5.f));
+    camera->setTarget(glm::vec3(0.f));
 
     // Set OpenGL state stuff
     glClearColor(0.5, 0.5, 0, 1);
@@ -62,11 +64,13 @@ void RenderManager::shutDown() {
     glfwTerminate();
 }
 
-// todo should this just be called from the Shader itself?
 void RenderManager::useShader(std::shared_ptr<Shader> shader) {
     if (shader->getProgram() == currentShader) return;
 
     glUseProgram(shader->getProgram());
+    shader->setUniform("view", camera->getView());
+    shader->setUniform("projection", camera->getProjection());
+    GLERRCHECK();
 }
 
 void RenderManager::frameStart() {
@@ -79,17 +83,10 @@ void RenderManager::frameEnd() {
     glfwPollEvents();
 }
 
-void RenderManager::glfwErrorCallback(int error, const char *desc) {
-    spdlog::get("renderer")->error("GLFW Error 0x{0:x}: {}", error, desc);
-}
-
-void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
-    glViewport(0, 0, width, height);
-    gRenderManager.camera->resize(width, height);
-}
-
 void RenderManager::update() {
-
+    for (auto renderComponent : renderComponents) {
+        renderComponent->update();
+    }
 }
 
 int RenderManager::shouldClose() {
@@ -98,4 +95,21 @@ int RenderManager::shouldClose() {
 
 const std::unique_ptr<WindowWrapper> &RenderManager::getWindowWrapper() const {
     return windowWrapper;
+}
+
+void RenderManager::addRenderComponent(RenderComponent *component) {
+    renderComponents.push_back(component);
+}
+
+/*
+ * Static functions
+ */
+
+void RenderManager::glfwErrorCallback(int error, const char *desc) {
+    spdlog::get("renderer")->error("GLFW Error 0x{0:x}: {}", error, desc);
+}
+
+void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
+    glViewport(0, 0, width, height);
+    gRenderManager.camera->resize(width, height);
 }

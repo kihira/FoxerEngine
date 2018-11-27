@@ -39,14 +39,14 @@ void main() {
 })";
 
 const GLfloat errCubeVertices[] = {
-        -1, -1, 1,
-        1, -1, 1,
-        1, 1, 1,
-        -1, 1, 1,
-        -1, -1, -1,
-        1, -1, -1,
-        1, 1, -1,
-        -1, 1, -1
+        -1, -1, 1,  1, 1, 1,     0, 0,
+        1, -1, 1,   1, 1, 1,     0, 0,
+        1, 1, 1,    1, 1, 1,     0, 0,
+        -1, 1, 1,   1, 1, 1,     0, 0,
+        -1, -1, -1, 1, 1, 1,     0, 0,
+        1, -1, -1,  1, 1, 1,     0, 0,
+        1, 1, -1,   1, 1, 1,     0, 0,
+        -1, 1, -1,   1, 1, 1,     0, 0
 };
 
 const GLushort errCubeIndices[] = {
@@ -252,9 +252,15 @@ std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
     glGenBuffers(1, &vboVertices);
     glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
     glBufferData(GL_ARRAY_BUFFER, sizeof(errCubeVertices), errCubeVertices, GL_STATIC_DRAW);
-
+    // Position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid *)(3 * sizeof(float)));
+    // UV
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid *)(6 * sizeof(float)));
 
     glGenBuffers(1, &vboIndices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
