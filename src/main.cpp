@@ -33,15 +33,13 @@ int main(int argc, char **argv) {
     // todo current way of creating tables seems messy, should see if there is a cleaner way
 
     // Entity functions
-    sol::table entityTable = gAssetManager.getLua().create_named_table("engine", "entity", gAssetManager.getLua().create_table_with(
-            "registerEntityPrototype", sol::as_function([](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); }),
-            "spawnEntity", sol::as_function([](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); })
-            ));
+    sol::table entityTable = engineTable.create_named("entity");
+    engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
+    engineTable["entity"]["spawnEntity"] = [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); };
 
     // Input functions
-    sol::table inputTable = gAssetManager.getLua().create_named_table("engine", "input", gAssetManager.getLua().create_table_with(
-            "registerKeyHandler", sol::as_function([](sol::function handler) { gInputManager.registerKeyHandlerLua(handler); })
-    ));
+    engineTable["input"] = engineTable.create();
+    engineTable["input"]["registerKeyHandler"] = [](sol::function handler) { gInputManager.registerKeyHandlerLua(handler); };
 
     // Register vec3 type
     engineTable.new_usertype<glm::vec3>(
@@ -53,7 +51,7 @@ int main(int argc, char **argv) {
             );
 
     // Register entity type
-    engineTable.new_usertype<Entity>(
+    entityTable.new_usertype<Entity>(
             "entity",
             // sol::constructors<Entity(const char *)>(),
             "noconstructor", sol::no_constructor, // No constructor as we use factory
