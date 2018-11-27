@@ -34,8 +34,9 @@ int main(int argc, char **argv) {
     sol::table engineTable = gAssetManager.getLua().create_named_table("engine"); // Namespace for interacting with the engine
 
     // Load functions for lua
+    // Can't pass a class instance as the 3rd parameter as it doesn't seem to work with extern
     engineTable.set_function("registerEntityPrototype", [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); });
-    engineTable.set_function("spawnEntity", &EntityManager::spawn, gEntityManager);
+    engineTable.set_function("spawnEntity", [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); });
 
     // Register vec3 type
     engineTable.new_usertype<glm::vec3>(
@@ -66,11 +67,10 @@ int main(int argc, char **argv) {
             );
 
     // Register entity prototypes
-    gEntityManager.registerPrototype("dummyTarget", gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget"));
-    gEntityManager.spawn("dummyTarget");
+    gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget");
 
     // Load initial level
-    // auto level = gAssetManager.loadLevel("level1");
+    auto level = gAssetManager.loadLevel("level1");
 
     // Start as server or connect to one
     if (server) {

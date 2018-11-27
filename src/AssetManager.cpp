@@ -385,11 +385,13 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         auto mesh = loadMesh(meshId);
         auto shader = loadShaderProgram(shaderId);
         auto renderComponent = new RenderComponent(entity, shader, mesh);
+        renderComponent->setActive(false);
 
         entity->addComponent(renderComponent);
     }
 
-    entityPrototypes.insert(std::make_pair(tableName, entity));
+    gEntityManager.registerPrototype(tableName, entity);
+    entityPrototypes[tableName] = entity;
     return entity;
 }
 
@@ -410,9 +412,11 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
     level->setUpdateFn(levelTable["update"]);
 
     // Load entities
-    sol::table entitiesTable = levelTable["entities"];
-    for (auto i = entitiesTable.begin(); i != entitiesTable.end(); i++) {
-        // todo spawn entities
+    if (levelTable["entities"] != sol::lua_nil) {
+        sol::table entitiesTable = levelTable["entities"];
+        for (auto i = entitiesTable.begin(); i != entitiesTable.end(); i++) {
+            // todo spawn entities
+        }
     }
 
     levels.insert(std::make_pair(name, level));
