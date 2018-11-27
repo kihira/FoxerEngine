@@ -5,7 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "Managers.h"
-#include "KeyHandler.h"
+#include "InputManager.h"
 
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
@@ -16,27 +16,32 @@ int main(int argc, char **argv) {
     // Initialise logger
     auto logger = spdlog::stdout_color_mt("main");
 
-    if (!server) gRenderManager.startUp();
+    gAssetManager.startUp();
+    if (!server) {
+        gRenderManager.startUp();
+        gInputManager.startUp();
+    }
     gNetworkManager.startUp();
     gPhysicsManager.startUp();
     gEntityManager.startUp();
     gSoundManager.startUp();
-    gAssetManager.startUp();
-
-    /*
-     * Setup key handler
-     */
-    // todo
-//    auto keyHandler = std::make_unique<KeyHandler>();
-//    glfwSetWindowUserPointer(renderManager->getWindow(), keyHandler.get());
-//    glfwSetKeyCallback(renderManager->getWindow(), KeyHandler::keyCallback);
 
     sol::table engineTable = gAssetManager.getLua().create_named_table("engine"); // Namespace for interacting with the engine
 
     // Load functions for lua
     // Can't pass a class instance as the 3rd parameter as it doesn't seem to work with extern
-    engineTable.set_function("registerEntityPrototype", [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); });
-    engineTable.set_function("spawnEntity", [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); });
+    // todo current way of creating tables seems messy, should see if there is a cleaner way
+
+    // Entity functions
+    sol::table entityTable = gAssetManager.getLua().create_named_table("engine", "entity", gAssetManager.getLua().create_table_with(
+            "registerEntityPrototype", sol::as_function([](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); }),
+            "spawnEntity", sol::as_function([](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); })
+            ));
+
+    // Input functions
+    sol::table inputTable = gAssetManager.getLua().create_named_table("engine", "input", gAssetManager.getLua().create_table_with(
+            "registerKeyHandler", sol::as_function([](sol::function handler) { gInputManager.registerKeyHandlerLua(handler); })
+    ));
 
     // Register vec3 type
     engineTable.new_usertype<glm::vec3>(
@@ -113,12 +118,15 @@ int main(int argc, char **argv) {
     }
 
     // Shutdown subsystems
-    gAssetManager.shutDown();
     gSoundManager.shutDown();
     gEntityManager.shutDown();
     gPhysicsManager.shutDown();
     gNetworkManager.shutDown();
-    if (!server) gRenderManager.shutDown();
+    if (!server) {
+        gInputManager.shutDown();
+        gRenderManager.shutDown();
+    }
+    gAssetManager.shutDown();
 
 #ifndef NDEBUG // Dump profile data
     profiler::dumpBlocksToFile("./profile_data.prof");

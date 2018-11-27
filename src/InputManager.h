@@ -8,11 +8,14 @@
 
 typedef bool (* KeyHandlerFn)(int key, int scancode, int action, int mods);
 
-class KeyHandler {
+class InputManager {
 private:
     std::vector<KeyHandlerFn> keyHandlers;
     std::vector<sol::function> luaKeyHandlers;
 public:
+    void startUp();
+
+    void shutDown();
     /**
      * Register a key handler that is called every time a key event is fired.
      * If the registered function returns true, then it stops further processing of inputs
@@ -24,7 +27,7 @@ public:
      */
     void registerKeyHandlerLua(sol::protected_function callback);
 
-    static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+    void keyCallback(int key, int scancode, int action, int mods);
 };
 
 
