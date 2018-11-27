@@ -12,21 +12,21 @@
 #define ENTITY_SPAWN_ID 12
 
 struct EntityUpdatePacketData {
-    unsigned short entityId;
+    ENTITY_ID entityId;
     glm::vec3 position;
     glm::vec3 rotation;
 };
 
 struct EntitySpawnPacketData {
     std::string prototypeName;
-    unsigned short entityId;
+    ENTITY_ID entityId;
 };
 
 class EntityManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
     std::map<std::string, std::shared_ptr<Entity>> prototypes;
-    std::map<int, std::shared_ptr<Entity>> entities;
+    std::map<ENTITY_ID, std::shared_ptr<Entity>> entities;
 
     /**
      * Gets a new entity ID that is not currently in use;
@@ -62,6 +62,14 @@ public:
      * @return The newly created entity
      */
     std::shared_ptr<Entity> spawn(std::string id);
+
+    /**
+     * Gets the entity with the specified id.
+     * If no entity with the ID exists, returns a nullptr
+     * @param id The ID of the entity
+     * @return The entity
+     */
+    std::shared_ptr<Entity> getEntity(ENTITY_ID id);
 
     /**
      * This is the callback for when the NetworkManager receives an entity update packet

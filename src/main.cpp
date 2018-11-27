@@ -5,7 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "Managers.h"
-#include "KeyHandler.h"
+#include "InputManager.h"
 
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
@@ -16,26 +16,31 @@ int main(int argc, char **argv) {
     // Initialise logger
     auto logger = spdlog::stdout_color_mt("main");
 
-    if (!server) gRenderManager.startUp();
+    gAssetManager.startUp();
+    if (!server) {
+        gRenderManager.startUp();
+        gInputManager.startUp();
+    }
     gNetworkManager.startUp();
     gPhysicsManager.startUp();
     gEntityManager.startUp();
     gSoundManager.startUp();
-    gAssetManager.startUp();
-
-    /*
-     * Setup key handler
-     */
-    // todo
-//    auto keyHandler = std::make_unique<KeyHandler>();
-//    glfwSetWindowUserPointer(renderManager->getWindow(), keyHandler.get());
-//    glfwSetKeyCallback(renderManager->getWindow(), KeyHandler::keyCallback);
 
     sol::table engineTable = gAssetManager.getLua().create_named_table("engine"); // Namespace for interacting with the engine
 
     // Load functions for lua
-    engineTable.set_function("registerEntityPrototype", [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); });
-    engineTable.set_function("spawnEntity", &EntityManager::spawn, gEntityManager);
+    // Can't pass a class instance as the 3rd parameter as it doesn't seem to work with extern
+
+    // Entity functions
+    sol::table entityTable = engineTable.create_named("entity");
+    engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
+    engineTable["entity"]["spawnEntity"] = [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); };
+    engineTable["entity"]["getEntity"] = [](ENTITY_ID id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
+
+            // Input functions
+    sol::table inputTable = engineTable.create_named("input");
+    engineTable["input"]["registerKeyHandler"] = [](sol::function handler) { gInputManager.registerKeyHandler(handler); };
+    engineTable["input"]["registerCursorHandler"] = [](sol::function handler) { gInputManager.registerCursorHandler(handler); };
 
     // Register vec3 type
     engineTable.new_usertype<glm::vec3>(
@@ -47,11 +52,9 @@ int main(int argc, char **argv) {
             );
 
     // Register entity type
-    engineTable.new_usertype<Entity>(
+    entityTable.new_usertype<Entity>(
             "entity",
-            // sol::constructors<Entity(const char *)>(),
-            "noconstructor", sol::no_constructor, // No constructor as we use factory
-            "spawn", [](std::string name){return gEntityManager.spawn(name);}, // Provides a method for retrieving a copy of a prototype
+            "new", sol::factories([](std::string id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(id); }),
             // Register properties
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
@@ -66,11 +69,10 @@ int main(int argc, char **argv) {
             );
 
     // Register entity prototypes
-    gEntityManager.registerPrototype("dummyTarget", gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget"));
-    gEntityManager.spawn("dummyTarget");
+    gAssetManager.loadEntityPrototype("testEntity", "testEntity");
 
     // Load initial level
-    // auto level = gAssetManager.loadLevel("level1");
+    auto level = gAssetManager.loadLevel(gAssetManager.loadSettings()->initialLevel);
 
     // Start as server or connect to one
     if (server) {
@@ -79,35 +81,49 @@ int main(int argc, char **argv) {
         gNetworkManager.connectToServer("localhost", 1234);
     }
 
+    double lastTickTime = 0.0;
+    double tickRate = 1 / 60.0;
+    double currentTime = glfwGetTime();
+    double delta = currentTime - lastTickTime;
+
     // Main loop
-    if (server) {
-        while (true) {
-            gPhysicsManager.update();
-            gNetworkManager.update();
-            gEntityManager.update();
-        }
+    while (server || !gRenderManager.shouldClose()) {
+        currentTime = glfwGetTime();
+        delta = currentTime - lastTickTime;
+        if (delta < tickRate) continue;
 
-    } else {
-        while (!gRenderManager.shouldClose()) {
-            gRenderManager.frameStart();
+        lastTickTime = currentTime;
+        while (delta >= tickRate) {
+            if (server) {
+                gPhysicsManager.update();
+                gNetworkManager.update();
+                gEntityManager.update();
+            } else {
+                gRenderManager.frameStart();
 
-            gPhysicsManager.update();
-            gNetworkManager.update();
-            gEntityManager.update();
-            gRenderManager.update();
-            gSoundManager.update();
+                gPhysicsManager.update();
+                gNetworkManager.update();
+                gEntityManager.update();
+                gRenderManager.update();
+                gSoundManager.update();
 
-            gRenderManager.frameEnd();
+                gRenderManager.frameEnd();
+            }
+
+            delta -= tickRate;
         }
     }
 
     // Shutdown subsystems
-    gAssetManager.shutDown();
     gSoundManager.shutDown();
     gEntityManager.shutDown();
     gPhysicsManager.shutDown();
     gNetworkManager.shutDown();
-    if (!server) gRenderManager.shutDown();
+    if (!server) {
+        gInputManager.shutDown();
+        gRenderManager.shutDown();
+    }
+    gAssetManager.shutDown();
 
 #ifndef NDEBUG // Dump profile data
     profiler::dumpBlocksToFile("./profile_data.prof");

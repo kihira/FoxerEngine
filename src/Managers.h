@@ -8,6 +8,7 @@
 #include "render/RenderManager.h"
 #include "entity/EntityManager.h"
 #include "SoundManager.h"
+#include "InputManager.h"
 
 // Gotta use extern here so we can access the same instance across all files
 // It totally didn't take me 2 days to "fix" it from being static and going crazy
@@ -17,5 +18,6 @@ extern NetworkManager gNetworkManager;
 extern PhysicsManager gPhysicsManager;
 extern SoundManager gSoundManager;
 extern AssetManager gAssetManager;
+extern InputManager gInputManager;
 
 #endif //GAMEENGINE301CR_MANAGERS_H

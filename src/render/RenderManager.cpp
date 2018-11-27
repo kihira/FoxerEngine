@@ -30,8 +30,10 @@ void RenderManager::startUp() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 #endif
 
+    auto settings = gAssetManager.loadSettings();
+
     // Create GLFW window
-    windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(720, 405, "301CR Engine", nullptr, nullptr));
+    windowWrapper = std::make_unique<WindowWrapper>(glfwCreateWindow(settings->windowWidth, settings->windowHeight, settings->windowTitle.c_str(), nullptr, nullptr));
     if (!windowWrapper->getWindow()) {
         logger->error("Failed to create GLFW window");
         exit(EXIT_FAILURE);
@@ -46,11 +48,11 @@ void RenderManager::startUp() {
         logger->error("Failed to initialize OpenGL context");
         exit(EXIT_FAILURE);
     }
-    logger->info("OpenGL {0:d}.{0:d}", GLVersion.major, GLVersion.minor);
+    logger->info("OpenGL {:d}.{:d}", GLVersion.major, GLVersion.minor);
 
     // Create camera
-    camera = std::make_unique<Camera>(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), 45.f);
-    camera->resize(720, 405);
+    camera = std::make_unique<Camera>(glm::vec3(0, 3, -3), glm::vec3(0, 0, 0), settings->cameraFov);
+    camera->resize(settings->windowWidth, settings->windowHeight);
 
     // Set OpenGL state stuff
     glClearColor(0.5, 0.5, 0, 1);
@@ -62,11 +64,13 @@ void RenderManager::shutDown() {
     glfwTerminate();
 }
 
-// todo should this just be called from the Shader itself?
 void RenderManager::useShader(std::shared_ptr<Shader> shader) {
     if (shader->getProgram() == currentShader) return;
 
     glUseProgram(shader->getProgram());
+    shader->setUniform("view", camera->getView());
+    shader->setUniform("projection", camera->getProjection());
+    GLERRCHECK();
 }
 
 void RenderManager::frameStart() {
@@ -79,17 +83,11 @@ void RenderManager::frameEnd() {
     glfwPollEvents();
 }
 
-void RenderManager::glfwErrorCallback(int error, const char *desc) {
-    spdlog::get("renderer")->error("GLFW Error 0x{0:x}: {}", error, desc);
-}
-
-void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
-    glViewport(0, 0, width, height);
-    gRenderManager.camera->resize(width, height);
-}
-
 void RenderManager::update() {
-
+    for (auto renderComponent : renderComponents) {
+        if (!renderComponent->isActive()) continue;
+        renderComponent->update();
+    }
 }
 
 int RenderManager::shouldClose() {
@@ -98,4 +96,21 @@ int RenderManager::shouldClose() {
 
 const std::unique_ptr<WindowWrapper> &RenderManager::getWindowWrapper() const {
     return windowWrapper;
+}
+
+void RenderManager::addRenderComponent(RenderComponent *component) {
+    renderComponents.push_back(component);
+}
+
+/*
+ * Static functions
+ */
+
+void RenderManager::glfwErrorCallback(int error, const char *desc) {
+    spdlog::get("renderer")->error("GLFW Error 0x{:x}: {}", error, desc);
+}
+
+void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
+    glViewport(0, 0, width, height);
+    gRenderManager.camera->resize(width, height);
 }

@@ -1,12 +1,15 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "RenderComponent.h"
+#include "../Managers.h"
 #include "../vectors.h"
 #include "../entity/Entity.h"
 #include "../gl_helper.hpp"
 
 RenderComponent::RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> &shader, std::shared_ptr<Mesh> &mesh) :
-Component(entity), shader(shader), mesh(mesh) {}
+Component(entity), shader(shader), mesh(mesh) {
+    gRenderManager.addRenderComponent(this);
+}
 
 void RenderComponent::update() {
     transform = glm::translate(glm::mat4(1.f), entity->getPosition());
@@ -15,7 +18,7 @@ void RenderComponent::update() {
     transform = glm::rotate(transform, entity->getRotation().z, vector::BACKWARD);
     // transform = glm::scale(transform, scale);
 
-    shader->use();
+    gRenderManager.useShader(shader);
     shader->setUniform("model", transform);
     mesh->render();
     GLERRCHECK();

@@ -41,17 +41,26 @@ void Entity::setUpdateFn(const sol::protected_function &updateFn) {
     Entity::updateFn = updateFn;
 }
 
+void Entity::setOnSpawnFn(const sol::function &onSpawnFn) {
+    Entity::onSpawnFn = onSpawnFn;
+}
+
 std::shared_ptr<Entity> Entity::clone(const unsigned short id) {
     auto newEntity = std::make_shared<Entity>(id, name);
 
     newEntity->setPosition(position);
     newEntity->setRotation(rotation);
     newEntity->setUpdateFn(updateFn);
+    newEntity->setOnSpawnFn(onSpawnFn);
 
     for (auto &component : components) {
         auto newComponent = component->clone(newEntity);
         ASSERT(newComponent != nullptr);
         newEntity->addComponent(newComponent);
+    }
+
+    if (newEntity->onSpawnFn != sol::lua_nil) {
+        newEntity->onSpawnFn(newEntity);
     }
 
     return newEntity;

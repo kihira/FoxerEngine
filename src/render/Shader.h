@@ -13,7 +13,6 @@ public:
 
     ~Shader();
 
-    void use();
     /**
      * Pre-emptively looks up a uniforms location and stores it for faster access later
      * @param name

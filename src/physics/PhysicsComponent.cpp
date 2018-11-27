@@ -7,6 +7,7 @@ PhysicsComponent::PhysicsComponent(const std::shared_ptr<Entity> &entity, b2Body
                                    b2FixtureDef &fixtureDef) : Component(entity), bodyDef(bodyDef), fixtureDef(fixtureDef) {
     body = gPhysicsManager.createBody(bodyDef);
     fixture = body->CreateFixture(&this->fixtureDef);
+    gPhysicsManager.addPhysicsComponent(this);
 }
 
 void PhysicsComponent::update() {
@@ -34,6 +35,7 @@ void PhysicsComponent::setGravityScale(float scale) {
 
 void PhysicsComponent::setActive(bool active) {
     body->SetActive(active);
+    Component::setActive(active);
 }
 
 Component *PhysicsComponent::clone(std::shared_ptr<Entity> entity) {

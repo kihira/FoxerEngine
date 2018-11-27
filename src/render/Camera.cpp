@@ -21,10 +21,12 @@ const glm::mat4 &Camera::getView() const {
 
 void Camera::setPosition(const glm::vec3 &position) {
     Camera::position = position;
+    updateViewMatrix();
 }
 
 void Camera::setTarget(const glm::vec3 &target) {
     Camera::target = target;
+    updateViewMatrix();
 }
 
 void Camera::updateViewMatrix() {

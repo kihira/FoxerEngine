@@ -13,6 +13,9 @@ EntityManager::~EntityManager() = default; // noop
 
 void EntityManager::startUp() {
     logger = spdlog::stdout_color_mt("entity");
+    SPDLOG_DEBUG("Entity Manager Start Up");
+
+    prototypes = std::map<std::string, std::shared_ptr<Entity>>();
 
     // Register entity handling packets
     gNetworkManager.registerPacket({ENTITY_UPDATE_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
@@ -21,6 +24,7 @@ void EntityManager::startUp() {
     gNetworkManager.registerPacket({ENTITY_SPAWN_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
         gEntityManager.handleEntitySpawnPacket(packetID, data, dataLength);
     }});
+    SPDLOG_DEBUG("Entity Manager Start Up Complete");
 }
 
 void EntityManager::shutDown() {
@@ -29,17 +33,17 @@ void EntityManager::shutDown() {
 
 // todo it's a little confusing having individual entities using the term id and also id per prototype...
 void EntityManager::registerPrototype(std::string id, std::shared_ptr<Entity> prototype) {
+    ASSERT(prototype != nullptr);
     if (prototypes.find(id) != prototypes.end()) {
-        logger->error("An entity with the id {0:d} already exists", id);
+        logger->error("An entity with the id {} already exists", id);
         return;
     }
-
-    prototypes.insert(std::make_pair(id, prototype));
+    prototypes.emplace(id, prototype);
 }
 
 std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
     if (prototypes.find(name) == prototypes.end()) {
-        logger->error("Unable to find entity prototype with name: {}", name);
+        logger->error("Unable to find entity prototype with id: {}", name);
         return nullptr; // todo return error entity
     }
 
@@ -49,7 +53,7 @@ std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
     auto entity = prototype->clone(id);
     ASSERT(entity != nullptr);
 
-    entities.insert(std::make_pair(id, entity));
+    entities.emplace(id, entity);
     return entity;
 }
 
@@ -72,7 +76,7 @@ void EntityManager::handleEntityUpdatePacket(int packetID, void *data, size_t da
     EntityUpdatePacketData packetData = *(EntityUpdatePacketData *)data;
 
     if (entities.find(packetData.entityId) == entities.end()) {
-        logger->error("Received entity update for {:d} but entity does not exist", packetData.entityId);
+        logger->error("Received entity update for {d} but entity does not exist", packetData.entityId);
         return;
     }
     auto entity = entities[packetData.entityId];
@@ -89,4 +93,11 @@ void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dat
         return;
     }
     auto entity = prototypes[packetData.prototypeName]->clone(packetData.entityId);
+}
+
+std::shared_ptr<Entity> EntityManager::getEntity(ENTITY_ID id) {
+    if (entities.find(id) == entities.end()) {
+        return nullptr;
+    }
+    return entities[id];
 }

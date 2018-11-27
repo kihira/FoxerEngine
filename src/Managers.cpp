@@ -6,3 +6,4 @@ NetworkManager gNetworkManager;
 PhysicsManager gPhysicsManager;
 SoundManager gSoundManager;
 AssetManager gAssetManager;
+InputManager gInputManager;

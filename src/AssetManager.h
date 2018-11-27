@@ -11,11 +11,13 @@
 #include "render/Shader.h"
 #include "entity/Entity.h"
 #include "level.h"
+#include "Settings.h"
 
 class AssetManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
     sol::state lua;
+    Settings *settings;
     std::map<std::string, GLuint> shaders;
     std::map<std::string, GLuint> textures;
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
@@ -86,6 +88,8 @@ public:
     std::shared_ptr<Level> loadLevel(std::string name);
 
     GLuint loadTexture(std::string name);
+
+    Settings *loadSettings();
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

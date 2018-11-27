@@ -34,14 +34,14 @@ void main() {
 })";
 
 const GLfloat errCubeVertices[] = {
-        -1, -1, 1,
-        1, -1, 1,
-        1, 1, 1,
-        -1, 1, 1,
-        -1, -1, -1,
-        1, -1, -1,
-        1, 1, -1,
-        -1, 1, -1
+        -1, -1, 1,  1, 1, 1,     0, 0,
+        1, -1, 1,   1, 1, 1,     0, 0,
+        1, 1, 1,    1, 1, 1,     0, 0,
+        -1, 1, 1,   1, 1, 1,     0, 0,
+        -1, -1, -1, 1, 1, 1,     0, 0,
+        1, -1, -1,  1, 1, 1,     0, 0,
+        1, 1, -1,   1, 1, 1,     0, 0,
+        -1, 1, -1,  1, 1, 1,     0, 0
 };
 
 const GLushort errCubeIndices[] = {
@@ -73,6 +73,8 @@ void AssetManager::startUp() {
 
 void AssetManager::shutDown() {
     cleanup();
+
+    delete settings;
 }
 
 std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
@@ -168,9 +170,10 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
 
     std::string shaderSource;
     getline(file, shaderSource, '\0');
+    const GLchar *shaderSrcPtr = shaderSource.c_str();
 
     GLuint shader = glCreateShader(shaderType);
-    // todo glShaderSource(shader, 1, &shaderSource[0], nullptr);
+    glShaderSource(shader, 1, &shaderSrcPtr, nullptr);
     glCompileShader(shader);
 
     // Check if the shader has compiled correctly, means its valid code
@@ -246,9 +249,15 @@ std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
     glGenBuffers(1, &vboVertices);
     glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
     glBufferData(GL_ARRAY_BUFFER, sizeof(errCubeVertices), errCubeVertices, GL_STATIC_DRAW);
-
+    // Position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+    // Normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid *)(3 * sizeof(float)));
+    // UV
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid *)(6 * sizeof(float)));
 
     glGenBuffers(1, &vboIndices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
@@ -311,12 +320,12 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     std::string name = entityTable["name"].get_or(fileName);
     auto entity = std::make_shared<Entity>(0, name);
     entity->setUpdateFn(entityTable["update"]);
+    entity->setOnSpawnFn(entityTable["onSpawn"]);
 
     // Create Physics Component
     if (entityTable["collider"] != sol::lua_nil) {
         auto physicsTable = entityTable["collider"];
 
-        // todo switch to using a builder/factory?
         b2BodyDef bodyDef;
         bodyDef.active = physicsTable["active"].get_or(true);
         bodyDef.angle = entity->getRotation().y;
@@ -343,13 +352,13 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         int shapeType = physicsTable["shape"].get_or(0);
         switch (shapeType) {
             case 0: {
-                b2CircleShape *shape = new b2CircleShape();
+                auto shape = new b2CircleShape();
                 shape->m_radius = physicsTable["radius"].get_or(.5f);
                 fixtureDef.shape = shape;
                 break;
             }
             case 1: {
-                b2PolygonShape *shape = new b2PolygonShape();
+                auto shape = new b2PolygonShape();
                 shape->SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
                 fixtureDef.shape = shape;
                 break;
@@ -364,6 +373,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         }
 
         auto physicsComponent = new PhysicsComponent(entity, bodyDef, fixtureDef);
+        physicsComponent->setActive(false);
         entity->addComponent(physicsComponent);
     }
 
@@ -374,11 +384,13 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         auto mesh = loadMesh(meshId);
         auto shader = loadShaderProgram(shaderId);
         auto renderComponent = new RenderComponent(entity, shader, mesh);
+        renderComponent->setActive(false);
 
         entity->addComponent(renderComponent);
     }
 
-    entityPrototypes.insert(std::make_pair(tableName, entity));
+    gEntityManager.registerPrototype(tableName, entity);
+    entityPrototypes[tableName] = entity;
     return entity;
 }
 
@@ -395,12 +407,18 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
 
     // Load data from lua file
     sol::table levelTable = lua["level"];
-
     auto level = std::make_shared<Level>();
     level->setUpdateFn(levelTable["update"]);
 
-    levels.insert(std::make_pair(name, level));
+    // Load entities
+    if (levelTable["entities"] != sol::lua_nil) {
+        sol::table entitiesTable = levelTable["entities"];
+        for (auto i = entitiesTable.begin(); i != entitiesTable.end(); i++) {
+            // todo spawn entities
+        }
+    }
 
+    levels.insert(std::make_pair(name, level));
     return std::shared_ptr<Level>();
 }
 
@@ -456,7 +474,7 @@ GLuint AssetManager::loadTexture(std::string name) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, data["wrapV"].get_or(GL_REPEAT));
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, data["minFilter"].get_or(GL_NEAREST));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, data["magFilter"].get_or(GL_LINEAR));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, data["magFilter"].get_or(GL_LINEAR));
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
 
@@ -471,4 +489,28 @@ GLuint AssetManager::loadTexture(std::string name) {
 
     textures.insert(std::make_pair(name, textureId));
     return textureId;
+}
+
+Settings *AssetManager::loadSettings() {
+    if (AssetManager::settings != nullptr) {
+        return AssetManager::settings;
+    }
+    auto settings = new Settings();
+
+    auto table = lua.script_file(ASSETS_FOLDER "settings" ASSETS_EXT);
+    if (!table.valid()) {
+        logger->error("Failed to load settings file, using defaults");
+        return settings;
+    }
+
+    sol::table data = table;
+    settings->windowTitle = data["window"]["title"].get_or(std::string("Window Title"));
+    settings->windowWidth = data["window"]["width"].get_or(1920);
+    settings->windowHeight = data["window"]["height"].get_or(1080);
+
+    settings->cameraFov = data["camera"]["fov"].get_or(75.f);
+
+    settings->initialLevel = data["initialLevel"].get_or(std::string("mainmenu"));
+
+    return settings;
 }

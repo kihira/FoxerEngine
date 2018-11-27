@@ -7,6 +7,7 @@
 #include "../render/Shader.h"
 #include "Component.h"
 
+#define ENTITY_ID unsigned short
 
 class Entity {
 private:
@@ -19,12 +20,13 @@ private:
      * Lua bindings
      */
     sol::protected_function updateFn;
+    sol::function onSpawnFn;
 
-    const unsigned short id;
+    const ENTITY_ID id;
     std::string name;
     std::vector<Component *> components;
 public:
-    Entity(unsigned short id, std::string name);
+    Entity(ENTITY_ID id, std::string name);
 
     void update();
 
@@ -33,7 +35,7 @@ public:
      *
      * Used as part of the prototype pattern
      */
-    std::shared_ptr<Entity> clone(unsigned short id);
+    std::shared_ptr<Entity> clone(ENTITY_ID id);
 
     const glm::vec3 &getPosition() const;
 
@@ -47,13 +49,15 @@ public:
 
     void setUpdateFn(const sol::protected_function &updateFn);
 
+    void setOnSpawnFn(const sol::function &onSpawnFn);
+
     void setName(const std::string &name);
 
     const glm::vec3 &getPrevPosition() const;
 
     const glm::vec3 &getPrevRotation() const;
 
-    const unsigned short getId() const;
+    const ENTITY_ID getId() const;
 
     void addComponent(Component *component);
 };

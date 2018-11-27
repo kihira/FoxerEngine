@@ -18,7 +18,7 @@ void NetworkManager::startUp() {
         exit(EXIT_FAILURE);
     }
 
-    logger->info("ENet {0:d}.{0:d}.{0:d}", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
+    logger->info("ENet {:d}.{:d}.{:d}", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
 
     // Register handler for network handshakes
     registerPacket({
@@ -28,7 +28,7 @@ void NetworkManager::startUp() {
         [](int packetID, void *data, size_t dataLength) {
             enet_uint8 clientId = (*((ClientData *)data)).clientId;
             gNetworkManager.clientId = clientId;
-            spdlog::get("network")->debug("Client ID is: {0:d}", clientId);
+            spdlog::get("network")->debug("Client ID is: {:d}", clientId);
         }
     });
 }
@@ -49,7 +49,7 @@ void NetworkManager::startServer() {
     server = true;
 
     if (host == nullptr) {
-        logger->error("Failed to start server on {0:d}:{0:d}", address.host, address.port);
+        logger->error("Failed to start server on {:d}:{:d}", address.host, address.port);
         exit(EXIT_FAILURE);
     }
 }
@@ -78,7 +78,7 @@ void NetworkManager::update() {
                     // Tell client of its id
                     sendToClient(clientData.clientId, CLIENT_DATA_ID, &clientData, sizeof(ClientData));
 
-                    logger->info("Client ({0:d}) connected to server", clientData.clientId);
+                    logger->info("Client ({:d}) connected to server", clientData.clientId);
                 } else {
                     logger->info("Connected to server");
                 }
@@ -92,7 +92,7 @@ void NetworkManager::update() {
             }
             case ENET_EVENT_TYPE_DISCONNECT:
                 if (server) {
-                    logger->info("Client ({0:d}) disconnected from server", ((ClientData *)event.peer)->clientId);
+                    logger->info("Client ({:d}) disconnected from server", ((ClientData *)event.peer)->clientId);
                 } else {
                     logger->info("Disconnected from server");
                     peer = nullptr;

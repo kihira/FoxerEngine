@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "WindowWrapper.h"
+#include "RenderComponent.h"
 
 class RenderManager {
 private:
@@ -18,6 +19,7 @@ private:
     std::unique_ptr<Camera> camera;
     GLuint currentShader = 0;
     std::shared_ptr<spdlog::logger> logger;
+    std::vector<RenderComponent *> renderComponents;
 
     static void glfwErrorCallback(int error, const char *desc);
 
@@ -49,7 +51,13 @@ public:
      */
     int shouldClose();
 
+    /**
+     * Begins using the shader and sets up the view and projection matrices
+     * @param shader
+     */
     void useShader(std::shared_ptr<Shader> shader);
+
+    void addRenderComponent(RenderComponent *component);
 
     const std::unique_ptr<WindowWrapper> &getWindowWrapper() const;
 };

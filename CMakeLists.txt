@@ -8,11 +8,11 @@ set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 # Enable building with profiler in debug
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DBUILD_WITH_EASY_PROFILER)
-    add_definitions(-DLOGLEVEL=3)
+    add_definitions(-DSPDLOG_DEBUG_ON)
 endif()
 
 # Source files
-set(SOURCES src/main.cpp src/entity/Entity.cpp src/entity/Entity.h src/AssetManager.cpp src/AssetManager.h src/render/Mesh.cpp src/render/Mesh.h src/render/Shader.cpp src/render/Shader.h src/gl_helper.hpp src/network/NetworkManager.cpp src/network/NetworkManager.h src/KeyHandler.cpp src/KeyHandler.h src/render/Camera.cpp src/render/Camera.h src/vectors.h src/level.cpp src/level.h src/assert.h src/render/RenderManager.cpp src/render/RenderManager.h src/entity/EntityManager.cpp src/entity/EntityManager.h src/render/WindowWrapper.cpp src/render/WindowWrapper.h src/entity/Player.cpp src/entity/Player.h src/Managers.h src/physics/PhysicsManager.cpp src/physics/PhysicsManager.h src/physics/PhysicsComponent.cpp src/physics/PhysicsComponent.h src/entity/Component.h src/network/NetworkComponent.cpp src/network/NetworkComponent.h src/SoundManager.cpp src/SoundManager.h src/Managers.cpp src/render/RenderComponent.cpp src/render/RenderComponent.h)
+set(SOURCES src/main.cpp src/entity/Entity.cpp src/entity/Entity.h src/AssetManager.cpp src/AssetManager.h src/render/Mesh.cpp src/render/Mesh.h src/render/Shader.cpp src/render/Shader.h src/gl_helper.hpp src/network/NetworkManager.cpp src/network/NetworkManager.h src/InputManager.cpp src/InputManager.h src/render/Camera.cpp src/render/Camera.h src/vectors.h src/level.cpp src/level.h src/assert.h src/render/RenderManager.cpp src/render/RenderManager.h src/entity/EntityManager.cpp src/entity/EntityManager.h src/render/WindowWrapper.cpp src/render/WindowWrapper.h src/entity/Player.cpp src/entity/Player.h src/Managers.h src/physics/PhysicsManager.cpp src/physics/PhysicsManager.h src/physics/PhysicsComponent.cpp src/physics/PhysicsComponent.h src/entity/Component.h src/network/NetworkComponent.cpp src/network/NetworkComponent.h src/SoundManager.cpp src/SoundManager.h src/Managers.cpp src/render/RenderComponent.cpp src/render/RenderComponent.h src/Settings.h)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
@@ -99,13 +99,26 @@ set(SPDLOG_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 add_subdirectory(${LIBRARIES_ROOT}/spdlog)
 target_link_libraries(${PROJECT_NAME} spdlog)
 
+# assimp
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
+set(ASSIMP_BUILD_TESTS OFF)
+set(VIEWER_BUILD OFF)
+# disable exporting from assimp and only enabled importing obj files for now
+set(ASSIMP_NO_EXPORT ON)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF)
+set(ASSIMP_BUILD_OBJ_IMPORTER ON)
+add_subdirectory(${LIBRARIES_ROOT}/assimp)
+target_link_libraries(${PROJECT_NAME} assimp)
+
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
 set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
 
-add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
-        DEPENDS ${DESTINATION_RESOURCES})
+if (WIN32)
+	add_custom_command(
+			TARGET ${PROJECT_NAME}
+			POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_RESOURCES} ${DESTINATION_RESOURCES}
+			DEPENDS ${DESTINATION_RESOURCES})
+endif()
 
 add_definitions(-DASSERTIONS_ENABLED=1)

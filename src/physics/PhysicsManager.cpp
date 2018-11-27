@@ -20,6 +20,11 @@ void PhysicsManager::shutDown() {
 void PhysicsManager::update() {
     EASY_FUNCTION(profiler::colors::Magenta);
     world->Step(timeStep, velocityIterations, positionIterations);
+
+    for (auto component : components) {
+        if (!component->isActive()) continue;
+        component->update();
+    }
 }
 
 b2Body *PhysicsManager::createBody(const b2BodyDef &bodyDef) {
@@ -29,4 +34,8 @@ b2Body *PhysicsManager::createBody(const b2BodyDef &bodyDef) {
 
 b2Joint *PhysicsManager::createJoint(const b2JointDef &jointDef) {
     return world->CreateJoint(&jointDef);
+}
+
+void PhysicsManager::addPhysicsComponent(PhysicsComponent *component) {
+    components.emplace_back(component);
 }
