@@ -6,28 +6,26 @@
 #include <GLFW/glfw3.h>
 #include <sol.hpp>
 
-typedef bool (* KeyHandlerFn)(int key, int scancode, int action, int mods);
-
 class InputManager {
 private:
-    std::vector<KeyHandlerFn> keyHandlers;
-    std::vector<sol::function> luaKeyHandlers;
+    std::vector<sol::function> keyHandlers;
+    std::vector<sol::function> cursorHandlers;
 public:
     void startUp();
 
     void shutDown();
+
     /**
      * Register a key handler that is called every time a key event is fired.
      * If the registered function returns true, then it stops further processing of inputs
      */
-    void registerKeyHandler(KeyHandlerFn keyHandler);
+    void registerKeyHandler(sol::function handler);
 
-    /**
-     * Function for binding lua callbacks
-     */
-    void registerKeyHandlerLua(sol::protected_function callback);
+    void registerCursorHandler(sol::function handler);
 
     void keyCallback(int key, int scancode, int action, int mods);
+
+    void cursorCallback(double xPos, double yPos);
 };
 
 

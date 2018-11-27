@@ -13,5 +13,10 @@ player.name = "Player"
 local keyHandler = function(key, scancode, action, mods)
     print(key)
 end
-
 engine.input.registerKeyHandler(keyHandler)
+
+-- example of registering cursor handler
+local cursorHandler = function(xPos, yPos)
+    print(xPos .. " " .. yPos)
+end
+engine.input.registerCursorHandler(cursorHandler)

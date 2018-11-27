@@ -7,6 +7,7 @@
 // Use custom definitions to avoid passing around GLFW window
 typedef void (* FramebufferSizeFn)(int width, int height);
 typedef void (* KeyFn)(int key, int scancode, int action, int mods);
+typedef void (* CursorFn)(double xPos, double yPos);
 
 
 /**
@@ -18,6 +19,7 @@ private:
     GLFWwindow *window;
     FramebufferSizeFn framebufferSizeCallback;
     KeyFn keyCallback;
+    CursorFn cursorCallback;
 public:
     explicit WindowWrapper(GLFWwindow *window);
 
@@ -32,6 +34,8 @@ public:
      * @param callback
      */
     void registerKeyCallback(KeyFn callback);
+
+    void registerCursorCallback(CursorFn callback);
 
     GLFWwindow *getWindow() const;
 

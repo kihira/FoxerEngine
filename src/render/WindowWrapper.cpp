@@ -28,6 +28,16 @@ void WindowWrapper::registerKeyCallback(KeyFn callback) {
     });
 }
 
+void WindowWrapper::registerCursorCallback(CursorFn callback) {
+    ASSERT(callback != nullptr);
+    cursorCallback = callback;
+
+    glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xPos, double yPos) {
+        auto wrapper = static_cast<WindowWrapper *>(glfwGetWindowUserPointer(window));
+        wrapper->cursorCallback(xPos, yPos);
+    });
+}
+
 GLFWwindow *WindowWrapper::getWindow() const {
     return window;
 }

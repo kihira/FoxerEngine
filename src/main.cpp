@@ -30,7 +30,6 @@ int main(int argc, char **argv) {
 
     // Load functions for lua
     // Can't pass a class instance as the 3rd parameter as it doesn't seem to work with extern
-    // todo current way of creating tables seems messy, should see if there is a cleaner way
 
     // Entity functions
     sol::table entityTable = engineTable.create_named("entity");
@@ -38,8 +37,9 @@ int main(int argc, char **argv) {
     engineTable["entity"]["spawnEntity"] = [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); };
 
     // Input functions
-    engineTable["input"] = engineTable.create();
-    engineTable["input"]["registerKeyHandler"] = [](sol::function handler) { gInputManager.registerKeyHandlerLua(handler); };
+    sol::table inputTable = engineTable.create_named("input");
+    engineTable["input"]["registerKeyHandler"] = [](sol::function handler) { gInputManager.registerKeyHandler(handler); };
+    engineTable["input"]["registerCursorHandler"] = [](sol::function handler) { gInputManager.registerCursorHandler(handler); };
 
     // Register vec3 type
     engineTable.new_usertype<glm::vec3>(
