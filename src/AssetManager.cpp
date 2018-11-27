@@ -378,6 +378,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         }
 
         auto physicsComponent = new PhysicsComponent(entity, bodyDef, fixtureDef);
+        physicsComponent->setActive(false);
         entity->addComponent(physicsComponent);
     }
 

@@ -47,6 +47,8 @@ public:
      * @return A pointer to the created joint
      */
     b2Joint *createJoint(const b2JointDef &jointDef);
+
+    void addPhysicsComponent(PhysicsComponent *component);
 };
 
 

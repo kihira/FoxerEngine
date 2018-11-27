@@ -1,6 +1,7 @@
 testEntity = {
     name = "Test Entity",
     collider = {
+        type = 2, -- dynamic body
         gravityScale = 0.3
     },
     render = {
