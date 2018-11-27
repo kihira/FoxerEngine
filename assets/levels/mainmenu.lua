@@ -6,7 +6,7 @@ level = {
 }
 
 -- example of loading entity
-local player = engine.entity.spawnEntity("dummyTarget")
+local player = engine.entity.spawnEntity("testEntity")
 player.name = "Player"
 
 -- example of registering key handler

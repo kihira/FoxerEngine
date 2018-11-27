@@ -19,6 +19,7 @@ private:
      * Lua bindings
      */
     sol::protected_function updateFn;
+    sol::function onSpawnFn;
 
     const unsigned short id;
     std::string name;
@@ -46,6 +47,8 @@ public:
     void setRotation(const glm::vec3 &rotation);
 
     void setUpdateFn(const sol::protected_function &updateFn);
+
+    void setOnSpawnFn(const sol::function &onSpawnFn);
 
     void setName(const std::string &name);
 

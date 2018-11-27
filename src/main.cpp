@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
             );
 
     // Register entity prototypes
-    gAssetManager.loadEntityPrototype("dummyTarget", "dummyTarget");
+    gAssetManager.loadEntityPrototype("testEntity", "testEntity");
 
     // Load initial level
     auto level = gAssetManager.loadLevel(gAssetManager.loadSettings()->initialLevel);

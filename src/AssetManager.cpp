@@ -325,6 +325,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     std::string name = entityTable["name"].get_or(fileName);
     auto entity = std::make_shared<Entity>(0, name);
     entity->setUpdateFn(entityTable["update"]);
+    entity->setOnSpawnFn(entityTable["onSpawn"]);
 
     // Create Physics Component
     if (entityTable["collider"] != sol::lua_nil) {
