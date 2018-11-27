@@ -6,5 +6,5 @@ level = {
 }
 
 -- example of loading entity
--- local player = engine.spawnEntity("dummyTarget")
--- player.name = "Player"
+local player = engine.spawnEntity("dummyTarget")
+player.name = "Player"

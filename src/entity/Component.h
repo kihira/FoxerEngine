@@ -12,7 +12,7 @@ class Entity; // Forward deceleration
 class Component {
 protected:
     std::shared_ptr<Entity> entity;
-    bool active;
+    bool active = true;
 public:
     explicit Component(std::shared_ptr<Entity> entity) : entity(std::move(entity)) {
         ASSERT(Component::entity != nullptr);

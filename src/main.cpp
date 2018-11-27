@@ -79,25 +79,36 @@ int main(int argc, char **argv) {
         gNetworkManager.connectToServer("localhost", 1234);
     }
 
+    double lastTickTime = 0.0;
+    double tickRate = 1 / 60.0;
+    double currentTime = glfwGetTime();
+    double delta = currentTime - lastTickTime;
+
     // Main loop
-    if (server) {
-        while (true) {
-            gPhysicsManager.update();
-            gNetworkManager.update();
-            gEntityManager.update();
-        }
+    while (server || !gRenderManager.shouldClose()) {
+        currentTime = glfwGetTime();
+        delta = currentTime - lastTickTime;
+        if (delta < tickRate) continue;
 
-    } else {
-        while (!gRenderManager.shouldClose()) {
-            gRenderManager.frameStart();
+        lastTickTime = currentTime;
+        while (delta >= tickRate) {
+            if (server) {
+                gPhysicsManager.update();
+                gNetworkManager.update();
+                gEntityManager.update();
+            } else {
+                gRenderManager.frameStart();
 
-            gPhysicsManager.update();
-            gNetworkManager.update();
-            gEntityManager.update();
-            gRenderManager.update();
-            gSoundManager.update();
+                gPhysicsManager.update();
+                gNetworkManager.update();
+                gEntityManager.update();
+                gRenderManager.update();
+                gSoundManager.update();
 
-            gRenderManager.frameEnd();
+                gRenderManager.frameEnd();
+            }
+
+            delta -= tickRate;
         }
     }
 
