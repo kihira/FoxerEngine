@@ -22,15 +22,15 @@ void NetworkManager::startUp() {
 
     // Register handler for network handshakes
     registerPacket({
-        CLIENT_DATA_ID,
-        0,
-        ENET_PACKET_FLAG_RELIABLE,
-        [](int packetID, void *data, size_t dataLength) {
-            enet_uint8 clientId = (*((ClientData *)data)).clientId;
-            gNetworkManager.clientId = clientId;
-            spdlog::get("network")->debug("Client ID is: {:d}", clientId);
-        }
-    });
+                           CLIENT_DATA_ID,
+                           0,
+                           ENET_PACKET_FLAG_RELIABLE,
+                           [](int packetID, void *data, size_t dataLength) {
+                               enet_uint8 clientId = (*((ClientData *) data)).clientId;
+                               gNetworkManager.clientId = clientId;
+                               spdlog::get("network")->debug("Client ID is: {:d}", clientId);
+                           }
+                   });
 }
 
 void NetworkManager::shutDown() {
@@ -86,13 +86,14 @@ void NetworkManager::update() {
             }
             case ENET_EVENT_TYPE_RECEIVE: {
                 enet_uint8 packetID = event.packet->data[0];
-                packetHandlers[packetID].packetHandler(packetID, event.packet->data + sizeof(enet_uint8), event.packet->dataLength - sizeof(enet_uint8));
+                packetHandlers[packetID].packetHandler(packetID, event.packet->data + sizeof(enet_uint8),
+                                                       event.packet->dataLength - sizeof(enet_uint8));
                 enet_packet_destroy(event.packet);
                 break;
             }
             case ENET_EVENT_TYPE_DISCONNECT:
                 if (server) {
-                    logger->info("Client ({:d}) disconnected from server", ((ClientData *)event.peer)->clientId);
+                    logger->info("Client ({:d}) disconnected from server", ((ClientData *) event.peer)->clientId);
                 } else {
                     logger->info("Disconnected from server");
                     peer = nullptr;
@@ -165,7 +166,7 @@ ENetPacket *NetworkManager::buildPacket(PacketMeta meta, void *data, size_t data
     // Append packet ID to the start of the packet so we know what to do with it on the other end
     void *newData = malloc(sizeof(enet_uint8) + dataLength);
     memcpy(newData, &meta.id, sizeof(enet_uint8));
-    memcpy(static_cast<char*>(newData) + sizeof(enet_uint8), data, dataLength);
+    memcpy(static_cast<char *>(newData) + sizeof(enet_uint8), data, dataLength);
     dataLength += sizeof(enet_uint8);
 
     ENetPacket *packet = enet_packet_create(newData, dataLength, meta.packetFlag);

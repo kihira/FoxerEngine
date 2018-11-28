@@ -5,7 +5,6 @@
 #include <fstream>
 #include <stb_image.h>
 #include "gl_helper.hpp"
-#include "render/RenderComponent.h"
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -59,8 +58,6 @@ const GLushort errCubeIndices[] = {
         6, 7, 3
 };
 
-const std::string errorName = "ERROR";
-
 AssetManager::AssetManager() = default; // noop
 
 AssetManager::~AssetManager() = default; // noop
@@ -68,11 +65,11 @@ AssetManager::~AssetManager() = default; // noop
 void AssetManager::startUp() {
     logger = spdlog::stdout_color_mt("asset");
 
-    lua.open_libraries(sol::lib::base, sol::lib::io);
+    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::io);
 }
 
 void AssetManager::shutDown() {
-    cleanup();
+    // cleanup();
 
     delete settings;
 }
@@ -379,8 +376,8 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
 
     // Create Render Component
     if (entityTable["render"] != sol::lua_nil) {
-        auto meshId = entityTable["render"]["mesh"].get_or(errorName);
-        auto shaderId = entityTable["render"]["shader"].get_or(errorName);
+        auto meshId = entityTable["render"]["mesh"].get_or(std::string(ERR_MESH));
+        auto shaderId = entityTable["render"]["shader"].get_or(std::string(ERR_SHADER));
         auto mesh = loadMesh(meshId);
         auto shader = loadShaderProgram(shaderId);
         auto renderComponent = new RenderComponent(entity, shader, mesh);

@@ -60,7 +60,7 @@ std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
 inline unsigned short EntityManager::getEntityId() {
     unsigned short id = 0;
     while (entities.find(id) != entities.end()) {
-        id = rand() % USHRT_MAX;
+        id = static_cast<unsigned short>(rand() % USHRT_MAX);
     }
     return id;
 }

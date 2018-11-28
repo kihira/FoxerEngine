@@ -8,12 +8,7 @@ Entity::Entity(const unsigned short id, std::string name) : id(id), name(std::mo
 
 void Entity::update() {
     if (updateFn != sol::lua_nil) {
-        auto updateResult = updateFn(this);
-        if (!updateResult.valid()) {
-            sol::error err = updateResult;
-            std::cerr << "Error updating Entity (" << name << "):" << std::endl
-                      << err.what() << std::endl;
-        }
+        updateFn(this);
     }
 }
 
