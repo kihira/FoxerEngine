@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 #include "Mesh.h"
-#include "../gl_helper.hpp"
+#include "RenderManager.h"
 
 Mesh::Mesh(GLuint vao, GLuint ibo, GLuint vbo, GLsizei vertexCount, GLenum mode, GLenum indicesType)
         : vao(vao), ibo(ibo), vbo(vbo), vertexCount(vertexCount), mode(mode), indicesType(indicesType) {}

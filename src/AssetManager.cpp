@@ -4,7 +4,6 @@
 #include "Managers.h"
 #include <fstream>
 #include <stb_image.h>
-#include "gl_helper.hpp"
 #include "assert.h"
 #include "render/RenderComponent.h"
 #include "Box2D/Collision/Shapes/b2CircleShape.h"

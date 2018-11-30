@@ -4,7 +4,6 @@
 #include "../Managers.h"
 #include "../vectors.h"
 #include "../entity/Entity.h"
-#include "../gl_helper.hpp"
 
 RenderComponent::RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> &shader, std::shared_ptr<Mesh> &mesh) :
 Component(entity), shader(shader), mesh(mesh) {

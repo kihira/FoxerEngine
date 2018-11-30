@@ -1,7 +1,6 @@
 
 #include <easy/profiler.h>
 #include "RenderManager.h"
-#include "../gl_helper.hpp"
 #include "../Managers.h"
 
 RenderManager::RenderManager() = default;
@@ -113,4 +112,31 @@ void RenderManager::glfwErrorCallback(int error, const char *desc) {
 void RenderManager::glfwFramebufferSizeCallback(int width, int height) {
     glViewport(0, 0, width, height);
     gRenderManager.camera->resize(width, height);
+}
+
+void RenderManager::GLERRCHECK_fn(const char *file, int line) {
+    GLenum err = glGetError();
+    if (err == GL_NO_ERROR) return;
+
+    std::string error;
+
+    switch (err) {
+        case GL_INVALID_ENUM:
+            error = "INVALID ENUM";
+            break;
+        case GL_INVALID_VALUE:
+            error = "INVALID VALUE";
+            break;
+        case GL_INVALID_OPERATION:
+            error = "INVALID OPERATION";
+            break;
+        case GL_OUT_OF_MEMORY:
+            error = "OUT OF MEMORY";
+            break;
+        default:
+            error = "UNKNOWN ERROR";
+            break;
+    }
+
+    spdlog::get("renderer")->error("({}:{}) GL ERROR 0x{:x}: {}", file, line, err, error);
 }

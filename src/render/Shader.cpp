@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <spdlog/spdlog.h>
 #include "Shader.h"
-#include "../gl_helper.hpp"
+#include "RenderManager.h"
 #include "../assert.h"
 
 void Shader::registerUniform(std::string name) {

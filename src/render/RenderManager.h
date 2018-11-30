@@ -13,6 +13,8 @@
 #include "WindowWrapper.h"
 #include "RenderComponent.h"
 
+#define GLERRCHECK() RenderManager::GLERRCHECK_fn(__FILE__, __LINE__)
+
 class RenderManager {
 private:
     std::unique_ptr<WindowWrapper> windowWrapper;
@@ -60,6 +62,8 @@ public:
     void addRenderComponent(RenderComponent *component);
 
     const std::unique_ptr<WindowWrapper> &getWindowWrapper() const;
+
+    static void GLERRCHECK_fn(const char *file, int line);
 };
 
 
