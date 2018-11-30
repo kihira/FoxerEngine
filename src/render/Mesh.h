@@ -1,7 +1,6 @@
 #ifndef GAMEENGINE301CR_MESH_H
 #define GAMEENGINE301CR_MESH_H
 
-#include <vector>
 #include <glad/glad.h>
 
 

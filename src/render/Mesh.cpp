@@ -1,5 +1,3 @@
-#include <utility>
-
 #include <glad/glad.h>
 #include "Mesh.h"
 #include "RenderManager.h"

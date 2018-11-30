@@ -4,8 +4,7 @@
 #include <glm/glm.hpp>
 #include <sol.hpp>
 #include <typeindex>
-#include "../render/Mesh.h"
-#include "../render/Shader.h"
+#include <map>
 #include "Component.h"
 
 #define ENTITY_ID unsigned short
