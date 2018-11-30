@@ -1,11 +1,7 @@
-#include <memory>
-#include <iostream>
-#include <sol.hpp>
 #include <easy/profiler.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "Managers.h"
-#include "InputManager.h"
 
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
@@ -15,6 +11,7 @@ int main(int argc, char **argv) {
 
     // Initialise logger
     auto logger = spdlog::stdout_color_mt("main");
+    logger->info("Starting as {}", server ? "server" : "client");
 
     gAssetManager.startUp();
     if (!server) {

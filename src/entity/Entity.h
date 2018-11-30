@@ -19,7 +19,7 @@ private:
     /*
      * Lua bindings
      */
-    sol::protected_function updateFn;
+    sol::function updateFn;
     sol::function onSpawnFn;
 
     const ENTITY_ID id;

@@ -9,7 +9,7 @@ private:
     GLuint program = 0;
     std::map<std::string, GLint> uniforms;
 public:
-    Shader(GLuint program);
+    explicit Shader(GLuint program);
 
     ~Shader();
 
