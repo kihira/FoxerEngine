@@ -9,7 +9,7 @@
 #include "PhysicsComponent.h"
 
 
-class PhysicsManager {
+class PhysicsManager : public b2ContactListener {
 private:
     std::shared_ptr<spdlog::logger> logger;
     const int32 velocityIterations = 6;
@@ -49,6 +49,10 @@ public:
     b2Joint *createJoint(const b2JointDef &jointDef);
 
     void addPhysicsComponent(PhysicsComponent *component);
+
+    void BeginContact(b2Contact *contact) override;
+
+    void EndContact(b2Contact *contact) override;
 };
 
 

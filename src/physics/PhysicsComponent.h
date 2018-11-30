@@ -2,32 +2,32 @@
 #ifndef GAMEENGINE301CR_PHYSICSCOMPONENT_H
 #define GAMEENGINE301CR_PHYSICSCOMPONENT_H
 
-#include <memory>
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2Fixture.h>
 #include "../entity/Entity.h"
-#include "../entity/Component.h"
 
 
 /**
  * A component that binds an entity to a physics body.
  * This is used to help provide a level of abstraction between the entity and physics subsystem
  */
- // todo possible future idea is to save bodyDef to binary as it's just a struct, allowing serialising it
 class PhysicsComponent : public Component {
 private:
     b2BodyDef bodyDef;
     b2FixtureDef fixtureDef;
     b2Body *body;
     b2Fixture *fixture;
+
+    // Lua bindings
+    sol::function beginContactFn;
+    sol::function endContactFn;
 public:
-    PhysicsComponent(const std::shared_ptr<Entity> &entity, b2BodyDef &bodyDef, b2FixtureDef &fixtureDef);
+    PhysicsComponent(const std::shared_ptr<Entity> &entity, b2BodyDef &bodyDef, b2FixtureDef &fixtureDef,
+                         sol::function &beginContactFn, sol::function &endContactFn);
 
     void update() override;
 
     Component *clone(std::shared_ptr<Entity> entity) override;
-
-    void setUserData(void *data);
 
     void setLinearDamping(float damping);
 
@@ -38,6 +38,10 @@ public:
     void setActive(bool active);
 
     void applyVelocity(glm::vec2 &velocity);
+
+    void beginContact();
+
+    void endContact();
 };
 
 

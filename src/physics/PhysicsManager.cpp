@@ -11,6 +11,7 @@ void PhysicsManager::startUp() {
 
     b2Vec2 gravity(0.f, 0.f);
     world = new b2World(gravity);
+    world->SetContactListener(this);
 }
 
 void PhysicsManager::shutDown() {
@@ -38,4 +39,20 @@ b2Joint *PhysicsManager::createJoint(const b2JointDef &jointDef) {
 
 void PhysicsManager::addPhysicsComponent(PhysicsComponent *component) {
     components.emplace_back(component);
+}
+
+void PhysicsManager::BeginContact(b2Contact *contact) {
+    auto componentA = static_cast<PhysicsComponent *>(contact->GetFixtureA()->GetUserData());
+    auto componentB = static_cast<PhysicsComponent *>(contact->GetFixtureB()->GetUserData());
+
+    componentA->beginContact();
+    componentB->beginContact();
+}
+
+void PhysicsManager::EndContact(b2Contact *contact) {
+    auto componentA = static_cast<PhysicsComponent *>(contact->GetFixtureA()->GetUserData());
+    auto componentB = static_cast<PhysicsComponent *>(contact->GetFixtureB()->GetUserData());
+
+    componentA->endContact();
+    componentB->endContact();
 }

@@ -2,7 +2,11 @@ testEntity = {
     name = "Test Entity",
     physicsComponent = {
         type = 2, -- dynamic body
-        gravityScale = 0.3
+        gravityScale = 0.3,
+        beginContact = function()
+        end,
+        endContact = function()
+        end
     },
     renderComponent = {
         mesh = "testMesh"

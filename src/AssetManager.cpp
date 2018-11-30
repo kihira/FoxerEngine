@@ -343,7 +343,6 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         bodyDef.type = static_cast<b2BodyType>(physicsTable["type"].get_or(0));
         bodyDef.position.Set(entity->getPosition().x, entity->getPosition().z);
         bodyDef.fixedRotation = physicsTable["fixedRotation"].get_or(false);
-        bodyDef.userData = entity.get();
 
         // Create fixture def
         b2FixtureDef fixtureDef;
@@ -379,7 +378,11 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
             }
         }
 
-        auto physicsComponent = new PhysicsComponent(entity, bodyDef, fixtureDef);
+        // Contact listeners
+        sol::function beginContactFn = physicsTable["beginContact"];
+        sol::function endContactFn = physicsTable["endContact"];
+
+        auto physicsComponent = new PhysicsComponent(entity, bodyDef, fixtureDef, beginContactFn, endContactFn);
         physicsComponent->setActive(false);
         entity->addComponent(std::type_index(typeid(PhysicsComponent)), physicsComponent);
     }
