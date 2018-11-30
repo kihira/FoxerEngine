@@ -48,10 +48,10 @@ std::shared_ptr<Entity> Entity::clone(const unsigned short id) {
     newEntity->setUpdateFn(updateFn);
     newEntity->setOnSpawnFn(onSpawnFn);
 
-    for (auto &component : components) {
-        auto newComponent = component->clone(newEntity);
+    for (auto component : components) {
+        auto newComponent = component.second->clone(newEntity);
         ASSERT(newComponent != nullptr);
-        newEntity->addComponent(newComponent);
+        newEntity->addComponent(component.first, newComponent);
     }
 
     if (newEntity->onSpawnFn != sol::lua_nil) {
@@ -65,10 +65,6 @@ void Entity::setName(const std::string &name) {
     Entity::name = name;
 }
 
-void Entity::addComponent(Component *component) {
-    components.push_back(component);
-}
-
 const glm::vec3 &Entity::getPrevPosition() const {
     return prevPosition;
 }
@@ -79,4 +75,23 @@ const glm::vec3 &Entity::getPrevRotation() const {
 
 const unsigned short Entity::getId() const {
     return id;
+}
+
+template <typename T>
+void Entity::addComponent(Component *component) {
+    components.emplace(std::type_index(typeid(T)), component);
+}
+
+void Entity::addComponent(std::type_index type, Component *component) {
+    components.emplace(type, component);
+}
+
+
+template<typename T>
+T *Entity::getComponent() {
+    auto i = components.find(std::type_index(typeid(T)));
+    if (i != components.end()) {
+        return i->second;
+    }
+    return nullptr;
 }

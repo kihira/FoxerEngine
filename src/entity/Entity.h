@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <sol.hpp>
+#include <typeindex>
 #include "../render/Mesh.h"
 #include "../render/Shader.h"
 #include "Component.h"
@@ -24,7 +25,7 @@ private:
 
     const ENTITY_ID id;
     std::string name;
-    std::vector<Component *> components;
+    std::map<std::type_index, Component *> components;
 public:
     Entity(ENTITY_ID id, std::string name);
 
@@ -59,7 +60,13 @@ public:
 
     const ENTITY_ID getId() const;
 
+    template <typename T>
     void addComponent(Component *component);
+
+    void addComponent(std::type_index type, Component *component);
+
+    template <typename T>
+    T *getComponent();
 };
 
 

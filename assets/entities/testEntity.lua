@@ -13,7 +13,16 @@ testEntity = {
     onSpawn = function(self)
         -- example of registering key handler
         local keyHandler = function(key, scancode, action, mods)
-            print(key)
+            if (key == 87) then --forward
+                self.position.z = self.position.z + 0.1
+            elseif (key == 83) then --backward
+                self.position.z = self.position.z - 0.1
+            elseif (key == 65) then --left
+                self.position.x = self.position.x + 0.1
+            elseif (key == 68) then --right
+                self.position.x = self.position.x - 0.1
+            end
+
         end
         engine.input.registerKeyHandler(keyHandler)
     end

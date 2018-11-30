@@ -36,6 +36,8 @@ public:
     void setGravityScale(float scale);
 
     void setActive(bool active);
+
+    void applyVelocity(glm::vec2 &velocity);
 };
 
 

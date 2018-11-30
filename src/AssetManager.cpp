@@ -376,7 +376,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
 
         auto physicsComponent = new PhysicsComponent(entity, bodyDef, fixtureDef);
         physicsComponent->setActive(false);
-        entity->addComponent(physicsComponent);
+        entity->addComponent(std::type_index(typeid(PhysicsComponent)), physicsComponent);
     }
 
     // Create Render Component
@@ -388,7 +388,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         auto renderComponent = new RenderComponent(entity, shader, mesh);
         renderComponent->setActive(false);
 
-        entity->addComponent(renderComponent);
+        entity->addComponent(std::type_index(typeid(RenderComponent)), renderComponent);
     }
 
     gEntityManager.registerPrototype(tableName, entity);
