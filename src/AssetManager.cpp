@@ -80,8 +80,9 @@ void AssetManager::shutDown() {
 }
 
 std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
-    if (meshes.find(name) != meshes.end()) {
-        return meshes[name];
+    auto it = meshes.find(name);
+    if (it != meshes.end()) {
+        return it->second;
     }
 
     auto result = lua.script_file(ASSETS_FOLDER "meshes/" + name + ASSETS_EXT);
@@ -158,8 +159,9 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
 }
 
 GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
-    if (shaders.find(name) != shaders.end()) {
-        return shaders[name];
+    auto it = shaders.find(name);
+    if (it != shaders.end()) {
+        return it->second;
     }
 
     // Load shader source
@@ -240,8 +242,9 @@ std::shared_ptr<Shader> AssetManager::loadShaderProgram(std::string name) {
 }
 
 std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
-    if (meshes.find(ERR_MESH) != meshes.end()) {
-        return meshes[ERR_MESH];
+    auto it = meshes.find(ERR_MESH);
+    if (it != meshes.end()) {
+        return it->second;
     }
 
     GLuint vao, vboVertices, vboIndices;
@@ -274,8 +277,9 @@ std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
 }
 
 std::shared_ptr<Shader> AssetManager::getErrorShader() {
-    if (shaderPrograms.find(ERR_SHADER) != shaderPrograms.end()) {
-        return shaderPrograms[ERR_SHADER];
+    auto it = shaderPrograms.find(ERR_SHADER);
+    if (it != shaderPrograms.end()) {
+        return it->second;
     }
 
     GLuint vertShader, fragShader, program;
@@ -311,8 +315,9 @@ std::shared_ptr<Shader> AssetManager::getErrorShader() {
 }
 
 std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, std::string tableName) {
-    if (entityPrototypes.find(tableName) != entityPrototypes.end()) {
-        return entityPrototypes[tableName];
+    auto it = entityPrototypes.find(tableName);
+    if (it != entityPrototypes.end()) {
+        return it->second;
     }
 
     lua.script_file(ASSETS_FOLDER "entities/" + fileName + ASSETS_EXT);
@@ -398,8 +403,9 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
 }
 
 std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
-    if (levels.find(name) != levels.end()) {
-        return levels[name];
+    auto it = levels.find(name);
+    if (it != levels.end()) {
+        return it->second;
     }
 
     auto result = lua.script_file(ASSETS_FOLDER "levels/" + name + ASSETS_EXT);
@@ -448,8 +454,9 @@ void AssetManager::cleanup() {
 }
 
 GLuint AssetManager::loadTexture(std::string name) {
-    if (textures.find(name) != textures.end()) {
-        return textures[name];
+    auto it = textures.find(name);
+    if (it != textures.end()) {
+        return it->second;
     }
 
     auto table = lua.script_file(ASSETS_FOLDER "textures/" + name + ASSETS_EXT);
