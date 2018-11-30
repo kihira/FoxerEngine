@@ -325,8 +325,8 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     entity->setOnSpawnFn(entityTable["onSpawn"]);
 
     // Create Physics Component
-    if (entityTable["collider"] != sol::lua_nil) {
-        auto physicsTable = entityTable["collider"];
+    if (entityTable["physicsComponent"] != sol::lua_nil) {
+        auto physicsTable = entityTable["physicsComponent"];
 
         b2BodyDef bodyDef;
         bodyDef.active = physicsTable["active"].get_or(true);
@@ -380,9 +380,10 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     }
 
     // Create Render Component
-    if (entityTable["render"] != sol::lua_nil) {
-        auto meshId = entityTable["render"]["mesh"].get_or(std::string(ERR_MESH));
-        auto shaderId = entityTable["render"]["shader"].get_or(std::string(ERR_SHADER));
+    if (entityTable["renderComponent"] != sol::lua_nil) {
+        auto renderTable = entityTable["renderComponent"];
+        auto meshId = renderTable["mesh"].get_or(std::string(ERR_MESH));
+        auto shaderId = renderTable["shader"].get_or(std::string(ERR_SHADER));
         auto mesh = loadMesh(meshId);
         auto shader = loadShaderProgram(shaderId);
         auto renderComponent = new RenderComponent(entity, shader, mesh);

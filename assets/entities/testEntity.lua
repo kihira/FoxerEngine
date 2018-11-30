@@ -1,10 +1,10 @@
 testEntity = {
     name = "Test Entity",
-    collider = {
+    physicsComponent = {
         type = 2, -- dynamic body
         gravityScale = 0.3
     },
-    render = {
+    renderComponent = {
         mesh = "testMesh"
     },
     update = function(self)
