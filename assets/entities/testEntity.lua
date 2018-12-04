@@ -16,15 +16,16 @@ testEntity = {
     end,
     onSpawn = function(self)
         -- example of registering key handler
+        local physics = self:getPhysicsComponent()
         local keyHandler = function(key, scancode, action, mods)
             if (key == 87) then --forward
-                self:getPhysicsComponent():setVelocity(engine.vec2.new(0.0, 1.0))
+                physics.velocity = physics.velocity + engine.vec2.new(0.0, 1.0)
             elseif (key == 83) then --backward
-                self:getPhysicsComponent():setVelocity(engine.vec2.new(0.0, -1.0))
+                physics.velocity = physics.velocity + engine.vec2.new(0.0, -1.0)
             elseif (key == 65) then --left
-                self:getPhysicsComponent():setVelocity(engine.vec2.new(1.0, 0.0))
+                physics.velocity = physics.velocity + engine.vec2.new(1.0, 0.0)
             elseif (key == 68) then --right
-                self:getPhysicsComponent():setVelocity(engine.vec2.new(-1.0, 0.0))
+                physics.velocity = physics.velocity + engine.vec2.new(-1.0, 0.0)
             end
 
         end

@@ -4,6 +4,7 @@
 
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2Fixture.h>
+#include <glm/vec2.hpp>
 #include "../entity/Entity.h"
 
 
@@ -29,13 +30,15 @@ public:
 
     Component *clone(std::shared_ptr<Entity> entity) override;
 
+    void setActive(bool active) override;
+
     void setLinearDamping(float damping);
 
     void setAngularDamping(float damping);
 
     void setGravityScale(float scale);
 
-    void setActive(bool active);
+    glm::vec2 getVelocity() const;
 
     void setVelocity(glm::vec2 &velocity);
 

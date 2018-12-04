@@ -27,6 +27,16 @@ void PhysicsComponent::update() {
     entity->setPosition(pos);
 }
 
+Component *PhysicsComponent::clone(std::shared_ptr<Entity> entity) {
+    auto newComponent = new PhysicsComponent(entity, bodyDef, fixtureDef, beginContactFn, endContactFn);
+    return newComponent;
+}
+
+void PhysicsComponent::setActive(bool active) {
+    body->SetActive(active);
+    Component::setActive(active);
+}
+
 void PhysicsComponent::setLinearDamping(float damping) {
     body->SetLinearDamping(damping);
 }
@@ -39,19 +49,13 @@ void PhysicsComponent::setGravityScale(float scale) {
     body->SetGravityScale(scale);
 }
 
-void PhysicsComponent::setActive(bool active) {
-    body->SetActive(active);
-    Component::setActive(active);
-}
-
-Component *PhysicsComponent::clone(std::shared_ptr<Entity> entity) {
-    auto newComponent = new PhysicsComponent(entity, bodyDef, fixtureDef, beginContactFn, endContactFn);
-    return newComponent;
+glm::vec2 PhysicsComponent::getVelocity() const {
+    auto v = body->GetLinearVelocity();
+    return glm::vec2(v.x, v.y);
 }
 
 void PhysicsComponent::setVelocity(glm::vec2 &velocity) {
-    b2Vec2 v(velocity.x, velocity.y);
-    body->SetLinearVelocity(v);
+    body->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
 }
 
 void PhysicsComponent::beginContact() {

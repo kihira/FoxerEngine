@@ -53,7 +53,9 @@ int main(int argc, char **argv) {
             "vec2",
             sol::constructors<glm::vec2(), glm::vec2(float), glm::vec2(float, float)>(),
             "x", &glm::vec2::x,
-            "y", &glm::vec2::y
+            "y", &glm::vec2::y,
+            sol::meta_function::addition, [](const glm::vec2& left, const glm::vec2& right) { return left + right; },
+            sol::meta_function::subtraction, [](const glm::vec2& left, const glm::vec2& right) { return left - right; }
     );
 
     // Register entity type
@@ -71,7 +73,7 @@ int main(int argc, char **argv) {
     entityTable.new_usertype<PhysicsComponent>(
             "physics",
             "", sol::no_constructor,
-            "setVelocity", &PhysicsComponent::setVelocity
+            "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity)
             );
 
     // Register level type

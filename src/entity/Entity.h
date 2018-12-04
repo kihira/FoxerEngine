@@ -1,7 +1,7 @@
 #ifndef GAMEENGINE301CR_ENTITY_H
 #define GAMEENGINE301CR_ENTITY_H
 
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
 #include <sol.hpp>
 #include <typeindex>
 #include <map>
