@@ -91,7 +91,9 @@ void AssetManager::startUp() {
      * Register user types
      */
 
-    // Register math stuff
+    /*
+     * Register math stuff
+     */
     sol::table mathTable = engineTable.create_named("math");
 
     // Register vec3 type
@@ -106,6 +108,12 @@ void AssetManager::startUp() {
             sol::meta_function::multiplication, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator*),
             sol::meta_function::division, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator/)
     );
+
+    /*
+     * Register graphics stuff
+     */
+    sol::table graphicsTable = engineTable.create_named("graphics");
+    graphicsTable["getCamera"] = []() { return gRenderManager.getCamera(); };
 
     // Register vec2 type
     mathTable.new_usertype<glm::vec2>(

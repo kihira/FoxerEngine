@@ -3,6 +3,7 @@ testEntity = {
     physicsComponent = {
         type = 2, -- dynamic body
         gravityScale = 0.3,
+        linearDamping = 2,
         beginContact = function()
         end,
         endContact = function()

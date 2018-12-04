@@ -60,7 +60,9 @@ public:
 
     void addRenderComponent(RenderComponent *component);
 
-    const std::unique_ptr<WindowWrapper> &getWindowWrapper() const;
+    const WindowWrapper *getWindowWrapper() const;
+
+    const Camera *getCamera() const;
 
     static void GLERRCHECK_fn(const char *file, int line);
 };

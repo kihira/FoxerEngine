@@ -20,7 +20,7 @@ private:
 public:
     PhysicsManager();
 
-    ~PhysicsManager();
+    ~PhysicsManager() override;
 
     /**
      * Initialises the PhysicsManager

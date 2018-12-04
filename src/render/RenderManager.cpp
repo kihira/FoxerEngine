@@ -93,8 +93,8 @@ int RenderManager::shouldClose() {
     return windowWrapper->shouldClose();
 }
 
-const std::unique_ptr<WindowWrapper> &RenderManager::getWindowWrapper() const {
-    return windowWrapper;
+const WindowWrapper *RenderManager::getWindowWrapper() const {
+    return windowWrapper.get();
 }
 
 void RenderManager::addRenderComponent(RenderComponent *component) {
@@ -139,4 +139,8 @@ void RenderManager::GLERRCHECK_fn(const char *file, int line) {
     }
 
     spdlog::get("renderer")->error("({}:{}) GL ERROR 0x{:x}: {}", file, line, err, error);
+}
+
+const Camera *RenderManager::getCamera() const {
+    return camera.get();
 }
