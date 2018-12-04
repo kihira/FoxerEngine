@@ -23,66 +23,6 @@ int main(int argc, char **argv) {
     gEntityManager.startUp();
     gSoundManager.startUp();
 
-    sol::table engineTable = gAssetManager.getLua().create_named_table("engine"); // Namespace for interacting with the engine
-
-    // Load functions for lua
-    // Can't pass a class instance as the 3rd parameter as it doesn't seem to work with extern
-
-    // Entity functions
-    sol::table entityTable = engineTable.create_named("entity");
-    engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
-    engineTable["entity"]["spawnEntity"] = [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); };
-    engineTable["entity"]["getEntity"] = [](ENTITY_ID id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
-
-            // Input functions
-    sol::table inputTable = engineTable.create_named("input");
-    engineTable["input"]["registerKeyHandler"] = [](sol::function handler) { gInputManager.registerKeyHandler(handler); };
-    engineTable["input"]["registerCursorHandler"] = [](sol::function handler) { gInputManager.registerCursorHandler(handler); };
-
-    // Register vec3 type
-    engineTable.new_usertype<glm::vec3>(
-            "vec3",
-            sol::constructors<glm::vec3(), glm::vec3(float), glm::vec3(float, float, float)>(),
-            "x", &glm::vec3::x,
-            "y", &glm::vec3::y,
-            "z", &glm::vec3::z
-            );
-
-    // Register vec2 type
-    engineTable.new_usertype<glm::vec2>(
-            "vec2",
-            sol::constructors<glm::vec2(), glm::vec2(float), glm::vec2(float, float)>(),
-            "x", &glm::vec2::x,
-            "y", &glm::vec2::y,
-            sol::meta_function::addition, [](const glm::vec2& left, const glm::vec2& right) { return left + right; },
-            sol::meta_function::subtraction, [](const glm::vec2& left, const glm::vec2& right) { return left - right; }
-    );
-
-    // Register entity type
-    entityTable.new_usertype<Entity>(
-            "entity",
-            "new", sol::factories([](std::string id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(id); }),
-            // Register properties
-            "name", sol::property(&Entity::getName, &Entity::setName),
-            "position", sol::property(&Entity::getPosition, &Entity::setPosition),
-            "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
-            "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); }
-            );
-
-    // Register physics component
-    entityTable.new_usertype<PhysicsComponent>(
-            "physics",
-            "", sol::no_constructor,
-            "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity)
-            );
-
-    // Register level type
-    engineTable.new_usertype<Level>(
-            "level",
-            "noconstructor", sol::no_constructor,
-            "name", sol::property(&Level::getName, &Level::setName)
-            );
-
     // Register entity prototypes
     gAssetManager.loadEntityPrototype("testEntity", "testEntity");
 
