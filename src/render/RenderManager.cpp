@@ -93,7 +93,7 @@ int RenderManager::shouldClose() {
     return windowWrapper->shouldClose();
 }
 
-const WindowWrapper *RenderManager::getWindowWrapper() const {
+WindowWrapper *RenderManager::getWindowWrapper() const {
     return windowWrapper.get();
 }
 

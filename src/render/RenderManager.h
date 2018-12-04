@@ -60,7 +60,7 @@ public:
 
     void addRenderComponent(RenderComponent *component);
 
-    const WindowWrapper *getWindowWrapper() const;
+    WindowWrapper *getWindowWrapper() const;
 
     const Camera *getCamera() const;
 

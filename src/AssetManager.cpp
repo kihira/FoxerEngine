@@ -402,12 +402,16 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
 
     lua.script_file(ASSETS_FOLDER "entities/" + fileName + ASSETS_EXT);
 
+    auto def = glm::vec3(0.f);
+
     // Load data from lua file and bind functions
     sol::table entityTable = lua[tableName];
     std::string name = entityTable["name"].get_or(fileName);
     auto entity = std::make_shared<Entity>(0, name);
     entity->setUpdateFn(entityTable["update"]);
     entity->setOnSpawnFn(entityTable["onSpawn"]);
+    entity->setPosition(entityTable["position"].get_or(def));
+    entity->setRotation(entityTable["rotation"].get_or(def));
 
     // Create Physics Component
     if (entityTable["physicsComponent"] != sol::lua_nil) {
