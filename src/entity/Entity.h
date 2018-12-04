@@ -65,7 +65,13 @@ public:
     void addComponent(std::type_index type, Component *component);
 
     template <typename T>
-    T *getComponent();
+    T *getComponent() {
+        auto i = components.find(std::type_index(typeid(T)));
+        if (i != components.end()) {
+            return (T *) i->second;
+        }
+        return nullptr;
+    }
 };
 
 

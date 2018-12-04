@@ -86,12 +86,3 @@ void Entity::addComponent(std::type_index type, Component *component) {
     components.emplace(type, component);
 }
 
-
-template<typename T>
-T *Entity::getComponent() {
-    auto i = components.find(std::type_index(typeid(T)));
-    if (i != components.end()) {
-        return i->second;
-    }
-    return nullptr;
-}

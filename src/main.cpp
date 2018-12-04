@@ -55,7 +55,8 @@ int main(int argc, char **argv) {
             // Register properties
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
-            "rotation", sol::property(&Entity::getRotation, &Entity::setRotation)
+            "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
+            "physics", [](std::shared_ptr<Entity> entity) { return entity->getComponent<PhysicsComponent>(); }
             );
 
     // Register level type
