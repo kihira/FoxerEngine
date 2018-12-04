@@ -91,8 +91,11 @@ void AssetManager::startUp() {
      * Register user types
      */
 
+    // Register math stuff
+    sol::table mathTable = engineTable.create_named("math");
+
     // Register vec3 type
-    engineTable.new_usertype<glm::vec3>(
+    mathTable.new_usertype<glm::vec3>(
             "vec3",
             sol::constructors<glm::vec3(), glm::vec3(float), glm::vec3(float, float, float)>(),
             "x", &glm::vec3::x,
@@ -105,7 +108,7 @@ void AssetManager::startUp() {
     );
 
     // Register vec2 type
-    engineTable.new_usertype<glm::vec2>(
+    mathTable.new_usertype<glm::vec2>(
             "vec2",
             sol::constructors<glm::vec2(), glm::vec2(float), glm::vec2(float, float)>(),
             "x", &glm::vec2::x,

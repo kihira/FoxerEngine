@@ -19,13 +19,13 @@ testEntity = {
         local physics = self:getPhysicsComponent()
         local keyHandler = function(key, scancode, action, mods)
             if (key == 87) then --forward
-                physics.velocity = physics.velocity + engine.vec2.new(0.0, 1.0)
+                physics.velocity = physics.velocity + engine.math.vec2.new(0.0, 1.0)
             elseif (key == 83) then --backward
-                physics.velocity = physics.velocity + engine.vec2.new(0.0, -1.0)
+                physics.velocity = physics.velocity + engine.math.vec2.new(0.0, -1.0)
             elseif (key == 65) then --left
-                physics.velocity = physics.velocity + engine.vec2.new(1.0, 0.0)
+                physics.velocity = physics.velocity + engine.math.vec2.new(1.0, 0.0)
             elseif (key == 68) then --right
-                physics.velocity = physics.velocity + engine.vec2.new(-1.0, 0.0)
+                physics.velocity = physics.velocity + engine.math.vec2.new(-1.0, 0.0)
             end
 
         end
