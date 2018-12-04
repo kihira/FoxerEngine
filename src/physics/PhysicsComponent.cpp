@@ -24,7 +24,7 @@ void PhysicsComponent::update() {
     glm::vec3 pos;
     pos.x = body->GetPosition().x;
     pos.z = body->GetPosition().y;
-    // entity->setPosition(pos);
+    entity->setPosition(pos);
 }
 
 void PhysicsComponent::setLinearDamping(float damping) {
@@ -49,7 +49,7 @@ Component *PhysicsComponent::clone(std::shared_ptr<Entity> entity) {
     return newComponent;
 }
 
-void PhysicsComponent::applyVelocity(glm::vec2 &velocity) {
+void PhysicsComponent::setVelocity(glm::vec2 &velocity) {
     b2Vec2 v(velocity.x, velocity.y);
     body->SetLinearVelocity(v);
 }

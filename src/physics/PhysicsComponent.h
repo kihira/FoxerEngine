@@ -37,7 +37,7 @@ public:
 
     void setActive(bool active);
 
-    void applyVelocity(glm::vec2 &velocity);
+    void setVelocity(glm::vec2 &velocity);
 
     void beginContact();
 

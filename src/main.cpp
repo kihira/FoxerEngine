@@ -48,6 +48,14 @@ int main(int argc, char **argv) {
             "z", &glm::vec3::z
             );
 
+    // Register vec2 type
+    engineTable.new_usertype<glm::vec2>(
+            "vec2",
+            sol::constructors<glm::vec2(), glm::vec2(float), glm::vec2(float, float)>(),
+            "x", &glm::vec2::x,
+            "y", &glm::vec2::y
+    );
+
     // Register entity type
     entityTable.new_usertype<Entity>(
             "entity",
@@ -56,7 +64,14 @@ int main(int argc, char **argv) {
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
-            "physics", [](std::shared_ptr<Entity> entity) { return entity->getComponent<PhysicsComponent>(); }
+            "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); }
+            );
+
+    // Register physics component
+    entityTable.new_usertype<PhysicsComponent>(
+            "physics",
+            "", sol::no_constructor,
+            "setVelocity", &PhysicsComponent::setVelocity
             );
 
     // Register level type

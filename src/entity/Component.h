@@ -21,7 +21,7 @@ public:
 
     virtual Component *clone(std::shared_ptr<Entity> entity) = 0;
 
-    void setActive(bool active) {
+    virtual void setActive(bool active) {
         Component::active = active;
     }
 

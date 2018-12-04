@@ -18,13 +18,13 @@ testEntity = {
         -- example of registering key handler
         local keyHandler = function(key, scancode, action, mods)
             if (key == 87) then --forward
-                self.position.z = self.position.z + 0.1
+                self:getPhysicsComponent():setVelocity(engine.vec2.new(0.0, 1.0))
             elseif (key == 83) then --backward
-                self.position.z = self.position.z - 0.1
+                self:getPhysicsComponent():setVelocity(engine.vec2.new(0.0, -1.0))
             elseif (key == 65) then --left
-                self.position.x = self.position.x + 0.1
+                self:getPhysicsComponent():setVelocity(engine.vec2.new(1.0, 0.0))
             elseif (key == 68) then --right
-                self.position.x = self.position.x - 0.1
+                self:getPhysicsComponent():setVelocity(engine.vec2.new(-1.0, 0.0))
             end
 
         end
