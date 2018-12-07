@@ -6,6 +6,7 @@
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
     EASY_PROFILER_ENABLE;
+    spdlog::set_level(spdlog::level::debug);
 #endif
     bool server = argc == 2; // Whether we are a server or not
 
@@ -14,10 +15,10 @@ int main(int argc, char **argv) {
     logger->info("Starting as {}", server ? "server" : "client");
 
     gAssetManager.startUp();
-    if (!server) {
+    //if (!server) {
         gRenderManager.startUp();
         gInputManager.startUp();
-    }
+    // }
     gNetworkManager.startUp();
     gPhysicsManager.startUp();
     gEntityManager.startUp();

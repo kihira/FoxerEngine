@@ -70,15 +70,15 @@ void NetworkManager::update() {
             case ENET_EVENT_TYPE_CONNECT: {
                 if (server) {
                     // Generate client id and store it
-                    auto clientData = ClientData();
-                    clientData.clientId = getNewClientId();
-                    event.peer->data = &clientData;
-                    clients[clientData.clientId] = event.peer;
+                    auto clientData = new ClientData();
+                    clientData->clientId = getNewClientId();
+                    event.peer->data = clientData;
+                    clients[clientData->clientId] = event.peer;
 
                     // Tell client of its id
-                    sendToClient(clientData.clientId, CLIENT_DATA_ID, &clientData, sizeof(ClientData));
+                    sendToClient(clientData->clientId, CLIENT_DATA_ID, clientData, sizeof(ClientData));
 
-                    logger->info("Client ({:d}) connected to server", clientData.clientId);
+                    logger->info("Client ({:d}) connected to server", clientData->clientId);
                 } else {
                     logger->info("Connected to server");
                 }
@@ -88,6 +88,7 @@ void NetworkManager::update() {
                 enet_uint8 packetID = event.packet->data[0];
                 packetHandlers[packetID].packetHandler(packetID, event.packet->data + sizeof(enet_uint8),
                                                        event.packet->dataLength - sizeof(enet_uint8));
+                logger->debug("Received packet. ID: {:d} Length: {:d}", packetID, event.packet->dataLength);
                 enet_packet_destroy(event.packet);
                 break;
             }
@@ -148,6 +149,7 @@ void NetworkManager::sendToClient(enet_uint8 clientId, enet_uint8 packetID, void
 
 void NetworkManager::packetFreeCallback(ENetPacket *packet) {
     free(packet->data);
+    packet->data = nullptr;
 }
 
 void NetworkManager::connectToServer(const char *address, enet_uint16 port) {

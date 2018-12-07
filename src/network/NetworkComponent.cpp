@@ -6,8 +6,9 @@
 void NetworkComponent::update() {
     if (!hasAuthority) return;
 
-    if (entity->getPrevPosition() != entity->getPosition() ||
-        entity->getPrevRotation() != entity->getRotation()) {
+    auto physicsComponent = entity->getComponent<PhysicsComponent>();
+    if (glm::length(entity->getPrevPosition() - entity->getPosition()) > 0.5f ||
+        glm::length(entity->getPrevRotation() - entity->getRotation()) > 0.5f ) {
         EntityUpdatePacketData data = {
                 entity->getId(),
                 entity->getPosition(),
