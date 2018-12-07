@@ -33,7 +33,7 @@ private:
 
     // Server only data
     bool server; // Whether we are a server or not
-    enet_uint8 lastClientId = 1;
+    enet_uint8 lastClientId = 0;
     std::map<enet_uint8, ENetPeer *> clients; // List of clients mapped between their peer and id
 
     // Client only data

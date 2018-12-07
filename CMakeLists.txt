@@ -8,7 +8,7 @@ set(LIBRARIES_ROOT "${CMAKE_SOURCE_DIR}/libs")
 # Enable building with profiler in debug
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DBUILD_WITH_EASY_PROFILER)
-    add_definitions(-DSPDLOG_DEBUG_ON)
+    add_definitions(-DSPDLOG_ACTIVE_LEVEL=0)
 endif()
 
 # Source files

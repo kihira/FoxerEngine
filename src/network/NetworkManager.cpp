@@ -117,6 +117,7 @@ void NetworkManager::registerPacket(PacketMeta meta) {
     ASSERT(meta.packetFlag < 4);
 
     packetHandlers.insert(std::pair<int, PacketMeta>(meta.id, meta));
+    logger->debug("Register packet handler. ID: {:d}");
 }
 
 void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLength) {
