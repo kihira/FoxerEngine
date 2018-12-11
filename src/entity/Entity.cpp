@@ -77,11 +77,6 @@ const unsigned short Entity::getId() const {
     return id;
 }
 
-template <typename T>
-void Entity::addComponent(Component *component) {
-    components.emplace(std::type_index(typeid(T)), component);
-}
-
 void Entity::addComponent(std::type_index type, Component *component) {
     components.emplace(type, component);
 }

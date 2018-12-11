@@ -6,7 +6,7 @@
 #include <vector>
 #include "EventListener.h"
 
-template <typename T>
+template <class T>
 class EventDispatcher {
 private:
     std::vector<EventListener<T>> listeners;
@@ -14,7 +14,7 @@ public:
     void push(T data);
 };
 
-template<typename T>
+template<class T>
 void EventDispatcher<T>::push(T data) {
     for (auto &listener : listeners) {
         if (listener.eventDispatched(data)) {

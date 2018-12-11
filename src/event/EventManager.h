@@ -9,11 +9,13 @@
 #include "EventListener.h"
 #include "EventDispatcher.h"
 
+typedef void (* EventCallback)(void *data);
+
 
 class EventManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
-    std::map<std::type_index, EventDispatcher *> dispatchers;
+    std::map<std::type_index, std::vector<EventCallback>> dispatchers;
 public:
     EventManager();
 
@@ -24,13 +26,17 @@ public:
     void shutDown();
 
     template <typename T>
-    void registerEventType(unsigned short eventId, T);
+    void registerEventType() {
+        logger->debug("Registered event type {}", std::type_index(typeid(T)));
+        dispatchers.emplace(std::type_index(typeid(T)), std::vector<EventCallback>());
+    }
 
     template <typename T>
-    void registerEventListener(EventListener<T> listener);
-
-    template <typename T>
-    void push(T data);
+    void push(T data) {
+        for (auto &listener : dispatchers[std::type_index(typeid(T))]) {
+            listener(data);
+        }
+    }
 };
 
 
