@@ -2,9 +2,10 @@
 #include <glm/glm.hpp>
 #include <easy/profiler.h>
 #include <spdlog/spdlog.h>
-#include "../Managers.h"
-#include "../assert.h"
 #include "EntityManager.h"
+#include "../Managers.h"
+#include "../network/NetworkManager.h"
+#include "../assert.h"
 
 
 EntityManager::EntityManager() = default; // noop

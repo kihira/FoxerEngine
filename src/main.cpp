@@ -2,6 +2,13 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "Managers.h"
+#include "AssetManager.h"
+#include "physics/PhysicsManager.h"
+#include "network/NetworkManager.h"
+#include "render/RenderManager.h"
+#include "entity/EntityManager.h"
+#include "SoundManager.h"
+#include "InputManager.h"
 
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode

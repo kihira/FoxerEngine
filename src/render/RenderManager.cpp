@@ -2,6 +2,7 @@
 #include <easy/profiler.h>
 #include "RenderManager.h"
 #include "../Managers.h"
+#include "../AssetManager.h"
 
 RenderManager::RenderManager() = default;
 

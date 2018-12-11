@@ -1,14 +1,19 @@
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "Managers.h"
+#include "AssetManager.h"
 #include <fstream>
 #include <stb_image.h>
+#include "Managers.h"
 #include "assert.h"
 #include "render/RenderComponent.h"
 #include "Box2D/Collision/Shapes/b2CircleShape.h"
 #include "Box2D/Collision/Shapes/b2PolygonShape.h"
 #include "Box2D/Dynamics/b2Fixture.h"
+#include "entity/EntityManager.h"
+#include "InputManager.h"
+#include "render/RenderManager.h"
+#include "physics/PhysicsManager.h"
 
 
 #define ASSETS_FOLDER "./assets/"

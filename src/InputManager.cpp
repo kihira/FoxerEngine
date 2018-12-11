@@ -1,6 +1,7 @@
 
-#include "Managers.h"
 #include "InputManager.h"
+#include "Managers.h"
+#include "render/RenderManager.h"
 
 void InputManager::startUp() {
     gRenderManager.getWindowWrapper()->registerKeyCallback([](int key, int scancode, int action, int mods) {

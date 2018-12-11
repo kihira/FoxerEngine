@@ -4,6 +4,7 @@
 
 
 #include "../entity/Component.h"
+#include <glm/mat4x4.hpp>
 #include "Mesh.h"
 #include "Shader.h"
 

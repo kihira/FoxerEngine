@@ -2,13 +2,14 @@
 #define GAMEENGINE301CR_MANAGERS_H
 #pragma once
 
-#include "AssetManager.h"
-#include "physics/PhysicsManager.h"
-#include "network/NetworkManager.h"
-#include "render/RenderManager.h"
-#include "entity/EntityManager.h"
-#include "SoundManager.h"
-#include "InputManager.h"
+// Forward declare for performance
+class RenderManager;
+class EntityManager;
+class NetworkManager;
+class PhysicsManager;
+class SoundManager;
+class AssetManager;
+class InputManager;
 
 // Gotta use extern here so we can access the same instance across all files
 // It totally didn't take me 2 days to "fix" it from being static and going crazy

@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "RenderComponent.h"
 #include "../Managers.h"
+#include "RenderManager.h"
 #include "../vectors.h"
 #include "../entity/Entity.h"
 

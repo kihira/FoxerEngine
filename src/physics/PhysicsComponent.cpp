@@ -2,6 +2,7 @@
 #include "PhysicsComponent.h"
 #include "../assert.h"
 #include "../Managers.h"
+#include "PhysicsManager.h"
 
 PhysicsComponent::PhysicsComponent(
         const std::shared_ptr<Entity> &entity,

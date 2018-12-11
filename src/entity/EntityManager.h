@@ -15,6 +15,7 @@ struct EntityUpdatePacketData {
     ENTITY_ID entityId;
     glm::vec3 position;
     glm::vec3 rotation;
+    glm::vec2 velocity;
 };
 
 struct EntitySpawnPacketData {

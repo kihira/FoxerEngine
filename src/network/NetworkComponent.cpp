@@ -1,7 +1,11 @@
 
 #include "NetworkComponent.h"
+#include <glm/glm.hpp>
 #include "../entity/Entity.h"
 #include "../Managers.h"
+#include "../entity/EntityManager.h"
+#include "NetworkManager.h"
+#include "../physics/PhysicsComponent.h"
 
 void NetworkComponent::update() {
     if (!hasAuthority) return;
@@ -12,7 +16,8 @@ void NetworkComponent::update() {
         EntityUpdatePacketData data = {
                 entity->getId(),
                 entity->getPosition(),
-                entity->getRotation()
+                entity->getRotation(),
+                physicsComponent->getVelocity()
         };
 
         if (gNetworkManager.isServer()) {

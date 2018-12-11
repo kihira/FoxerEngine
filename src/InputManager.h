@@ -3,7 +3,6 @@
 #define GAMEENGINE301CR_KEYHANDLER_H
 
 #include <vector>
-#include <GLFW/glfw3.h>
 #include <sol.hpp>
 
 class InputManager {
