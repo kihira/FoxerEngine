@@ -108,7 +108,7 @@ void NetworkManager::update() {
 
 void NetworkManager::registerPacket(PacketMeta meta) {
     if (packetHandlers.find(meta.id) != packetHandlers.end()) {
-        logger->error("A packet with the ID {0:d} has already been registered!", meta.id);
+        logger->error("A packet with the ID {:d} has already been registered!", meta.id);
         return;
     }
 
@@ -117,7 +117,7 @@ void NetworkManager::registerPacket(PacketMeta meta) {
     ASSERT(meta.packetFlag < 4);
 
     packetHandlers.insert(std::pair<int, PacketMeta>(meta.id, meta));
-    logger->debug("Register packet handler. ID: {:d}");
+    logger->debug("Register packet handler. ID: {:d}", meta.id);
 }
 
 void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLength) {

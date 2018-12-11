@@ -3,7 +3,6 @@
 #define GAMEENGINE301CR_ENTITYMANAGER_H
 
 
-#include <cstddef>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "Entity.h"
