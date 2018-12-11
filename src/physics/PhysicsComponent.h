@@ -42,6 +42,12 @@ public:
 
     void setVelocity(glm::vec2 &velocity);
 
+    const glm::vec2 getPosition() const;
+
+    const float getRotation() const;
+
+    void setPositionAndRotation(glm::vec2 &position, float rotation);
+
     void beginContact();
 
     void endContact();

@@ -8,15 +8,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "Entity.h"
 
-#define ENTITY_UPDATE_ID 11
 #define ENTITY_SPAWN_ID 12
-
-struct EntityUpdatePacketData {
-    ENTITY_ID entityId;
-    glm::vec3 position;
-    glm::vec3 rotation;
-    glm::vec2 velocity;
-};
 
 struct EntitySpawnPacketData {
     std::string prototypeName;
@@ -71,14 +63,6 @@ public:
      * @return The entity
      */
     std::shared_ptr<Entity> getEntity(ENTITY_ID id);
-
-    /**
-     * This is the callback for when the NetworkManager receives an entity update packet
-     * @param packetID
-     * @param data
-     * @param dataLength
-     */
-    void handleEntityUpdatePacket(int packetID, void *data, size_t dataLength);
 
     /**
      * Callback for when an entity spawn packet is received

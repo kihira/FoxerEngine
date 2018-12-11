@@ -59,6 +59,12 @@ void PhysicsComponent::setVelocity(glm::vec2 &velocity) {
     body->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
 }
 
+
+
+void PhysicsComponent::setPositionAndRotation(glm::vec2 &position, float rotation) {
+    body->SetTransform(b2Vec2(position.x, position.y), rotation);
+}
+
 void PhysicsComponent::beginContact() {
     if (beginContactFn != sol::lua_nil) {
         beginContactFn();
@@ -69,5 +75,14 @@ void PhysicsComponent::endContact() {
     if (endContactFn != sol::lua_nil) {
         endContactFn();
     }
+}
+
+const glm::vec2 PhysicsComponent::getPosition() const {
+    auto pos = body->GetPosition();
+    return glm::vec2(pos.x, pos.y);
+}
+
+const float PhysicsComponent::getRotation() const {
+    return body->GetAngle();
 }
 

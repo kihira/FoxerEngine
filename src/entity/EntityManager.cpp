@@ -1,5 +1,4 @@
 
-#include <glm/glm.hpp>
 #include <easy/profiler.h>
 #include <spdlog/spdlog.h>
 #include "EntityManager.h"
@@ -19,9 +18,6 @@ void EntityManager::startUp() {
     prototypes = std::map<std::string, std::shared_ptr<Entity>>();
 
     // Register entity handling packets
-    gNetworkManager.registerPacket({ENTITY_UPDATE_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
-        gEntityManager.handleEntityUpdatePacket(packetID, data, dataLength);
-    }});
     gNetworkManager.registerPacket({ENTITY_SPAWN_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
         gEntityManager.handleEntitySpawnPacket(packetID, data, dataLength);
     }});
@@ -71,18 +67,6 @@ void EntityManager::update() {
     for (const auto &entity : entities) {
         entity.second->update();
     }
-}
-
-void EntityManager::handleEntityUpdatePacket(int packetID, void *data, size_t dataLength) {
-    EntityUpdatePacketData packetData = *(EntityUpdatePacketData *)data;
-
-    if (entities.find(packetData.entityId) == entities.end()) {
-        logger->error("Received entity update for {d} but entity does not exist", packetData.entityId);
-        return;
-    }
-    auto entity = entities[packetData.entityId];
-    entity->setPosition(packetData.position);
-    entity->setRotation(packetData.rotation);
 }
 
 void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dataLength) {

@@ -3,9 +3,9 @@
 #include <glm/glm.hpp>
 #include "../entity/Entity.h"
 #include "../Managers.h"
-#include "../entity/EntityManager.h"
 #include "NetworkManager.h"
 #include "../physics/PhysicsComponent.h"
+#include "../packets/PhysicsUpdatePacket.h"
 
 void NetworkComponent::update() {
     if (!hasAuthority) return;
@@ -13,17 +13,17 @@ void NetworkComponent::update() {
     auto physicsComponent = entity->getComponent<PhysicsComponent>();
     if (glm::length(entity->getPrevPosition() - entity->getPosition()) > 0.5f ||
         glm::length(entity->getPrevRotation() - entity->getRotation()) > 0.5f ) {
-        EntityUpdatePacketData data = {
+        PhysicsUpdatePacketData data = {
                 entity->getId(),
-                entity->getPosition(),
-                entity->getRotation(),
+                physicsComponent->getPosition(),
+                physicsComponent->getRotation(),
                 physicsComponent->getVelocity()
         };
 
         if (gNetworkManager.isServer()) {
-            gNetworkManager.sendToAllClients(ENTITY_UPDATE_ID, &data, sizeof(EntityUpdatePacketData));
+            gNetworkManager.sendToAllClients(ENTITY_UPDATE_ID, &data, sizeof(PhysicsUpdatePacketData));
         } else {
-            gNetworkManager.sendToServer(ENTITY_UPDATE_ID, &data, sizeof(EntityUpdatePacketData));
+            gNetworkManager.sendToServer(ENTITY_UPDATE_ID, &data, sizeof(PhysicsUpdatePacketData));
         }
     }
 }
