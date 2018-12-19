@@ -6,6 +6,7 @@
 #include "entity/EntityManager.h"
 #include "SoundManager.h"
 #include "InputManager.h"
+#include "event/EventManager.h"
 
 RenderManager gRenderManager;
 EntityManager gEntityManager;
@@ -14,3 +15,4 @@ PhysicsManager gPhysicsManager;
 SoundManager gSoundManager;
 AssetManager gAssetManager;
 InputManager gInputManager;
+EventManager gEventManager;

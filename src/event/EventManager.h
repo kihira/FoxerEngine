@@ -32,6 +32,11 @@ public:
     }
 
     template <typename T>
+    void registerListener(EventCallback callback) {
+        dispatchers[std::type_index(typeid(T))].emplace_back(callback);
+    }
+
+    template <typename T>
     void push(T data) {
         for (auto &listener : dispatchers[std::type_index(typeid(T))]) {
             listener(data);

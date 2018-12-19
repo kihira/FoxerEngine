@@ -10,6 +10,7 @@
 #include "SoundManager.h"
 #include "InputManager.h"
 #include "packets/PhysicsUpdatePacket.h"
+#include "event/EventManager.h"
 
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
@@ -22,6 +23,7 @@ int main(int argc, char **argv) {
     auto logger = spdlog::stdout_color_mt("main");
     logger->info("Starting as {}", server ? "server" : "client");
 
+    gEventManager.startUp();
     gAssetManager.startUp();
     //if (!server) {
         gRenderManager.startUp();
@@ -31,6 +33,8 @@ int main(int argc, char **argv) {
     gPhysicsManager.startUp();
     gEntityManager.startUp();
     gSoundManager.startUp();
+
+    gEventManager.registerListener<int>([](void *data) -> void {gAssetManager.getLua()["function"](data); return;});
 
     // todo should put this somewhere
     // todo should really look into doing an event based system as well
@@ -92,10 +96,13 @@ int main(int argc, char **argv) {
         gRenderManager.shutDown();
     }
     gAssetManager.shutDown();
+    gEventManager.shutDown();
 
 #ifndef NDEBUG // Dump profile data
     profiler::dumpBlocksToFile("./profile_data.prof");
 #endif
+
+    spdlog::drop_all();
 
     return 0;
 }
