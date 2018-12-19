@@ -4,18 +4,14 @@
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <typeindex>
 #include <map>
-#include "EventListener.h"
-#include "EventDispatcher.h"
-
-typedef void (* EventCallback)(void *data);
+#include "EventHandler.h"
 
 
 class EventManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
-    std::map<std::type_index, std::vector<EventCallback>> dispatchers;
+    std::map<EventType, std::vector<EventHandler>> handlers;
 public:
     EventManager();
 
@@ -25,23 +21,9 @@ public:
 
     void shutDown();
 
-    template <typename T>
-    void registerEventType() {
-        logger->debug("Registered event type {}", std::type_index(typeid(T)));
-        dispatchers.emplace(std::type_index(typeid(T)), std::vector<EventCallback>());
-    }
+    void registerHandler(EventType type, EventHandler handler);
 
-    template <typename T>
-    void registerListener(EventCallback callback) {
-        dispatchers[std::type_index(typeid(T))].emplace_back(callback);
-    }
-
-    template <typename T>
-    void push(T data) {
-        for (auto &listener : dispatchers[std::type_index(typeid(T))]) {
-            listener(data);
-        }
-    }
+    void push(Event &event);
 };
 
 

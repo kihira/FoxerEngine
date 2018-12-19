@@ -26,8 +26,14 @@ struct Variant {
 };
 
 class Event {
+private:
     EventType eventType;
     std::map<std::string, Variant> arguments;
+
+public:
+    EventType getType() const {
+        return eventType;
+    }
 };
 
 #endif //GAMEENGINE301CR_EVENT_H
