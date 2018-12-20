@@ -34,11 +34,6 @@ int main(int argc, char **argv) {
     gEntityManager.startUp();
     gSoundManager.startUp();
 
-    gEventManager.registerHandler<int>(EVENT_TYPE_LEVEL_STARTED, [](void *data) -> void {
-            gAssetManager.getLua()["function"](data);
-            return;
-        });
-
     // todo should put this somewhere
     // todo should really look into doing an event based system as well
     gNetworkManager.registerPacket({ENTITY_UPDATE_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, handlePhysicsUpdatePacket});

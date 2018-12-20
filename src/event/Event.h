@@ -2,8 +2,10 @@
 #ifndef GAMEENGINE301CR_EVENT_H
 #define GAMEENGINE301CR_EVENT_H
 
+#include "../StringId.h"
+
 enum EventType {
-    EVENT_TYPE_LEVEL_STARTED
+    EVENT_TYPE_LEVEL_STARTED = SID("EVENT_TYPE_LEVEL_STARTED")
 };
 
 struct Variant {
@@ -21,7 +23,7 @@ struct Variant {
         int asInteger;
         float asFloat;
         bool asBool;
-        unsigned int asStringId;
+        StringId asStringId;
     };
 };
 

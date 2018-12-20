@@ -6,7 +6,7 @@
 
 class EventHandler {
 public:
-    virtual bool onEvent(Event &event) = 0;
+    virtual bool onEvent(Event &event) { return false; };
 };
 
 #endif //GAMEENGINE301CR_EVENTLISTENER_H
