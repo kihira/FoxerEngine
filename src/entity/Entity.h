@@ -6,10 +6,11 @@
 #include <typeindex>
 #include <map>
 #include "Component.h"
+#include "../event/EventHandler.h"
 
 #define ENTITY_ID unsigned short
 
-class Entity {
+class Entity : public EventHandler {
 private:
     glm::vec3 position;
     glm::vec3 prevPosition;
@@ -21,6 +22,7 @@ private:
      */
     sol::function updateFn;
     sol::function onSpawnFn;
+    sol::function onEventFn;
 
     const ENTITY_ID id;
     std::string name;
@@ -36,6 +38,8 @@ public:
      * Used as part of the prototype pattern
      */
     std::shared_ptr<Entity> clone(ENTITY_ID id);
+
+    bool onEvent(Event &event) override;
 
     const glm::vec3 &getPosition() const;
 

@@ -81,3 +81,10 @@ void Entity::addComponent(std::type_index type, Component *component) {
     components.emplace(type, component);
 }
 
+bool Entity::onEvent(Event &event) {
+    if (onEventFn != sol::lua_nil) {
+        return onEventFn(event);
+    }
+    return false;
+}
+

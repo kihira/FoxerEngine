@@ -14,6 +14,7 @@
 #include "InputManager.h"
 #include "render/RenderManager.h"
 #include "physics/PhysicsManager.h"
+#include "event/EventManager.h"
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -93,8 +94,26 @@ void AssetManager::startUp() {
     engineTable["input"]["registerCursorHandler"] = [](sol::function handler) { gInputManager.registerCursorHandler(handler); };
 
     /*
-     * Register user types
+     * Register event stuff
      */
+    sol::table eventTable = engineTable.create_named("event");
+
+    // Register event type
+    eventTable.new_usertype<Event>(
+            "event",
+            sol::constructors<Event(EventType)>(),
+            "setBool", &Event::setArg<bool>,
+            "setFloat", &Event::setArg<float>,
+            "setInt", &Event::setArg<int>,
+            "setStringId", &Event::setArg<StringId>,
+            "getBool", &Event::getArg<bool>,
+            "getFloat", &Event::getArg<float>,
+            "getInt", &Event::getArg<int>,
+            "getStringId", &Event::getArg<StringId>,
+            "getType", &Event::getType
+    );
+
+    eventTable["push"] = [](Event event) { gEventManager.push(event); };
 
     /*
      * Register math stuff

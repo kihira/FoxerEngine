@@ -32,5 +32,10 @@ testEntity = {
 
         end
         engine.input.registerKeyHandler(keyHandler)
+    end,
+    onEvent = function(self, event)
+        if event.getType then
+
+        end
     end
 }
