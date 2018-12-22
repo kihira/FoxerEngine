@@ -6,11 +6,11 @@
 
 class EventHandler {
 public:
-    EventHandler() = default;
+    EventHandler();
 
-    virtual ~EventHandler() = default;
+    virtual ~EventHandler();
 
-    virtual bool onEvent(Event &event) {};
+    virtual bool onEvent(Event &event);
 };
 
 #endif //GAMEENGINE301CR_EVENTLISTENER_H
