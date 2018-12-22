@@ -12,6 +12,56 @@
 #include "packets/PhysicsUpdatePacket.h"
 #include "event/EventManager.h"
 
+void runMainLoop() {
+    double lastTickTime = 0.0;
+    double tickRate = 1 / 60.0;
+    double currentTime = glfwGetTime();
+    double delta = currentTime - lastTickTime;
+
+    // Main loop
+    while (!gRenderManager.shouldClose()) {
+        currentTime = glfwGetTime();
+        delta = currentTime - lastTickTime;
+        if (delta < tickRate) continue;
+
+        lastTickTime = currentTime;
+        while (delta >= tickRate) {
+            gRenderManager.frameStart();
+
+            gPhysicsManager.update();
+            gNetworkManager.update();
+            gEntityManager.update();
+            gRenderManager.update();
+            gSoundManager.update();
+
+            delta -= tickRate;
+        }
+    }
+}
+
+void runMainLoopServer() {
+    double lastTickTime = 0.0;
+    double tickRate = 1 / 60.0;
+    double currentTime = glfwGetTime();
+    double delta = currentTime - lastTickTime;
+
+    // Main loop
+    while (true) {
+        currentTime = glfwGetTime();
+        delta = currentTime - lastTickTime;
+        if (delta < tickRate) continue;
+
+        lastTickTime = currentTime;
+        while (delta >= tickRate) {
+            gPhysicsManager.update();
+            gNetworkManager.update();
+            gEntityManager.update();
+
+            delta -= tickRate;
+        }
+    }
+}
+
 int main(int argc, char **argv) {
 #ifndef NDEBUG // Enable profiler in debug mode
     EASY_PROFILER_ENABLE;
@@ -51,37 +101,10 @@ int main(int argc, char **argv) {
         gNetworkManager.connectToServer("localhost", 1234);
     }
 
-    double lastTickTime = 0.0;
-    double tickRate = 1 / 60.0;
-    double currentTime = glfwGetTime();
-    double delta = currentTime - lastTickTime;
-
-    // Main loop
-    while (server || !gRenderManager.shouldClose()) {
-        currentTime = glfwGetTime();
-        delta = currentTime - lastTickTime;
-        if (delta < tickRate) continue;
-
-        lastTickTime = currentTime;
-        while (delta >= tickRate) {
-            if (server) {
-                gPhysicsManager.update();
-                gNetworkManager.update();
-                gEntityManager.update();
-            } else {
-                gRenderManager.frameStart();
-
-                gPhysicsManager.update();
-                gNetworkManager.update();
-                gEntityManager.update();
-                gRenderManager.update();
-                gSoundManager.update();
-
-                gRenderManager.frameEnd();
-            }
-
-            delta -= tickRate;
-        }
+    if (server) {
+        runMainLoopServer();
+    } else {
+        runMainLoop();
     }
 
     // Shutdown subsystems
