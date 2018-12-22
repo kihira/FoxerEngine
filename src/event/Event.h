@@ -6,10 +6,6 @@
 #include <string>
 #include "../StringId.h"
 
-enum EventType {
-    EVENT_TYPE_LEVEL_STARTED = SID("EVENT_TYPE_LEVEL_STARTED"),
-    EVENT_TYPE_PLAYER_SPAWNED = SID("EVENT_TYPE_PLAYER_SPAWNED")
-};
 
 struct Variant {
     enum Type {
@@ -32,13 +28,13 @@ struct Variant {
 
 class Event {
 private:
-    EventType eventType;
+    StringId type;
     std::map<std::string, Variant> arguments;
 
 public:
-    explicit Event(EventType eventType);
+    explicit Event(StringId type);
 
-    EventType getType();
+    StringId getType();
 
     template <typename T>
     void setArg(const std::string &name, T value);

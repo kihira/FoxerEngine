@@ -101,7 +101,7 @@ void AssetManager::startUp() {
     // Register event type
     eventTable.new_usertype<Event>(
             "event",
-            sol::constructors<Event(EventType)>(),
+            sol::constructors<Event(StringId)>(),
             "setBool", &Event::setArg<bool>,
             "setFloat", &Event::setArg<float>,
             "setInt", &Event::setArg<int>,

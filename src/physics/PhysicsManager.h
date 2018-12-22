@@ -9,7 +9,7 @@
 #include "PhysicsComponent.h"
 
 
-class PhysicsManager : public b2ContactListener {
+class PhysicsManager : public b2ContactListener, public EventHandler {
 private:
     std::shared_ptr<spdlog::logger> logger;
     const int32 velocityIterations = 6;
@@ -53,6 +53,8 @@ public:
     void BeginContact(b2Contact *contact) override;
 
     void EndContact(b2Contact *contact) override;
+
+    bool onEvent(Event &event) override;
 };
 
 

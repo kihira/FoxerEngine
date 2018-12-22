@@ -1,9 +1,9 @@
 #include "Event.h"
 
-Event::Event(EventType eventType) : eventType(eventType) {}
+Event::Event(StringId type) : type(type) {}
 
-EventType Event::getType() {
-    return eventType;
+StringId Event::getType() {
+    return type;
 }
 
 template<typename T>

@@ -11,7 +11,7 @@
 class EventManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
-    std::map<EventType, std::vector<EventHandler>> handlers;
+    std::map<StringId, std::vector<EventHandler>> handlers;
 public:
     EventManager();
 
@@ -21,7 +21,7 @@ public:
 
     void shutDown();
 
-    void registerHandler(EventType type, EventHandler handler);
+    void registerHandler(StringId type, EventHandler handler);
 
     void push(Event &event);
 };

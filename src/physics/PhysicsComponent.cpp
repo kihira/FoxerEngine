@@ -59,8 +59,6 @@ void PhysicsComponent::setVelocity(glm::vec2 &velocity) {
     body->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
 }
 
-
-
 void PhysicsComponent::setPositionAndRotation(glm::vec2 &position, float rotation) {
     body->SetTransform(b2Vec2(position.x, position.y), rotation);
 }
