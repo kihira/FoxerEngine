@@ -1,5 +1,5 @@
 #include <memory>
-#include "../assert.h"
+#include "../util/assert.h"
 
 
 #ifndef GAMEENGINE301CR_COMPONENT_H

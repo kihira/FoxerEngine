@@ -4,7 +4,7 @@
 #include "EntityManager.h"
 #include "../Managers.h"
 #include "../network/NetworkManager.h"
-#include "../assert.h"
+#include "../util/assert.h"
 
 
 EntityManager::EntityManager() = default; // noop

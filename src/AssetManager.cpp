@@ -5,7 +5,7 @@
 #include <fstream>
 #include <stb_image.h>
 #include "Managers.h"
-#include "assert.h"
+#include "util/assert.h"
 #include "render/RenderComponent.h"
 #include "Box2D/Collision/Shapes/b2CircleShape.h"
 #include "Box2D/Collision/Shapes/b2PolygonShape.h"

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <easy/profiler.h>
 #include "../Managers.h"
-#include "../assert.h"
+#include "../util/assert.h"
 #include "NetworkManager.h"
 
 

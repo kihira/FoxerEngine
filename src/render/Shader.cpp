@@ -7,7 +7,7 @@
 #include <spdlog/spdlog.h>
 #include "Shader.h"
 #include "RenderManager.h"
-#include "../assert.h"
+#include "../util/assert.h"
 
 void Shader::registerUniform(std::string name) {
     if (uniforms.find(name) != uniforms.end()) {

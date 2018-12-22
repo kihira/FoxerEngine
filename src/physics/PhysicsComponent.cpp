@@ -1,6 +1,6 @@
 
 #include "PhysicsComponent.h"
-#include "../assert.h"
+#include "../util/assert.h"
 #include "../Managers.h"
 #include "PhysicsManager.h"
 

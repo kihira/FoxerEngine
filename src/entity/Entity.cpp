@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "Entity.h"
-#include "../vectors.h"
+#include "../util/Vectors.h"
 
 Entity::Entity(const unsigned short id, std::string name) : id(id), name(std::move(name)) {}
 

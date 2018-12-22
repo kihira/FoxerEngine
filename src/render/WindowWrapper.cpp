@@ -1,6 +1,6 @@
 
 #include "WindowWrapper.h"
-#include "../assert.h"
+#include "../util/assert.h"
 
 WindowWrapper::WindowWrapper(GLFWwindow *window) : window(window) {
     ASSERT(window != nullptr);
