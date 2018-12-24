@@ -101,6 +101,7 @@ int main(int argc, char **argv) {
         gNetworkManager.connectToServer("localhost", 1234);
     }
 
+    logger->info("Starting main loop...");
     if (server) {
         runMainLoopServer();
     } else {

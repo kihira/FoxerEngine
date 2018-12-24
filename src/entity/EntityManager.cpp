@@ -4,6 +4,7 @@
 #include "EntityManager.h"
 #include "../Managers.h"
 #include "../network/NetworkManager.h"
+#include "../event/EventManager.h"
 #include "../util/assert.h"
 
 
@@ -49,6 +50,10 @@ std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
     auto id = getEntityId();
     auto entity = prototype->clone(id);
     ASSERT(entity != nullptr);
+
+    auto event = Event(SID("EVENT_TYPE_ENTITY_SPAWN"));
+    event.setArg<short>("entityId", entity->getId());
+    gEventManager.push(event);
 
     entities.emplace(id, entity);
     return entity;

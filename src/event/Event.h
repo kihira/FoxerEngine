@@ -10,6 +10,7 @@
 struct Variant {
     enum Type {
         TYPE_INTEGER,
+        TYPE_SHORT,
         TYPE_FLOAT,
         TYPE_BOOL,
         TYPE_STRING_ID,

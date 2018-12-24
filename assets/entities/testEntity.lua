@@ -33,6 +33,10 @@ testEntity = {
         end
         engine.input.registerKeyHandler(keyHandler)
     end,
+    -- events to listen for
+    events = {
+        "EVENT_TYPE_SPAWN_ENTITY"
+    },
     onEvent = function(self, event)
         if event.getType then
 

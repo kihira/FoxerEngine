@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include "Event.h"
 
 Event::Event(StringId type) : type(type) {}
@@ -8,7 +9,7 @@ StringId Event::getType() {
 
 template<typename T>
 void Event::setArg(const std::string &name, T value) {
-
+    spdlog::get("event")->error("Attempting to set an unsupported arg {}", value);
 }
 
 template<typename T>
@@ -29,6 +30,15 @@ template<>
 void Event::setArg<int>(const std::string &name, int value) {
     Variant variant{};
     variant.type = Variant::TYPE_INTEGER;
+    variant.asInteger = value;
+
+    arguments[name] = variant;
+}
+
+template<>
+void Event::setArg<short>(const std::string &name, short value) {
+    Variant variant{};
+    variant.type = Variant::TYPE_SHORT;
     variant.asInteger = value;
 
     arguments[name] = variant;

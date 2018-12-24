@@ -508,6 +508,17 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         entity->addComponent<RenderComponent>(renderComponent);
     }
 
+    // Events
+    if (entityTable["events"] != sol::lua_nil) {
+        std::vector<const char *> eventIds = entityTable["events"].get<std::vector<const char *>>();
+        std::vector<StringId> events;
+        events.reserve(eventIds.size());
+        for (auto &eventId : eventIds) {
+            events.emplace_back(processString(eventId));
+        }
+        // todo register with event manager when entity itself is spawned
+    }
+
     gEntityManager.registerPrototype(tableName, entity);
     entityPrototypes[tableName] = entity;
     return entity;
