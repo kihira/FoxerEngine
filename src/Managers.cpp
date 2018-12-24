@@ -4,7 +4,7 @@
 #include "network/NetworkManager.h"
 #include "render/RenderManager.h"
 #include "entity/EntityManager.h"
-#include "SoundManager.h"
+#include "sound/SoundManager.h"
 #include "InputManager.h"
 #include "event/EventManager.h"
 
