@@ -22,9 +22,9 @@ void LevelManager::loadLevel(StringId level) {
     }
 
     // Load new level
-    activeLevel = gAssetManager.loadLevel();
+    // activeLevel = gAssetManager.loadLevel();
 
     // Post event
     auto event = Event(SID("EVENT_TYPE_LEVEL_LOAD"));
-    // event.setArg()
+    event.setArg("levelId", level);
 }

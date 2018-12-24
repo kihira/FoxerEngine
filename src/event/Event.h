@@ -10,6 +10,7 @@
 struct Variant {
     enum Type {
         TYPE_INTEGER,
+        TYPE_UNSIGNED_SHORT,
         TYPE_SHORT,
         TYPE_FLOAT,
         TYPE_BOOL,
@@ -20,17 +21,22 @@ struct Variant {
     Type type;
 
     union {
-        int asInteger;
+        int asInt;
+        unsigned short asUShort;
+        short asShort;
         float asFloat;
         bool asBool;
         StringId asStringId;
     };
 };
 
+/**
+ * A general class to hold data about an event
+ */
 class Event {
 private:
     StringId type;
-    std::map<std::string, Variant> arguments;
+    std::map<const char *, Variant> arguments;
 public:
     explicit Event(StringId type);
 
@@ -43,10 +49,10 @@ public:
     void push();
 
     template <typename T>
-    void setArg(const std::string &name, T value);
+    void setArg(const char *name, T value);
 
     template <typename T>
-    T getArg(const std::string &name);
+    T getArg(const char *name);
 };
 
 #endif //GAMEENGINE301CR_EVENT_H

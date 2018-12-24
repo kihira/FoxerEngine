@@ -10,12 +10,12 @@ StringId Event::getType() {
 }
 
 template<typename T>
-void Event::setArg(const std::string &name, T value) {
+void Event::setArg(const char *name, T value) {
     spdlog::get("event")->error("Attempting to set an unsupported arg {}", value);
 }
 
 template<typename T>
-T Event::getArg(const std::string &name) {
+T Event::getArg(const char *name) {
     return nullptr;
 }
 
@@ -24,7 +24,7 @@ void Event::push() {
 }
 
 template<>
-void Event::setArg<float>(const std::string &name, float value) {
+void Event::setArg<float>(const char *name, float value) {
     Variant variant{};
     variant.type = Variant::TYPE_FLOAT;
     variant.asFloat = value;
@@ -33,25 +33,34 @@ void Event::setArg<float>(const std::string &name, float value) {
 }
 
 template<>
-void Event::setArg<int>(const std::string &name, int value) {
+void Event::setArg<int>(const char *name, int value) {
     Variant variant{};
     variant.type = Variant::TYPE_INTEGER;
-    variant.asInteger = value;
+    variant.asInt = value;
 
     arguments[name] = variant;
 }
 
 template<>
-void Event::setArg<short>(const std::string &name, short value) {
+void Event::setArg<unsigned short>(const char *name, unsigned short value) {
+    Variant variant{};
+    variant.type = Variant::TYPE_UNSIGNED_SHORT;
+    variant.asUShort = value;
+
+    arguments[name] = variant;
+}
+
+template<>
+void Event::setArg<short>(const char *name, short value) {
     Variant variant{};
     variant.type = Variant::TYPE_SHORT;
-    variant.asInteger = value;
+    variant.asShort = value;
 
     arguments[name] = variant;
 }
 
 template<>
-void Event::setArg<bool>(const std::string &name, bool value) {
+void Event::setArg<bool>(const char *name, bool value) {
     Variant variant{};
     variant.type = Variant::TYPE_BOOL;
     variant.asBool = value;
@@ -60,7 +69,7 @@ void Event::setArg<bool>(const std::string &name, bool value) {
 }
 
 template<>
-void Event::setArg<StringId>(const std::string &name, StringId value) {
+void Event::setArg<StringId>(const char *name, StringId value) {
     Variant variant{};
     variant.type = Variant::TYPE_STRING_ID;
     variant.asStringId = value;
@@ -70,21 +79,31 @@ void Event::setArg<StringId>(const std::string &name, StringId value) {
 
 // todo error checking
 template<>
-float Event::getArg<float>(const std::string &name) {
+float Event::getArg<float>(const char *name) {
     return arguments[name].asFloat;
 }
 
 template<>
-int Event::getArg<int>(const std::string &name) {
-    return arguments[name].asInteger;
+int Event::getArg<int>(const char *name) {
+    return arguments[name].asInt;
 }
 
 template<>
-bool Event::getArg<bool>(const std::string &name) {
+unsigned short Event::getArg<unsigned short>(const char *name) {
+    return arguments[name].asUShort;
+}
+
+template<>
+short Event::getArg<short>(const char *name) {
+    return arguments[name].asShort;
+}
+
+template<>
+bool Event::getArg<bool>(const char *name) {
     return arguments[name].asBool;
 }
 
 template<>
-StringId Event::getArg<StringId>(const std::string &name) {
+StringId Event::getArg<StringId>(const char *name) {
     return arguments[name].asStringId;
 }
