@@ -1,5 +1,7 @@
 #include <spdlog/spdlog.h>
 #include "Event.h"
+#include "../Managers.h"
+#include "EventManager.h"
 
 Event::Event(StringId type) : type(type) {}
 
@@ -15,6 +17,10 @@ void Event::setArg(const std::string &name, T value) {
 template<typename T>
 T Event::getArg(const std::string &name) {
     return nullptr;
+}
+
+void Event::push() {
+    gEventManager.push(*this);
 }
 
 template<>

@@ -31,11 +31,16 @@ class Event {
 private:
     StringId type;
     std::map<std::string, Variant> arguments;
-
 public:
     explicit Event(StringId type);
 
     StringId getType();
+
+    /**
+     * Pushes the event into the event queue and prevents further changes.
+     * This is on the event itself so the event manager header file doesn't need to be included everywhere
+     */
+    void push();
 
     template <typename T>
     void setArg(const std::string &name, T value);

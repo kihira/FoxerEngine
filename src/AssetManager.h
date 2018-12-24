@@ -10,7 +10,7 @@
 #include "render/Mesh.h"
 #include "render/Shader.h"
 #include "entity/Entity.h"
-#include "level.h"
+#include "level/Level.h"
 #include "Settings.h"
 
 class AssetManager {

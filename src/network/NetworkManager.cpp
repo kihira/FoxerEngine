@@ -4,6 +4,7 @@
 #include "../Managers.h"
 #include "../util/assert.h"
 #include "NetworkManager.h"
+#include "../event/Event.h"
 
 
 NetworkManager::NetworkManager() = default; // noop
@@ -77,6 +78,11 @@ void NetworkManager::update() {
 
                     // Tell client of its id
                     sendToClient(clientData->clientId, CLIENT_DATA_ID, clientData, sizeof(ClientData));
+
+                    // Post event
+                    auto event = Event(SID("EVENT_TYPE_PLAYER_CONNECTED"));
+                    event.setArg<short>("clientId", clientData->clientId);
+                    event.push();
 
                     logger->info("Client ({:d}) connected to server", clientData->clientId);
                 } else {

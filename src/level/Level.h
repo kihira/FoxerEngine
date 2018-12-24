@@ -4,12 +4,16 @@
 
 #include <string>
 #include <sol.hpp>
+#include "../util/StringId.h"
 
 
 class Level {
 private:
     std::string name;
     sol::protected_function updateFn;
+    sol::function onEventFn;
+
+    std::vector<StringId> events;
 public:
     void update();
 
@@ -19,6 +23,9 @@ public:
 
     void setUpdateFn(const sol::protected_function &updateFn);
 
+    void setOnEventFn(const sol::function &onEventFn);
+
+    void setEvents(const std::vector<StringId> &events);
 };
 
 

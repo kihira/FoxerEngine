@@ -1,5 +1,5 @@
 
-#include "level.h"
+#include "Level.h"
 
 void Level::update() {
     if (updateFn != sol::lua_nil) {
@@ -22,4 +22,12 @@ const std::string &Level::getName() const {
 
 void Level::setName(const std::string &name) {
     Level::name = name;
+}
+
+void Level::setOnEventFn(const sol::function &onEventFn) {
+    Level::onEventFn = onEventFn;
+}
+
+void Level::setEvents(const std::vector<StringId> &events) {
+    Level::events = events;
 }

@@ -113,7 +113,7 @@ void AssetManager::startUp() {
             "getType", &Event::getType
     );
 
-    eventTable["push"] = [](Event event) { gEventManager.push(event); };
+    eventTable["push"] = [](Event &event) { gEventManager.push(event); };
 
     /*
      * Register math stuff
@@ -549,6 +549,19 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
         for (auto i = entitiesTable.begin(); i != entitiesTable.end(); i++) {
             // todo spawn entities
         }
+    }
+
+    // Events
+    if (levelTable["events"] != sol::lua_nil && levelTable["onEvent"] != sol::lua_nil) {
+        std::vector<const char *> eventIds = levelTable["events"].get<std::vector<const char *>>();
+        std::vector<StringId> events;
+        events.reserve(eventIds.size());
+        for (auto &eventId : eventIds) {
+            events.emplace_back(processString(eventId));
+        }
+
+        level->setOnEventFn(levelTable["onEvent"]);
+        level->setEvents(events);
     }
 
     levels.insert(std::make_pair(name, level));
