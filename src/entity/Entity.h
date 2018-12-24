@@ -27,6 +27,7 @@ private:
     const ENTITY_ID id;
     std::string name;
     std::map<std::type_index, Component *> components;
+    std::vector<StringId> events;
 public:
     Entity(ENTITY_ID id, std::string name);
 
@@ -55,7 +56,11 @@ public:
 
     void setOnSpawnFn(const sol::function &onSpawnFn);
 
+    void setOnEventFn(const sol::function &onEventFn);
+
     void setName(const std::string &name);
+
+    void setEvents(const std::vector<StringId> &events);
 
     const glm::vec3 &getPrevPosition() const;
 

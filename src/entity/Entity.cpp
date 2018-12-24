@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Entity.h"
 #include "../util/Vectors.h"
+#include "../Managers.h"
+#include "../event/EventManager.h"
 
 Entity::Entity(const unsigned short id, std::string name) : id(id), name(std::move(name)) {}
 
@@ -58,6 +60,15 @@ std::shared_ptr<Entity> Entity::clone(const unsigned short id) {
         newEntity->onSpawnFn(newEntity);
     }
 
+    // Setup events
+    if (onEventFn != sol::lua_nil) {
+        newEntity->setOnEventFn(onEventFn);
+        newEntity->setEvents(events);
+        for (auto &eventId : events) {
+            gEventManager.registerHandler(eventId, newEntity.get());
+        }
+    }
+
     return newEntity;
 }
 
@@ -86,5 +97,13 @@ bool Entity::onEvent(Event &event) {
         return onEventFn(event);
     }
     return false;
+}
+
+void Entity::setOnEventFn(const sol::function &onEventFn) {
+    Entity::onEventFn = onEventFn;
+}
+
+void Entity::setEvents(const std::vector<StringId> &events) {
+    Entity::events = events;
 }
 

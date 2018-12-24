@@ -34,6 +34,8 @@ void runMainLoop() {
             gRenderManager.update();
             gSoundManager.update();
 
+            gRenderManager.frameEnd();
+
             delta -= tickRate;
         }
     }
