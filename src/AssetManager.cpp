@@ -84,8 +84,8 @@ void AssetManager::startUp() {
 
     // Entity functions
     sol::table entityTable = engineTable.create_named("entity");
-    engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, std::string tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
-    engineTable["entity"]["spawnEntity"] = [](std::string name) -> std::shared_ptr<Entity> { return gEntityManager.spawn(name); };
+    engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, const char *tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
+    engineTable["entity"]["spawnEntity"] = [](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); };
     engineTable["entity"]["getEntity"] = [](ENTITY_ID id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
 
     // Input functions
@@ -154,7 +154,7 @@ void AssetManager::startUp() {
     // Register entity type
     entityTable.new_usertype<Entity>(
             "entity",
-            "new", sol::factories([](std::string id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(id); }),
+            "new", sol::factories([](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); }),
             // Register properties
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
@@ -418,7 +418,7 @@ std::shared_ptr<Shader> AssetManager::getErrorShader() {
     return shader;
 }
 
-std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, std::string tableName) {
+std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, const char *tableName) {
     auto it = entityPrototypes.find(tableName);
     if (it != entityPrototypes.end()) {
         return it->second;
@@ -521,7 +521,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         entity->setEvents(events);
     }
 
-    gEntityManager.registerPrototype(tableName, entity);
+    gEntityManager.registerPrototype(processString(tableName), entity);
     entityPrototypes[tableName] = entity;
     return entity;
 }

@@ -10,14 +10,14 @@
 #define ENTITY_SPAWN_ID 12
 
 struct EntitySpawnPacketData {
-    std::string prototypeName;
+    StringId prototypeId;
     ENTITY_ID entityId;
 };
 
 class EntityManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
-    std::map<std::string, std::shared_ptr<Entity>> prototypes;
+    std::map<StringId, std::shared_ptr<Entity>> prototypes;
     std::map<ENTITY_ID, std::shared_ptr<Entity>> entities;
 
     /**
@@ -46,14 +46,14 @@ public:
      * @param id The ID of the entity that can be used to spawn
      * @param prototype The prototype instance of the entity
      */
-    void registerPrototype(std::string id, std::shared_ptr<Entity> prototype);
+    void registerPrototype(StringId id, std::shared_ptr<Entity> prototype);
 
     /**
      * Spawns an entity from it's registered prototype with that ID
      * @param id The ID of the entity
      * @return The newly created entity
      */
-    std::shared_ptr<Entity> spawn(std::string id);
+    std::shared_ptr<Entity> spawn(StringId id);
 
     /**
      * Gets the entity with the specified id.

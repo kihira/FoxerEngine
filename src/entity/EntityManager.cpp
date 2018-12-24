@@ -16,7 +16,7 @@ void EntityManager::startUp() {
     logger = spdlog::stdout_color_mt("entity");
     SPDLOG_DEBUG("Entity Manager Start Up");
 
-    prototypes = std::map<std::string, std::shared_ptr<Entity>>();
+    prototypes = std::map<StringId, std::shared_ptr<Entity>>();
 
     // Register entity handling packets
     gNetworkManager.registerPacket({ENTITY_SPAWN_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
@@ -30,7 +30,7 @@ void EntityManager::shutDown() {
 }
 
 // todo it's a little confusing having individual entities using the term id and also id per prototype...
-void EntityManager::registerPrototype(std::string id, std::shared_ptr<Entity> prototype) {
+void EntityManager::registerPrototype(StringId id, std::shared_ptr<Entity> prototype) {
     ASSERT(prototype != nullptr);
     if (prototypes.find(id) != prototypes.end()) {
         logger->error("An entity with the id {} already exists", id);
@@ -39,7 +39,7 @@ void EntityManager::registerPrototype(std::string id, std::shared_ptr<Entity> pr
     prototypes.emplace(id, prototype);
 }
 
-std::shared_ptr<Entity> EntityManager::spawn(std::string name) {
+std::shared_ptr<Entity> EntityManager::spawn(StringId name) {
     if (prototypes.find(name) == prototypes.end()) {
         logger->error("Unable to find entity prototype with id: {}", name);
         return nullptr; // todo return error entity
@@ -78,11 +78,11 @@ void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dat
     if (gNetworkManager.isServer()) return; // Shouldn't process spawn packets on server
     EntitySpawnPacketData packetData = *(EntitySpawnPacketData *)data;
 
-    if (prototypes.find(packetData.prototypeName) == prototypes.end()) {
-        logger->error("Attempted to spawn a {} but no prototype was found", packetData.prototypeName);
+    if (prototypes.find(packetData.prototypeId) == prototypes.end()) {
+        logger->error("Attempted to spawn a {} but no prototype was found", packetData.prototypeId);
         return;
     }
-    auto entity = prototypes[packetData.prototypeName]->clone(packetData.entityId);
+    auto entity = prototypes[packetData.prototypeId]->clone(packetData.entityId);
 }
 
 std::shared_ptr<Entity> EntityManager::getEntity(ENTITY_ID id) {

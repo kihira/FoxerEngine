@@ -83,7 +83,7 @@ public:
      * @param tableName The table name of the entity in the file
      * @return The prototype entity that can be used for spawning
      */
-    std::shared_ptr<Entity> loadEntityPrototype(std::string fileName, std::string tableName);
+    std::shared_ptr<Entity> loadEntityPrototype(std::string fileName, const char *tableName);
 
     std::shared_ptr<Level> loadLevel(std::string name);
 
