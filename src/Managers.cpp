@@ -7,6 +7,7 @@
 #include "sound/SoundManager.h"
 #include "InputManager.h"
 #include "event/EventManager.h"
+#include "level/LevelManager.h"
 
 RenderManager gRenderManager;
 EntityManager gEntityManager;
@@ -16,3 +17,4 @@ SoundManager gSoundManager;
 AssetManager gAssetManager;
 InputManager gInputManager;
 EventManager gEventManager;
+LevelManager gLevelManager;

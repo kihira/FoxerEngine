@@ -151,6 +151,13 @@ void AssetManager::startUp() {
             sol::meta_function::division, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator/)
     );
 
+    /*
+     * Register network stuff
+     */
+    sol::table networkTable = engineTable.create_named("network");
+    networkTable["isServer"] = []() { return gNetworkManager.isServer(); };
+    networkTable["isClient"] = []() { return !gNetworkManager.isServer(); };
+
     // Register entity type
     entityTable.new_usertype<Entity>(
             "entity",

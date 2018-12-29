@@ -16,9 +16,11 @@ void LevelManager::shutDown() {
 }
 
 void LevelManager::loadLevel(StringId level) {
-    // Unload existing leve
+    // Unload existing level
     if (activeLevel != nullptr) {
-
+        auto event = Event(SID("EVENT_TYPE_LEVEL_UNLOAD"));
+        event.setArg("levelId", level);
+        event.push();
     }
 
     // Load new level
@@ -27,4 +29,5 @@ void LevelManager::loadLevel(StringId level) {
     // Post event
     auto event = Event(SID("EVENT_TYPE_LEVEL_LOAD"));
     event.setArg("levelId", level);
+    event.push();
 }
