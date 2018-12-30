@@ -11,7 +11,7 @@ constexpr unsigned int processString(const char *str) {
     int c = 0;
 
     while ((c = *str++)) {
-        hash = ((hash << 5) + hash) + c;
+        hash = ((hash << 5) + hash) ^ c;
     }
 
     return hash;

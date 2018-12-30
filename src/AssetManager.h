@@ -24,6 +24,7 @@ private:
     std::map<std::string, std::shared_ptr<Mesh>> meshes;
     std::map<std::string, std::shared_ptr<Entity>> entityPrototypes;
     std::map<std::string, std::shared_ptr<Level>> levels;
+    std::map<StringId, std::string> stringIds; // todo move into StringId?
 
     /**
      * Returns a default cube mesh that is used to show there is an error
@@ -37,7 +38,7 @@ private:
      */
     std::shared_ptr<Shader> getErrorShader();
 
-
+    void loadStringIds();
 public:
     AssetManager();
 

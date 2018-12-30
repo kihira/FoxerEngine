@@ -15,6 +15,7 @@
 #include "render/RenderManager.h"
 #include "physics/PhysicsManager.h"
 #include "event/EventManager.h"
+#include "network/NetworkManager.h"
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -75,6 +76,8 @@ AssetManager::~AssetManager() = default; // noop
 void AssetManager::startUp() {
     logger = spdlog::stdout_color_mt("asset");
 
+    loadStringIds();
+
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::io);
 
     sol::table engineTable = gAssetManager.getLua().create_named_table("engine"); // Namespace for interacting with the engine
@@ -82,11 +85,24 @@ void AssetManager::startUp() {
     // Load functions for lua
     // Can't pass a class instance as the 3rd parameter as it doesn't seem to work with extern
 
-    // Entity functions
+    /*
+     * Register entity stuff
+     */
     sol::table entityTable = engineTable.create_named("entity");
     engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, const char *tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
     engineTable["entity"]["spawnEntity"] = [](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); };
     engineTable["entity"]["getEntity"] = [](ENTITY_ID id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
+
+    // Register entity type
+    entityTable.new_usertype<Entity>(
+            "entity",
+            "new", sol::factories([](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); }),
+            // Register properties
+            "name", sol::property(&Entity::getName, &Entity::setName),
+            "position", sol::property(&Entity::getPosition, &Entity::setPosition),
+            "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
+            "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); }
+    );
 
     // Input functions
     sol::table inputTable = engineTable.create_named("input");
@@ -133,12 +149,6 @@ void AssetManager::startUp() {
             sol::meta_function::division, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator/)
     );
 
-    /*
-     * Register graphics stuff
-     */
-    sol::table graphicsTable = engineTable.create_named("graphics");
-    graphicsTable["getCamera"] = []() { return gRenderManager.getCamera(); };
-
     // Register vec2 type
     mathTable.new_usertype<glm::vec2>(
             "vec2",
@@ -152,22 +162,17 @@ void AssetManager::startUp() {
     );
 
     /*
+     * Register graphics stuff
+     */
+    sol::table graphicsTable = engineTable.create_named("graphics");
+    graphicsTable["getCamera"] = []() { return gRenderManager.getCamera(); };
+
+    /*
      * Register network stuff
      */
     sol::table networkTable = engineTable.create_named("network");
     networkTable["isServer"] = []() { return gNetworkManager.isServer(); };
     networkTable["isClient"] = []() { return !gNetworkManager.isServer(); };
-
-    // Register entity type
-    entityTable.new_usertype<Entity>(
-            "entity",
-            "new", sol::factories([](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); }),
-            // Register properties
-            "name", sol::property(&Entity::getName, &Entity::setName),
-            "position", sol::property(&Entity::getPosition, &Entity::setPosition),
-            "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
-            "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); }
-    );
 
     // Register physics component
     entityTable.new_usertype<PhysicsComponent>(
@@ -667,4 +672,28 @@ Settings *AssetManager::loadSettings() {
     settings->initialLevel = data["initialLevel"].get_or(std::string("mainmenu"));
 
     return settings;
+}
+
+void AssetManager::loadStringIds() {
+    std::ifstream file;
+    file.open(ASSETS_FOLDER "strings.txt");
+
+    if (!file.is_open()) {
+        logger->error("Failed to open string ID definitions file");
+        return;
+    }
+
+    std::string line;
+    while (getline(file, line)) {
+        auto spacePos = line.find(" ");
+        if (spacePos == std::string::npos) {
+            logger->error("Failed to properly parse string ID line: {}", line);
+            continue;
+        }
+
+        auto stringValue = line.substr(0, spacePos);
+        StringId stringId = std::stoul(line.substr(spacePos, std::string::npos));
+
+        stringIds.emplace(stringValue, stringId);
+    }
 }
