@@ -27,7 +27,7 @@ void NetworkManager::startUp() {
                            0,
                            ENET_PACKET_FLAG_RELIABLE,
                            [](int packetID, void *data, size_t dataLength) {
-                               enet_uint8 clientId = (*((ClientData *) data)).clientId;
+                               ClientId clientId = (*((ClientData *) data)).clientId;
                                gNetworkManager.clientId = clientId;
                                spdlog::get("network")->debug("Client ID is: {:d}", clientId);
                            }
@@ -81,7 +81,7 @@ void NetworkManager::update() {
 
                     // Post event
                     auto event = Event(SID("EVENT_TYPE_PLAYER_CONNECTED"));
-                    event.setArg<short>("clientId", clientData->clientId);
+                    event.setArg("clientId", clientData->clientId);
                     event.push();
 
                     logger->info("Client ({:d}) connected to server", clientData->clientId);
@@ -100,7 +100,17 @@ void NetworkManager::update() {
             }
             case ENET_EVENT_TYPE_DISCONNECT:
                 if (server) {
-                    logger->info("Client ({:d}) disconnected from server", ((ClientData *) event.peer)->clientId);
+                    // Remove client data
+                    auto clientId = static_cast<ClientData *>(event.peer->data)->clientId;
+                    delete clients[clientId];
+                    clients.erase(clientId);
+
+                    // Post event
+                    auto event = Event(SID("EVENT_TYPE_PLAYER_DISCONNECTED"));
+                    event.setArg("clientId", clientId);
+                    event.push();
+
+                    logger->info("Client ({:d}) disconnected from server", clientId);
                 } else {
                     logger->info("Disconnected from server");
                     peer = nullptr;
@@ -144,7 +154,7 @@ void NetworkManager::sendToAllClients(enet_uint8 packetID, void *data, size_t da
     enet_host_broadcast(host, meta.channel, packet);
 }
 
-void NetworkManager::sendToClient(enet_uint8 clientId, enet_uint8 packetID, void *data, size_t dataLength) {
+void NetworkManager::sendToClient(ClientId clientId, enet_uint8 packetID, void *data, size_t dataLength) {
     ASSERT(isServer());
 
     PacketMeta meta = packetHandlers[packetID];
@@ -191,4 +201,8 @@ bool NetworkManager::isServer() {
 enet_uint8 NetworkManager::getNewClientId() {
     lastClientId++;
     return lastClientId;
+}
+
+unsigned long NetworkManager::clientsCount() {
+    return clients.size();
 }

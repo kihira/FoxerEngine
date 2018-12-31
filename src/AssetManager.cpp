@@ -179,6 +179,7 @@ void AssetManager::startUp() {
     sol::table networkTable = engineTable.create_named("network");
     networkTable["isServer"] = []() { return gNetworkManager.isServer(); };
     networkTable["isClient"] = []() { return !gNetworkManager.isServer(); };
+    networkTable["clientsCount"] = []() { return gNetworkManager.clientsCount(); };
 
     // Network component
     networkTable.new_usertype<NetworkComponent>(

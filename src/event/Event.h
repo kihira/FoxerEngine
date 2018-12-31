@@ -36,7 +36,7 @@ struct Variant {
 class Event {
 private:
     StringId type;
-    std::map<const char *, Variant> arguments;
+    std::map<std::string, Variant> arguments;
 public:
     explicit Event(StringId type);
 
@@ -48,6 +48,7 @@ public:
      */
     void push();
 
+    // todo convert all the const char into std::string
     template <typename T>
     void setArg(const char *name, T value);
 

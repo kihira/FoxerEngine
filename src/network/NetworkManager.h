@@ -11,6 +11,7 @@
 #define CLIENT_DATA_ID 1
 
 typedef void (* PacketHandlerFn)(int packetID, void *data, size_t dataLength);
+typedef enet_uint16 ClientId;
 
 struct PacketMeta {
     enet_uint8 id;
@@ -20,7 +21,7 @@ struct PacketMeta {
 };
 
 struct ClientData {
-    enet_uint8 clientId;
+    ClientId clientId;
 };
 
 class NetworkManager {
@@ -33,8 +34,8 @@ private:
 
     // Server only data
     bool server; // Whether we are a server or not
-    enet_uint8 lastClientId = 0;
-    std::map<enet_uint8, ENetPeer *> clients; // List of clients mapped between their peer and id
+    ClientId lastClientId = 0;
+    std::map<ClientId, ENetPeer *> clients; // List of clients mapped between their peer and id
 
     // Client only data
     enet_uint8 clientId;
@@ -110,7 +111,7 @@ public:
      * @param data A pointer to the data that should be sent
      * @param dataLength The length of the data to be sent in bytes
      */
-    void sendToClient(enet_uint8 clientId, enet_uint8 packetID, void *data, size_t dataLength);
+    void sendToClient(ClientId clientId, enet_uint8 packetID, void *data, size_t dataLength);
 
     /**
      * As a client, attempts to connect to the provided address and port
@@ -124,6 +125,13 @@ public:
      * @return
      */
     bool isServer();
+
+    /**
+     * The number of connected clients to the server.
+     * Returns 0 if we're a client
+     * @return Number of connected clients, otherwise 0 if client
+     */
+    unsigned long clientsCount();
 };
 
 
