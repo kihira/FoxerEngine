@@ -3,11 +3,15 @@ level = {
     players = 2,
     update = function(self) end,
     events = {
-        "EVENT_TYPE_PLAYER_CONNECTED" --- 1994444546
+        "EVENT_TYPE_LEVEL_LOAD",
+        "EVENT_TYPE_PLAYER_CONNECTED"
     },
     onEvent = function(self, event)
-        if (event.type == 1994444546) then
+        if (event:type() == 1994444546) then --- EVENT_TYPE_PLAYER_CONNECTED
             print("Player connected!")
+        elseif event:type() == 1205121214 then --- EVENT_TYPE_LEVEL_LOAD
+            print("Level loaded!")
         end
+        return false;
     end
 }

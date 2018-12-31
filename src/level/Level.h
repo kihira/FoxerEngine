@@ -5,9 +5,10 @@
 #include <string>
 #include <sol.hpp>
 #include "../util/StringId.h"
+#include "../event/EventHandler.h"
 
 
-class Level {
+class Level : public EventHandler {
 private:
     std::string name;
     sol::protected_function updateFn;
@@ -26,6 +27,12 @@ public:
     void setOnEventFn(const sol::function &onEventFn);
 
     void setEvents(const std::vector<StringId> &events);
+
+    const std::vector<StringId> &getEvents() const;
+
+    bool canHandleEvents();
+
+    bool onEvent(Event &event) override;
 };
 
 

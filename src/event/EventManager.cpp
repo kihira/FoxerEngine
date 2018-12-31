@@ -25,6 +25,13 @@ void EventManager::registerHandler(StringId type, EventHandler *handler) {
     logger->debug("Registered event handler for {:d}", type);
 }
 
+void EventManager::registerHandler(const std::vector<StringId> &events, EventHandler *handler) {
+    for (auto event : events) {
+        registerHandler(event, handler);
+    }
+}
+
+
 void EventManager::push(Event &event) {
     for (auto handler : handlers[event.getType()]) {
         if (handler->onEvent(event)) {

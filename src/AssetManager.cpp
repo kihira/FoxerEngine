@@ -113,6 +113,7 @@ void AssetManager::startUp() {
      * Register event stuff
      */
     sol::table eventTable = engineTable.create_named("event");
+    eventTable["push"] = [](Event &event) { gEventManager.push(event); };
 
     // Register event type
     eventTable.new_usertype<Event>(
@@ -121,15 +122,18 @@ void AssetManager::startUp() {
             "setBool", &Event::setArg<bool>,
             "setFloat", &Event::setArg<float>,
             "setInt", &Event::setArg<int>,
+            "setShort", &Event::setArg<short>,
+            "setUShort", &Event::setArg<unsigned short>,
             "setStringId", &Event::setArg<StringId>,
             "getBool", &Event::getArg<bool>,
             "getFloat", &Event::getArg<float>,
             "getInt", &Event::getArg<int>,
+            "getShort", &Event::getArg<short>,
+            "getUShort", &Event::getArg<unsigned short>,
             "getStringId", &Event::getArg<StringId>,
-            "getType", &Event::getType
+            "type", &Event::getType,
+            "push", &Event::push
     );
-
-    eventTable["push"] = [](Event &event) { gEventManager.push(event); };
 
     /*
      * Register math stuff
@@ -577,7 +581,7 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
     }
 
     levels.insert(std::make_pair(name, level));
-    return std::shared_ptr<Level>();
+    return level;
 }
 
 

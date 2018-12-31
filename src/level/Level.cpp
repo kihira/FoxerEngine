@@ -31,3 +31,16 @@ void Level::setOnEventFn(const sol::function &onEventFn) {
 void Level::setEvents(const std::vector<StringId> &events) {
     Level::events = events;
 }
+
+const std::vector<StringId> &Level::getEvents() const {
+    return events;
+}
+
+bool Level::onEvent(Event &event) {
+    // We can make the assumption that this would never be registered as an event handler if onEventFn is null
+    return onEventFn(this, event);
+}
+
+bool Level::canHandleEvents() {
+    return onEventFn != sol::lua_nil;
+}

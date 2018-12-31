@@ -23,6 +23,8 @@ public:
 
     void registerHandler(StringId type, EventHandler *handler);
 
+    void registerHandler(const std::vector<StringId> &events, EventHandler *handler);
+
     void push(Event &event);
 };
 

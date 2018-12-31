@@ -94,7 +94,7 @@ void Entity::addComponent(std::type_index type, Component *component) {
 
 bool Entity::onEvent(Event &event) {
     if (onEventFn != sol::lua_nil) {
-        return onEventFn(event);
+        return onEventFn(this, event);
     }
     return false;
 }

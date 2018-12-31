@@ -2,6 +2,7 @@
 #include "LevelManager.h"
 #include "../Managers.h"
 #include "../AssetManager.h"
+#include "../event/EventManager.h"
 
 LevelManager::LevelManager() = default;
 
@@ -27,8 +28,18 @@ void LevelManager::loadLevel(const std::string &levelName) {
     logger->info("Loading level {}", levelName);
     activeLevel = gAssetManager.loadLevel(levelName);
 
+    // Register its events
+    if (activeLevel->canHandleEvents()) {
+        gEventManager.registerHandler(activeLevel->getEvents(), activeLevel.get());
+    }
+
     // Post event
-//    auto event = Event(SID("EVENT_TYPE_LEVEL_LOAD"));
-//    event.setArg("levelId", level);
-//    event.push();
+    auto event = Event(SID("EVENT_TYPE_LEVEL_LOAD"));
+    event.push();
+}
+
+void LevelManager::update() {
+    if (activeLevel != nullptr) {
+        activeLevel->update();
+    }
 }

@@ -20,6 +20,8 @@ public:
 
     void shutDown();
 
+    void update();
+
     void loadLevel(const std::string &levelName);
 };
 
