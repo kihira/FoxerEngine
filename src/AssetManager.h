@@ -6,7 +6,6 @@
 #include <glad/glad.h>
 #include <sol.hpp>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include "render/Mesh.h"
 #include "render/Shader.h"
 #include "entity/Entity.h"

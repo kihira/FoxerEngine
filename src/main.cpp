@@ -11,6 +11,7 @@
 #include "InputManager.h"
 #include "packets/PhysicsUpdatePacket.h"
 #include "event/EventManager.h"
+#include "level/LevelManager.h"
 
 void runMainLoop() {
     double lastTickTime = 0.0;
@@ -85,6 +86,7 @@ int main(int argc, char **argv) {
     gPhysicsManager.startUp();
     gEntityManager.startUp();
     gSoundManager.startUp();
+    gLevelManager.startUp();
 
     // todo should put this somewhere
     // todo should really look into doing an event based system as well
@@ -94,7 +96,7 @@ int main(int argc, char **argv) {
     gAssetManager.loadEntityPrototype("testEntity", "testEntity");
 
     // Load initial level
-    auto level = gAssetManager.loadLevel(gAssetManager.loadSettings()->initialLevel);
+    gLevelManager.loadLevel(gAssetManager.loadSettings()->initialLevel);
 
     // Start as server or connect to one
     if (server) {
@@ -111,6 +113,7 @@ int main(int argc, char **argv) {
     }
 
     // Shutdown subsystems
+    gLevelManager.shutDown();
     gSoundManager.shutDown();
     gEntityManager.shutDown();
     gPhysicsManager.shutDown();

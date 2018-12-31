@@ -3,10 +3,13 @@
 #define GAMEENGINE301CR_LEVELMANAGER_H
 
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include "Level.h"
 
 class LevelManager {
 private:
+    std::shared_ptr<spdlog::logger> logger;
     std::shared_ptr<Level> activeLevel;
 public:
     LevelManager();
@@ -17,7 +20,7 @@ public:
 
     void shutDown();
 
-    void loadLevel(StringId level);
+    void loadLevel(const std::string &levelName);
 };
 
 

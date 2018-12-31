@@ -669,7 +669,7 @@ Settings *AssetManager::loadSettings() {
 
     settings->cameraFov = data["camera"]["fov"].get_or(75.f);
 
-    settings->initialLevel = data["initialLevel"].get_or(std::string("mainmenu"));
+    settings->initialLevel = data["initialLevel"].get_or(std::string("mainmenu")).c_str();
 
     return settings;
 }
@@ -694,6 +694,6 @@ void AssetManager::loadStringIds() {
         auto stringValue = line.substr(0, spacePos);
         StringId stringId = std::stoul(line.substr(spacePos, std::string::npos));
 
-        stringIds.emplace(stringValue, stringId);
+        stringIds.emplace(stringId, stringValue);
     }
 }

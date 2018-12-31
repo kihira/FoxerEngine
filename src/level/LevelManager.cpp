@@ -8,26 +8,27 @@ LevelManager::LevelManager() = default;
 LevelManager::~LevelManager() = default;
 
 void LevelManager::startUp() {
-
+    logger = spdlog::stdout_color_mt("level");
 }
 
 void LevelManager::shutDown() {
 
 }
 
-void LevelManager::loadLevel(StringId level) {
+void LevelManager::loadLevel(const std::string &levelName) {
     // Unload existing level
-    if (activeLevel != nullptr) {
-        auto event = Event(SID("EVENT_TYPE_LEVEL_UNLOAD"));
-        event.setArg("levelId", level);
-        event.push();
-    }
+//    if (activeLevel != nullptr) {
+//        auto event = Event(SID("EVENT_TYPE_LEVEL_UNLOAD"));
+//        event.setArg("levelId", level);
+//        event.push();
+//    }
 
     // Load new level
-    // activeLevel = gAssetManager.loadLevel();
+    logger->info("Loading level {}", levelName);
+    activeLevel = gAssetManager.loadLevel(levelName);
 
     // Post event
-    auto event = Event(SID("EVENT_TYPE_LEVEL_LOAD"));
-    event.setArg("levelId", level);
-    event.push();
+//    auto event = Event(SID("EVENT_TYPE_LEVEL_LOAD"));
+//    event.setArg("levelId", level);
+//    event.push();
 }
