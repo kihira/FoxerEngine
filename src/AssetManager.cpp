@@ -16,6 +16,7 @@
 #include "physics/PhysicsManager.h"
 #include "event/EventManager.h"
 #include "network/NetworkManager.h"
+#include "network/NetworkComponent.h"
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -101,7 +102,8 @@ void AssetManager::startUp() {
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
-            "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); }
+            "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); },
+            "getNetworkComponent", [](std::shared_ptr<Entity> entity) -> NetworkComponet * { return entity->getComponent<NetworkComponent>(); }
     );
 
     // Input functions
@@ -177,6 +179,13 @@ void AssetManager::startUp() {
     sol::table networkTable = engineTable.create_named("network");
     networkTable["isServer"] = []() { return gNetworkManager.isServer(); };
     networkTable["isClient"] = []() { return !gNetworkManager.isServer(); };
+
+    // Network component
+    networkTable.new_usertype<NetworkComponent>(
+            "network",
+            "", sol::no_constructor,
+            "hasAuthority", &NetworkComponent::hasAuthority
+    );
 
     // Register physics component
     entityTable.new_usertype<PhysicsComponent>(

@@ -8,7 +8,7 @@
 #include "../packets/PhysicsUpdatePacket.h"
 
 void NetworkComponent::update() {
-    if (!hasAuthority) return;
+    if (!isAuthoritive) return;
 
     auto physicsComponent = entity->getComponent<PhysicsComponent>();
     if (glm::length(entity->getPrevPosition() - entity->getPosition()) > 0.5f ||
@@ -29,10 +29,14 @@ void NetworkComponent::update() {
 }
 
 Component *NetworkComponent::clone(std::shared_ptr<Entity> entity) {
-    auto newComponent = new NetworkComponent(entity, hasAuthority);
+    auto newComponent = new NetworkComponent(entity, isAuthoritive);
     return newComponent;
 }
 
 NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, bool hasAuthority) : Component(entity),
-                                                                                               hasAuthority(
+                                                                                               isAuthoritive(
                                                                                                        hasAuthority) {}
+
+bool NetworkComponent::hasAuthority() const {
+    return isAuthoritive;
+}
