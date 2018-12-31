@@ -4,7 +4,6 @@
 
 
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include "Entity.h"
 
 #define ENTITY_SPAWN_ID 12

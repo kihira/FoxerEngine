@@ -13,7 +13,7 @@ EntityManager::EntityManager() = default; // noop
 EntityManager::~EntityManager() = default; // noop
 
 void EntityManager::startUp() {
-    logger = spdlog::stdout_color_mt("entity");
+    logger = spdlog::get("main")->clone("entity");
     SPDLOG_DEBUG("Entity Manager Start Up");
 
     prototypes = std::map<StringId, std::shared_ptr<Entity>>();

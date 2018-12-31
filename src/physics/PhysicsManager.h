@@ -4,7 +4,6 @@
 
 #include <Box2D/Box2D.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <vector>
 #include "PhysicsComponent.h"
 

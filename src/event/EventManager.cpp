@@ -6,7 +6,7 @@ EventManager::EventManager() = default;
 EventManager::~EventManager() = default;
 
 void EventManager::startUp() {
-    logger = spdlog::stdout_color_mt("event");
+    logger = spdlog::get("main")->clone("event");
 
     // Register some default events
     handlers.emplace(SID("EVENT_TYPE_LEVEL_STARTED"), std::vector<EventHandler *>());

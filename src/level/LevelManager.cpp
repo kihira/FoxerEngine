@@ -9,7 +9,7 @@ LevelManager::LevelManager() = default;
 LevelManager::~LevelManager() = default;
 
 void LevelManager::startUp() {
-    logger = spdlog::stdout_color_mt("level");
+    logger = spdlog::get("main")->clone("level");
 }
 
 void LevelManager::shutDown() {

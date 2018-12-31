@@ -5,7 +5,6 @@
 
 #include <enet/enet.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <map>
 
 #define CLIENT_DATA_ID 1

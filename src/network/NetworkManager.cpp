@@ -12,7 +12,7 @@ NetworkManager::NetworkManager() = default; // noop
 NetworkManager::~NetworkManager() = default; // noop
 
 void NetworkManager::startUp() {
-    logger = spdlog::stdout_color_mt("network");
+    logger = spdlog::get("main")->clone("network");
 
     if (enet_initialize() != 0) {
         logger->error("Failed to initialise ENet");

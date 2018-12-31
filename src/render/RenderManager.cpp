@@ -9,7 +9,7 @@ RenderManager::RenderManager() = default;
 RenderManager::~RenderManager() = default;
 
 void RenderManager::startUp() {
-    logger = spdlog::stdout_color_mt("renderer");
+    logger = spdlog::get("main")->clone("renderer");
 
     glfwSetErrorCallback(glfwErrorCallback);
 

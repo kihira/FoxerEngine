@@ -75,7 +75,7 @@ AssetManager::AssetManager() = default; // noop
 AssetManager::~AssetManager() = default; // noop
 
 void AssetManager::startUp() {
-    logger = spdlog::stdout_color_mt("asset");
+    logger = spdlog::get("main")->clone("asset");
 
     loadStringIds();
 
