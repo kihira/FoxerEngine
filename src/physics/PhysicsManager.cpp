@@ -41,6 +41,10 @@ void PhysicsManager::addPhysicsComponent(PhysicsComponent *component) {
     components.emplace_back(component);
 }
 
+void PhysicsManager::setGravity(const glm::vec2 &gravity) {
+    world->SetGravity(b2Vec2(gravity.x, gravity.y));
+}
+
 void PhysicsManager::BeginContact(b2Contact *contact) {
     auto componentA = static_cast<PhysicsComponent *>(contact->GetFixtureA()->GetUserData());
     auto componentB = static_cast<PhysicsComponent *>(contact->GetFixtureB()->GetUserData());
@@ -65,4 +69,9 @@ bool PhysicsManager::onEvent(Event &event) {
             break;
     }
     return false;
+}
+
+const glm::vec2 PhysicsManager::getGravity() const {
+    auto gravity = world->GetGravity();
+    return glm::vec2(gravity.x, gravity.y);
 }

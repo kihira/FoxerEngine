@@ -103,7 +103,7 @@ void AssetManager::startUp() {
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
             "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); },
-            "getNetworkComponent", [](std::shared_ptr<Entity> entity) -> NetworkComponet * { return entity->getComponent<NetworkComponent>(); }
+            "getNetworkComponent", [](std::shared_ptr<Entity> entity) -> NetworkComponent * { return entity->getComponent<NetworkComponent>(); }
     );
 
     // Input functions
@@ -182,14 +182,21 @@ void AssetManager::startUp() {
 
     // Network component
     networkTable.new_usertype<NetworkComponent>(
-            "network",
+            "networkComponent",
             "", sol::no_constructor,
             "hasAuthority", &NetworkComponent::hasAuthority
     );
 
-    // Register physics component
-    entityTable.new_usertype<PhysicsComponent>(
-            "physics",
+    /*
+     * Register physics stuff
+     */
+    sol::table physicsTable = engineTable.create_named("physics");
+    physicsTable["setGravity"] = [](glm::vec2 &gravity) { gPhysicsManager.setGravity(gravity); };
+    physicsTable["getGravity"] = []() -> const glm::vec2 { return gPhysicsManager.getGravity(); };
+
+    // Physics component
+    physicsTable.new_usertype<PhysicsComponent>(
+            "physicsComponent",
             "", sol::no_constructor,
             "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity)
     );

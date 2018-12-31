@@ -50,6 +50,19 @@ public:
 
     void addPhysicsComponent(PhysicsComponent *component);
 
+    /**
+     * Sets the gravity for the active world.
+     * NOTE: This affects the x z plane, not the y plane
+     * @param gravity The new gravity value
+     */
+    void setGravity(const glm::vec2 &gravity);
+
+    /**
+     * Gets the gravity for the active world
+     * @return The gravity
+     */
+    const glm::vec2 getGravity() const;
+
     void BeginContact(b2Contact *contact) override;
 
     void EndContact(b2Contact *contact) override;
