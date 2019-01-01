@@ -170,12 +170,6 @@ void AssetManager::startUp() {
     );
 
     /*
-     * Register graphics stuff
-     */
-    sol::table graphicsTable = engineTable.create_named("graphics");
-    graphicsTable["getCamera"] = []() { return gRenderManager.getCamera(); };
-
-    /*
      * Register network stuff
      */
     sol::table networkTable = engineTable.create_named("network");

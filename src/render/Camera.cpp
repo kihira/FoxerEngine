@@ -8,7 +8,9 @@ Camera::Camera(const glm::vec3 &position, const glm::vec3 &target, float fov, fl
 }
 
 void Camera::resize(int width, int height) {
-    projection = glm::perspective(glm::radians(fov), (float) width / (float) height, near_, far_);
+    Camera::width = width;
+    Camera::height = height;
+    updateProjectionMatrix();
 }
 
 const glm::mat4 &Camera::getProjection() const {
@@ -31,4 +33,25 @@ void Camera::setTarget(const glm::vec3 &target) {
 
 void Camera::updateViewMatrix() {
     view = glm::lookAt(position, target, glm::vec3(0.f, 1.f, 0.f));
+}
+
+const glm::vec3 &Camera::getPosition() const {
+    return position;
+}
+
+const glm::vec3 &Camera::getTarget() const {
+    return target;
+}
+
+float Camera::getFov() const {
+    return fov;
+}
+
+void Camera::setFov(float fov) {
+    Camera::fov = fov;
+    updateProjectionMatrix();
+}
+
+void Camera::updateProjectionMatrix() {
+    projection = glm::perspective(glm::radians(fov), (float) width / (float) height, near_, far_);
 }

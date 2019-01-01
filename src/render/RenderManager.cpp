@@ -57,6 +57,19 @@ void RenderManager::startUp() {
     // Set OpenGL state stuff
     glClearColor(0.5, 0.5, 0, 1);
     glDisable(GL_CULL_FACE);
+
+    // Register lua stuff
+    sol::table graphicsTable = gAssetManager.getLua().get<sol::table>("engine").create_named("graphics");
+    graphicsTable["camera"] = gRenderManager.getCamera();
+
+    // Register camera type
+    graphicsTable.new_usertype<Camera>(
+            "CameraType",
+            "", sol::no_constructor,
+            "position", sol::property(&Camera::getPosition, &Camera::setPosition),
+            "target", sol::property(&Camera::getTarget, &Camera::setTarget),
+            "fov", sol::property(&Camera::getFov, &Camera::setFov)
+    );
 }
 
 void RenderManager::shutDown() {
