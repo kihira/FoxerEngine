@@ -21,7 +21,7 @@ level = {
             print("Client ID: " .. event:getUShort("clientId"))
         elseif event:type() == 1205121214 then --- EVENT_TYPE_LEVEL_LOAD
             print("Level loaded!")
-            engine.entity.spawnEntity("ENTITY_PLAYER")
+            -- engine.entity.spawnEntity("ENTITY_PLAYER")
         end
         return false;
     end
