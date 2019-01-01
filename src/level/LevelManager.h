@@ -21,7 +21,11 @@ public:
 
     void update();
 
-    void loadLevel(const std::string &levelName);
+    /**
+     * Loads a level with the specified level ID and unloads the existing one
+     * @param levelId ID of the level
+     */
+    void loadLevel(StringId levelId);
 
     bool onEvent(Event &event) override;
 };

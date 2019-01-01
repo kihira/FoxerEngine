@@ -44,3 +44,7 @@ bool Level::onEvent(Event &event) {
 bool Level::canHandleEvents() {
     return onEventFn != sol::lua_nil;
 }
+
+StringId Level::getId() const {
+    return id;
+}

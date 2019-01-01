@@ -10,6 +10,7 @@
 
 class Level : public EventHandler {
 private:
+    StringId id;
     std::string name;
     sol::protected_function updateFn;
     sol::function onEventFn;
@@ -31,6 +32,8 @@ public:
     const std::vector<StringId> &getEvents() const;
 
     bool canHandleEvents();
+
+    StringId getId() const;
 
     bool onEvent(Event &event) override;
 };

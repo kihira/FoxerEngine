@@ -6,10 +6,6 @@
 
 class EventHandler {
 public:
-    EventHandler();
-
-    virtual ~EventHandler();
-
     virtual bool onEvent(Event &event) = 0;
 };
 
