@@ -22,6 +22,9 @@ void NetworkManager::startUp() {
 
     logger->info("ENet {:d}.{:d}.{:d}", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
 
+    auto event = Event(SID("EVENT_TYPE_NETWORK_STARTUP"));
+    event.push();
+
     // Register handler for network handshakes
     registerPacket(
             {
@@ -55,6 +58,9 @@ void NetworkManager::startServer() {
         logger->error("Failed to start server on {:d}:{:d}", address.host, address.port);
         exit(EXIT_FAILURE);
     }
+
+    auto event = Event(SID("EVENT_TYPE_SERVER_START"));
+    event.push();
 }
 
 void NetworkManager::stopServer() {
@@ -174,6 +180,9 @@ void NetworkManager::packetFreeCallback(ENetPacket *packet) {
 void NetworkManager::connectToServer(const char *address, enet_uint16 port) {
     enet_address_set_host(&this->address, address);
     this->address.port = port;
+
+    auto event = Event(SID("EVENT_TYPE_CLIENT_START"));
+    event.push();
 
     host = enet_host_create(nullptr, 1, 2, 0, 0);
     peer = enet_host_connect(host, &this->address, 2, 0);

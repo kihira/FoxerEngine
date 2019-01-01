@@ -98,6 +98,7 @@ void AssetManager::startUp() {
     entityTable.new_usertype<Entity>(
             "entity",
             "new", sol::factories([](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); }),
+            "id", &Entity::getId,
             // Register properties
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),

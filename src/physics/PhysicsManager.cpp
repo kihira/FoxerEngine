@@ -12,6 +12,9 @@ void PhysicsManager::startUp() {
     b2Vec2 gravity(0.f, 0.f);
     world = new b2World(gravity);
     world->SetContactListener(this);
+
+    auto event = Event(SID("EVENT_TYPE_PHYSICS_STARTUP"));
+    event.push();
 }
 
 void PhysicsManager::shutDown() {

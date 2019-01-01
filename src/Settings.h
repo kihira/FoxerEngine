@@ -10,7 +10,7 @@ struct Settings {
 
     float cameraFov = 75.f;
 
-    std::string initialLevel = "mainmenu";
+    StringId initialLevel = 0;
 };
 
 #endif //GAMEENGINE301CR_SETTINGS_H

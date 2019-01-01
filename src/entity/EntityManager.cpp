@@ -52,7 +52,7 @@ std::shared_ptr<Entity> EntityManager::spawn(StringId name) {
     ASSERT(entity != nullptr);
 
     auto event = Event(SID("EVENT_TYPE_ENTITY_SPAWN"));
-    event.setArg<short>("entityId", entity->getId());
+    event.setArg("entityId", entity->getId());
     gEventManager.push(event);
 
     entities.emplace(id, entity);

@@ -35,11 +35,13 @@ testEntity = {
     end,
     -- events to listen for
     events = {
-        "EVENT_TYPE_SPAWN_ENTITY"
+        "EVENT_TYPE_ENTITY_SPAWN"
     },
     onEvent = function(self, event)
-        if event.getType then
-
+        if event:type() == 791803502 then
+            if event:getUShort("entityId") == self:id() then
+                print("We've spawned!")
+            end
         end
     end
 }
