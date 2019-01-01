@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 #include "Level.h"
 
-class LevelManager {
+class LevelManager : public EventHandler {
 private:
     std::shared_ptr<spdlog::logger> logger;
     std::shared_ptr<Level> activeLevel;
@@ -22,6 +22,8 @@ public:
     void update();
 
     void loadLevel(const std::string &levelName);
+
+    bool onEvent(Event &event) override;
 };
 
 

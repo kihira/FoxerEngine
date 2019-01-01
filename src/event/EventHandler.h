@@ -10,7 +10,7 @@ public:
 
     virtual ~EventHandler();
 
-    virtual bool onEvent(Event &event);
+    virtual bool onEvent(Event &event) = 0;
 };
 
 #endif //GAMEENGINE301CR_EVENTLISTENER_H

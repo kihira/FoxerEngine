@@ -7,13 +7,14 @@
 #include <spdlog/spdlog.h>
 #include <map>
 
-#define CLIENT_DATA_ID 1
+#define PACKET_ID_CLIENT_DATA 1
 
 typedef void (* PacketHandlerFn)(int packetID, void *data, size_t dataLength);
 typedef enet_uint16 ClientId;
+typedef enet_uint8 PacketId;
 
 struct PacketMeta {
-    enet_uint8 id;
+    PacketId id;
     enet_uint8 channel;
     ENetPacketFlag packetFlag;
     PacketHandlerFn packetHandler;
@@ -29,7 +30,7 @@ private:
     ENetHost *host;
     ENetPeer *peer;
     std::shared_ptr<spdlog::logger> logger;
-    std::map<enet_uint8, PacketMeta> packetHandlers;
+    std::map<PacketId, PacketMeta> packetHandlers;
 
     // Server only data
     bool server; // Whether we are a server or not
@@ -37,7 +38,7 @@ private:
     std::map<ClientId, ENetPeer *> clients; // List of clients mapped between their peer and id
 
     // Client only data
-    enet_uint8 clientId;
+    ClientId clientId;
 
     /**
      * Builds a ENet packet from the data provided so it is able to be sent
@@ -52,7 +53,7 @@ private:
      * Returns a client ID that is currently not in use
      * @return
      */
-    enet_uint8 getNewClientId();
+    ClientId getNewClientId();
 
     static void packetFreeCallback(ENetPacket *packet);
 public:
@@ -94,7 +95,7 @@ public:
      * @param data A pointer to the data that should be sent
      * @param dataLength The length of the data to be sent in bytes
      */
-    void sendToServer(enet_uint8 packetID, void *data, size_t dataLength);
+    void sendToServer(PacketId packetID, void *data, size_t dataLength);
 
     /**
      * As a server, sends a packet to all connected clients
@@ -102,7 +103,7 @@ public:
      * @param data A pointer to the data that should be sent
      * @param dataLength The length of the data to be sent in bytes
      */
-    void sendToAllClients(enet_uint8 packetID, void *data, size_t dataLength);
+    void sendToAllClients(PacketId packetID, void *data, size_t dataLength);
 
     /**
      * As a server, sends a packet to the specific client
@@ -110,7 +111,7 @@ public:
      * @param data A pointer to the data that should be sent
      * @param dataLength The length of the data to be sent in bytes
      */
-    void sendToClient(ClientId clientId, enet_uint8 packetID, void *data, size_t dataLength);
+    void sendToClient(ClientId clientId, PacketId packetID, void *data, size_t dataLength);
 
     /**
      * As a client, attempts to connect to the provided address and port

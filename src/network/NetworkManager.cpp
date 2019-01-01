@@ -22,16 +22,17 @@ void NetworkManager::startUp() {
     logger->info("ENet {:d}.{:d}.{:d}", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
 
     // Register handler for network handshakes
-    registerPacket({
-                           CLIENT_DATA_ID,
-                           0,
-                           ENET_PACKET_FLAG_RELIABLE,
-                           [](int packetID, void *data, size_t dataLength) {
-                               ClientId clientId = (*((ClientData *) data)).clientId;
-                               gNetworkManager.clientId = clientId;
-                               spdlog::get("network")->debug("Client ID is: {:d}", clientId);
-                           }
-                   });
+    registerPacket(
+            {
+                    PACKET_ID_CLIENT_DATA,
+                    0,
+                    ENET_PACKET_FLAG_RELIABLE,
+                    [](int packetID, void *data, size_t dataLength) {
+                        ClientId clientId = static_cast<ClientData *>(data)->clientId;
+                        gNetworkManager.clientId = clientId;
+                        spdlog::get("network")->debug("Client ID is: {:d}", clientId);
+                    }
+            });
 }
 
 void NetworkManager::shutDown() {
@@ -77,7 +78,7 @@ void NetworkManager::update() {
                     clients[clientData->clientId] = event.peer;
 
                     // Tell client of its id
-                    sendToClient(clientData->clientId, CLIENT_DATA_ID, clientData, sizeof(ClientData));
+                    sendToClient(clientData->clientId, PACKET_ID_CLIENT_DATA, clientData, sizeof(ClientData));
 
                     // Post event
                     auto event = Event(SID("EVENT_TYPE_PLAYER_CONNECTED"));
@@ -136,7 +137,7 @@ void NetworkManager::registerPacket(PacketMeta meta) {
     logger->debug("Register packet handler. ID: {:d}", meta.id);
 }
 
-void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLength) {
+void NetworkManager::sendToServer(PacketId packetID, void *data, size_t dataLength) {
     ASSERT(!isServer());
 
     PacketMeta meta = packetHandlers[packetID];
@@ -145,7 +146,7 @@ void NetworkManager::sendToServer(enet_uint8 packetID, void *data, size_t dataLe
     enet_peer_send(peer, meta.channel, packet);
 }
 
-void NetworkManager::sendToAllClients(enet_uint8 packetID, void *data, size_t dataLength) {
+void NetworkManager::sendToAllClients(PacketId packetID, void *data, size_t dataLength) {
     ASSERT(isServer());
 
     PacketMeta meta = packetHandlers[packetID];
@@ -154,7 +155,7 @@ void NetworkManager::sendToAllClients(enet_uint8 packetID, void *data, size_t da
     enet_host_broadcast(host, meta.channel, packet);
 }
 
-void NetworkManager::sendToClient(ClientId clientId, enet_uint8 packetID, void *data, size_t dataLength) {
+void NetworkManager::sendToClient(ClientId clientId, PacketId packetID, void *data, size_t dataLength) {
     ASSERT(isServer());
 
     PacketMeta meta = packetHandlers[packetID];
@@ -183,10 +184,10 @@ void NetworkManager::connectToServer(const char *address, enet_uint16 port) {
 
 ENetPacket *NetworkManager::buildPacket(PacketMeta meta, void *data, size_t dataLength) {
     // Append packet ID to the start of the packet so we know what to do with it on the other end
-    void *newData = malloc(sizeof(enet_uint8) + dataLength);
-    memcpy(newData, &meta.id, sizeof(enet_uint8));
-    memcpy(static_cast<char *>(newData) + sizeof(enet_uint8), data, dataLength);
-    dataLength += sizeof(enet_uint8);
+    void *newData = malloc(sizeof(PacketId) + dataLength);
+    memcpy(newData, &meta.id, sizeof(PacketId));
+    memcpy(static_cast<char *>(newData) + sizeof(PacketId), data, dataLength);
+    dataLength += sizeof(PacketId);
 
     ENetPacket *packet = enet_packet_create(newData, dataLength, meta.packetFlag);
     packet->freeCallback = NetworkManager::packetFreeCallback;
@@ -198,7 +199,7 @@ bool NetworkManager::isServer() {
     return server;
 }
 
-enet_uint8 NetworkManager::getNewClientId() {
+ClientId NetworkManager::getNewClientId() {
     lastClientId++;
     return lastClientId;
 }
