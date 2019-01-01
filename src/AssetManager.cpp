@@ -77,6 +77,8 @@ AssetManager::~AssetManager() = default; // noop
 void AssetManager::startUp() {
     logger = spdlog::get("main")->clone("asset");
 
+    loadDatabase();
+
     loadStringIds();
 
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::io);
@@ -560,16 +562,19 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
     return entity;
 }
 
-std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
-    auto it = levels.find(name);
+std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
+    auto it = levels.find(id);
     if (it != levels.end()) {
         return it->second;
     }
 
-    auto result = lua.script_file(ASSETS_FOLDER "levels/" + name + ASSETS_EXT);
+    // Get file from database
+    std::string levelFileName = lua["database"]["levels"][id];
+
+    auto result = lua.script_file(ASSETS_FOLDER "levels/" + levelFileName);
     if (!result.valid()) {
         sol::error err = result;
-        logger->error("Failed to run lua file for level {}: {}", name, err.what());
+        logger->error("Failed to run lua file for level {}: {}", levelFileName, err.what());
     }
 
     // Load data from lua file
@@ -598,7 +603,7 @@ std::shared_ptr<Level> AssetManager::loadLevel(std::string name) {
         level->setEvents(events);
     }
 
-    levels.insert(std::make_pair(name, level));
+    levels.insert(std::make_pair(id, level));
     return level;
 }
 
@@ -691,7 +696,7 @@ Settings *AssetManager::loadSettings() {
 
     settings->cameraFov = data["camera"]["fov"].get_or(75.f);
 
-    settings->initialLevel = data["initialLevel"].get_or(std::string("mainmenu")).c_str();
+    settings->initialLevel = processString(data["initialLevel"].get_or(std::string("mainmenu")).c_str());
 
     return settings;
 }
@@ -718,4 +723,8 @@ void AssetManager::loadStringIds() {
 
         stringIds.emplace(stringId, stringValue);
     }
+}
+
+void AssetManager::loadDatabase() {
+    lua.script_file(ASSETS_FOLDER "database.lua");
 }

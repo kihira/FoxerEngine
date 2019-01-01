@@ -22,7 +22,7 @@ private:
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
     std::map<std::string, std::shared_ptr<Mesh>> meshes;
     std::map<std::string, std::shared_ptr<Entity>> entityPrototypes;
-    std::map<std::string, std::shared_ptr<Level>> levels;
+    std::map<StringId, std::shared_ptr<Level>> levels;
     std::map<StringId, std::string> stringIds; // todo move into StringId?
 
     /**
@@ -36,6 +36,8 @@ private:
      * @return
      */
     std::shared_ptr<Shader> getErrorShader();
+
+    void loadDatabase();
 
     void loadStringIds();
 public:
@@ -85,7 +87,7 @@ public:
      */
     std::shared_ptr<Entity> loadEntityPrototype(std::string fileName, const char *tableName);
 
-    std::shared_ptr<Level> loadLevel(std::string name);
+    std::shared_ptr<Level> loadLevel(StringId id);
 
     GLuint loadTexture(std::string name);
 

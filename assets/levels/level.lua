@@ -1,4 +1,5 @@
 level = {
+    id = 248972157, --- LEVEL_1
     name = "Level 1",
     players = 2,
     update = function(self) end,

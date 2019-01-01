@@ -7,5 +7,5 @@ return {
     camera = {
         fov = 75
     },
-    initialLevel = "level"
+    initialLevel = "LEVEL_1"
 }
