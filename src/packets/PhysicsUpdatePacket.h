@@ -12,7 +12,7 @@
 #define ENTITY_UPDATE_ID 11
 
 struct PhysicsUpdatePacketData {
-    ENTITY_ID entityId;
+    EntityId entityId;
     glm::vec2 position;
     float rotation;
     glm::vec2 velocity;

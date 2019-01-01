@@ -94,7 +94,7 @@ void AssetManager::startUp() {
     sol::table entityTable = engineTable.create_named("entity");
     engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, const char *tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
     engineTable["entity"]["spawnEntity"] = [](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); };
-    engineTable["entity"]["getEntity"] = [](ENTITY_ID id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
+    engineTable["entity"]["getEntity"] = [](EntityId id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
 
     // Register entity type
     entityTable.new_usertype<Entity>(
@@ -585,8 +585,14 @@ std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
     // Load entities
     if (levelTable["entities"] != sol::lua_nil) {
         sol::table entitiesTable = levelTable["entities"];
-        for (auto i = entitiesTable.begin(); i != entitiesTable.end(); i++) {
-            // todo spawn entities
+        for (auto i = 0; i < entitiesTable.size(); i++) {
+            sol::table entityTable = entitiesTable[i];
+            StringId prototypeId = entityTable["prototypeId"];
+            EntityId entityId = entityTable["entityId"];
+
+            // Spawn entity
+            auto entity = gEntityManager.spawn(prototypeId, entityId);
+            entity->setPosition(entityTable["position"]);
         }
     }
 

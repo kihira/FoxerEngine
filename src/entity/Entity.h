@@ -8,7 +8,7 @@
 #include "Component.h"
 #include "../event/EventHandler.h"
 
-#define ENTITY_ID unsigned short
+typedef unsigned short EntityId;
 
 class Entity : public EventHandler {
 private:
@@ -24,12 +24,12 @@ private:
     sol::function onSpawnFn;
     sol::function onEventFn;
 
-    const ENTITY_ID id;
+    const EntityId id;
     std::string name;
     std::map<std::type_index, Component *> components;
     std::vector<StringId> events;
 public:
-    Entity(ENTITY_ID id, std::string name);
+    Entity(EntityId id, std::string name);
 
     void update();
 
@@ -38,7 +38,7 @@ public:
      *
      * Used as part of the prototype pattern
      */
-    std::shared_ptr<Entity> clone(ENTITY_ID id);
+    std::shared_ptr<Entity> clone(EntityId id);
 
     bool onEvent(Event &event) override;
 
@@ -66,7 +66,7 @@ public:
 
     const glm::vec3 &getPrevRotation() const;
 
-    const ENTITY_ID getId() const;
+    const EntityId getId() const;
 
     void addComponent(std::type_index type, Component *component);
 

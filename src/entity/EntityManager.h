@@ -10,19 +10,19 @@
 
 struct EntitySpawnPacketData {
     StringId prototypeId;
-    ENTITY_ID entityId;
+    EntityId entityId;
 };
 
 class EntityManager {
 private:
     std::shared_ptr<spdlog::logger> logger;
     std::map<StringId, std::shared_ptr<Entity>> prototypes;
-    std::map<ENTITY_ID, std::shared_ptr<Entity>> entities;
+    std::map<EntityId, std::shared_ptr<Entity>> entities;
 
     /**
      * Gets a new entity ID that is not currently in use;
      */
-    unsigned short getEntityId();
+    EntityId getEntityId();
 public:
     EntityManager();
 
@@ -49,10 +49,20 @@ public:
 
     /**
      * Spawns an entity from it's registered prototype with that ID
-     * @param id The ID of the entity
+     * @param prototypeId The ID of the entity
      * @return The newly created entity
      */
-    std::shared_ptr<Entity> spawn(StringId id);
+    std::shared_ptr<Entity> spawn(StringId prototypeId);
+
+    /**
+     * Spawns an entity with an ID already set.
+     * This should be used when you know the ID is not in use (such as when spawning level defined entities)
+     * DOES NOT fire the EVENT_TYPE_SPAWN_ENTITY event
+     * @param prototypeId ID of the prototype entity
+     * @param entityId ID of the entity
+     * @return The newly created entity
+     */
+    std::shared_ptr<Entity> spawn(StringId prototypeId, EntityId entityId);
 
     /**
      * Gets the entity with the specified id.
@@ -60,7 +70,7 @@ public:
      * @param id The ID of the entity
      * @return The entity
      */
-    std::shared_ptr<Entity> getEntity(ENTITY_ID id);
+    std::shared_ptr<Entity> getEntity(EntityId id);
 
     /**
      * Callback for when an entity spawn packet is received

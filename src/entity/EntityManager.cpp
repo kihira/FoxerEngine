@@ -39,13 +39,13 @@ void EntityManager::registerPrototype(StringId id, std::shared_ptr<Entity> proto
     prototypes.emplace(id, prototype);
 }
 
-std::shared_ptr<Entity> EntityManager::spawn(StringId name) {
-    if (prototypes.find(name) == prototypes.end()) {
-        logger->error("Unable to find entity prototype with id: {}", name);
+std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId) {
+    if (prototypes.find(prototypeId) == prototypes.end()) {
+        logger->error("Unable to find entity prototype with id: {}", prototypeId);
         return nullptr; // todo return error entity
     }
 
-    auto prototype = prototypes[name];
+    auto prototype = prototypes[prototypeId];
     ASSERT(prototype != nullptr);
     auto id = getEntityId();
     auto entity = prototype->clone(id);
@@ -59,10 +59,29 @@ std::shared_ptr<Entity> EntityManager::spawn(StringId name) {
     return entity;
 }
 
+std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId, EntityId entityId) {
+    if (prototypes.find(prototypeId) == prototypes.end()) {
+        logger->error("Unable to find entity prototype with id: {}", prototypeId);
+        return nullptr; // todo return error entity
+    }
+
+    auto prototype = prototypes[prototypeId];
+    ASSERT(prototype != nullptr);
+    auto entity = prototype->clone(entityId);
+    ASSERT(entity != nullptr);
+
+//    auto event = Event(SID("EVENT_TYPE_ENTITY_SPAWN"));
+//    event.setArg("entityId", entity->getId());
+//    gEventManager.push(event);
+
+    entities.emplace(entityId, entity);
+    return entity;
+}
+
 inline unsigned short EntityManager::getEntityId() {
-    unsigned short id = 0;
+    unsigned short id = static_cast<EntityId>(rand() % USHRT_MAX);
     while (entities.find(id) != entities.end()) {
-        id = static_cast<unsigned short>(rand() % USHRT_MAX);
+        id = static_cast<EntityId>(rand() % USHRT_MAX);
     }
     return id;
 }
@@ -85,7 +104,7 @@ void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dat
     auto entity = prototypes[packetData.prototypeId]->clone(packetData.entityId);
 }
 
-std::shared_ptr<Entity> EntityManager::getEntity(ENTITY_ID id) {
+std::shared_ptr<Entity> EntityManager::getEntity(EntityId id) {
     if (entities.find(id) == entities.end()) {
         return nullptr;
     }

@@ -2,6 +2,14 @@ level = {
     id = 248972157, --- LEVEL_1
     name = "Level 1",
     players = 2,
+    entities = {
+        {
+            prototypeId = 123456789,
+            entityId = 123456789,
+            position = engine.math.vec3(1, 0, 1),
+            rotation = engine.math.vec3(0, 0, 0)
+        }
+    },
     update = function(self) end,
     events = {
         "EVENT_TYPE_LEVEL_LOAD",
