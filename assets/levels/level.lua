@@ -4,10 +4,10 @@ level = {
     players = 2,
     entities = {
         {
-            prototypeId = 123456789,
-            entityId = 123456789,
-            position = engine.math.vec3(1, 0, 1),
-            rotation = engine.math.vec3(0, 0, 0)
+            prototypeId = 591432690,
+            entityId = 12345,
+            position = engine.math.vec3.new(1, 0, 1),
+            rotation = engine.math.vec3.new(0, 0, 0)
         }
     },
     update = function(self) end,
@@ -21,7 +21,7 @@ level = {
             print("Client ID: " .. event:getUShort("clientId"))
         elseif event:type() == 1205121214 then --- EVENT_TYPE_LEVEL_LOAD
             print("Level loaded!")
-            engine.entity.spawnEntity("testEntity")
+            engine.entity.spawnEntity("ENTITY_PLAYER")
         end
         return false;
     end

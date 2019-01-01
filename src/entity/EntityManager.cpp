@@ -1,11 +1,10 @@
 
 #include <easy/profiler.h>
-#include <spdlog/spdlog.h>
 #include "EntityManager.h"
 #include "../Managers.h"
 #include "../network/NetworkManager.h"
-#include "../event/EventManager.h"
 #include "../util/assert.h"
+#include "../AssetManager.h"
 
 
 EntityManager::EntityManager() = default; // noop
@@ -41,8 +40,7 @@ void EntityManager::registerPrototype(StringId id, std::shared_ptr<Entity> proto
 
 std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId) {
     if (prototypes.find(prototypeId) == prototypes.end()) {
-        logger->error("Unable to find entity prototype with id: {}", prototypeId);
-        return nullptr; // todo return error entity
+        gAssetManager.loadEntityPrototype(prototypeId);
     }
 
     auto prototype = prototypes[prototypeId];
@@ -53,7 +51,7 @@ std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId) {
 
     auto event = Event(SID("EVENT_TYPE_ENTITY_SPAWN"));
     event.setArg("entityId", entity->getId());
-    gEventManager.push(event);
+    event.push();
 
     entities.emplace(id, entity);
     return entity;
@@ -61,8 +59,7 @@ std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId) {
 
 std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId, EntityId entityId) {
     if (prototypes.find(prototypeId) == prototypes.end()) {
-        logger->error("Unable to find entity prototype with id: {}", prototypeId);
-        return nullptr; // todo return error entity
+        gAssetManager.loadEntityPrototype(prototypeId);
     }
 
     auto prototype = prototypes[prototypeId];
@@ -78,8 +75,8 @@ std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId, EntityId enti
     return entity;
 }
 
-inline unsigned short EntityManager::getEntityId() {
-    unsigned short id = static_cast<EntityId>(rand() % USHRT_MAX);
+inline EntityId EntityManager::getEntityId() {
+    auto id = static_cast<EntityId>(rand() % USHRT_MAX);
     while (entities.find(id) != entities.end()) {
         id = static_cast<EntityId>(rand() % USHRT_MAX);
     }

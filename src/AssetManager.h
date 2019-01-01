@@ -21,7 +21,7 @@ private:
     std::map<std::string, GLuint> textures;
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
     std::map<std::string, std::shared_ptr<Mesh>> meshes;
-    std::map<std::string, std::shared_ptr<Entity>> entityPrototypes;
+    std::map<StringId, std::shared_ptr<Entity>> entityPrototypes;
     std::map<StringId, std::shared_ptr<Level>> levels;
     std::map<StringId, std::string> stringIds; // todo move into StringId?
 
@@ -81,11 +81,10 @@ public:
 
     /**
      * Loads an entity class that can then be spawned later on
-     * @param fileName The name of the file EXCLUDING the extension
-     * @param tableName The table name of the entity in the file
+     * @param id The StringId of the entity
      * @return The prototype entity that can be used for spawning
      */
-    std::shared_ptr<Entity> loadEntityPrototype(std::string fileName, const char *tableName);
+    std::shared_ptr<Entity> loadEntityPrototype(StringId id);
 
     std::shared_ptr<Level> loadLevel(StringId id);
 

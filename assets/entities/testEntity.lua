@@ -1,4 +1,4 @@
-testEntity = {
+return {
     name = "Test Entity",
     position = engine.math.vec3.new(0.0),
     physicsComponent = {

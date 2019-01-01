@@ -92,7 +92,6 @@ void AssetManager::startUp() {
      * Register entity stuff
      */
     sol::table entityTable = engineTable.create_named("entity");
-    engineTable["entity"]["registerEntityPrototype"] = [](std::string fileName, const char *tableName) -> std::shared_ptr<Entity> { return gAssetManager.loadEntityPrototype(fileName, tableName); };
     engineTable["entity"]["spawnEntity"] = [](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); };
     engineTable["entity"]["getEntity"] = [](EntityId id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
 
@@ -454,20 +453,23 @@ std::shared_ptr<Shader> AssetManager::getErrorShader() {
     return shader;
 }
 
-std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, const char *tableName) {
-    auto it = entityPrototypes.find(tableName);
+std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
+    auto it = entityPrototypes.find(id);
     if (it != entityPrototypes.end()) {
         return it->second;
     }
 
-    lua.script_file(ASSETS_FOLDER "entities/" + fileName + ASSETS_EXT);
+    // Get file from database
+    std::string fileName = lua["database"]["entities"][id];
 
     auto def = glm::vec3(0.f);
 
     // Load data from lua file and bind functions
-    sol::table entityTable = lua[tableName];
+    sol::table entityTable = lua.script_file(ASSETS_FOLDER "entities/" + fileName);
     std::string name = entityTable["name"].get_or(fileName);
+
     auto entity = std::make_shared<Entity>(0, name);
+
     entity->setUpdateFn(entityTable["update"]);
     entity->setOnSpawnFn(entityTable["onSpawn"]);
     entity->setPosition(entityTable["position"].get_or(def));
@@ -557,8 +559,8 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(std::string fileName, 
         entity->setEvents(events);
     }
 
-    gEntityManager.registerPrototype(processString(tableName), entity);
-    entityPrototypes[tableName] = entity;
+    gEntityManager.registerPrototype(id, entity);
+    entityPrototypes[id] = entity;
     return entity;
 }
 
@@ -571,6 +573,7 @@ std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
     // Get file from database
     std::string levelFileName = lua["database"]["levels"][id];
 
+    // Load level file
     auto result = lua.script_file(ASSETS_FOLDER "levels/" + levelFileName);
     if (!result.valid()) {
         sol::error err = result;
@@ -585,8 +588,8 @@ std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
     // Load entities
     if (levelTable["entities"] != sol::lua_nil) {
         sol::table entitiesTable = levelTable["entities"];
-        for (auto i = 0; i < entitiesTable.size(); i++) {
-            sol::table entityTable = entitiesTable[i];
+        for (auto entry : entitiesTable) {
+            sol::table entityTable = entry.second;
             StringId prototypeId = entityTable["prototypeId"];
             EntityId entityId = entityTable["entityId"];
 

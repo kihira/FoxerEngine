@@ -92,9 +92,6 @@ int main(int argc, char **argv) {
     // todo should really look into doing an event based system as well
     gNetworkManager.registerPacket({ENTITY_UPDATE_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, handlePhysicsUpdatePacket});
 
-    // Register entity prototypes
-    gAssetManager.loadEntityPrototype("testEntity", "testEntity");
-
     // Load initial level
     gLevelManager.loadLevel(gAssetManager.loadSettings()->initialLevel);
 
