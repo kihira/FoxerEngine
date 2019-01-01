@@ -22,7 +22,7 @@
 #define ASSETS_FOLDER "./assets/"
 #define ASSETS_EXT ".lua"
 #define ERR_SHADER "ERROR"
-#define ERR_MESH "ERROR"
+#define ERR_MESH SID("MESH_ERROR")
 #define ERR_SIZE 1024
 
 #define ERR_STR_LOAD_ASSET "Failed to load asset definition for {}"
@@ -212,29 +212,19 @@ void AssetManager::shutDown() {
     delete settings;
 }
 
-std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
-    auto it = meshes.find(name);
+std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
+    auto it = meshes.find(id);
     if (it != meshes.end()) {
         return it->second;
     }
 
-    auto result = lua.script_file(ASSETS_FOLDER "meshes/" + name + ASSETS_EXT);
-    if (!result.valid()) {
-        logger->error(ERR_STR_LOAD_ASSET, name);
-        return getErrorMesh();
-    }
-    sol::table assetData = result;
-
-    if (assetData["texture"] != sol::lua_nil) {
-        // todo use texture somehow
-        loadTexture(assetData["texture"]);
-    }
+    std::string assetData = lua["database"]["meshes"][id];
 
     // Attempt to load file
     std::ifstream file;
-    file.open(ASSETS_FOLDER "meshes/" + assetData["file"].get_or(std::string(ERR_MESH)), std::ios::in);
+    file.open(ASSETS_FOLDER "meshes/" + assetData, std::ios::in);
     if (!file) {
-        logger->error("Error opening mesh file: {}", name);
+        logger->error("Error opening mesh file: {}", id);
         return getErrorMesh();
     }
 
@@ -287,7 +277,7 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(std::string name) {
     GLERRCHECK();
 
     auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, 0, GL_TRIANGLES, GL_UNSIGNED_SHORT);
-    meshes.insert(std::make_pair(name, mesh));
+    meshes.emplace(id, mesh);
     return mesh;
 }
 
@@ -530,7 +520,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
     // Create Render Component
     if (entityTable["renderComponent"] != sol::lua_nil) {
         auto renderTable = entityTable["renderComponent"];
-        auto meshId = renderTable["mesh"].get_or(std::string(ERR_MESH));
+        auto meshId = renderTable["mesh"].get_or(ERR_MESH);
         auto shaderId = renderTable["shader"].get_or(std::string(ERR_SHADER));
         auto mesh = loadMesh(meshId);
         auto shader = loadShaderProgram(shaderId);
@@ -632,19 +622,15 @@ void AssetManager::cleanup() {
     }
 }
 
-GLuint AssetManager::loadTexture(std::string name) {
-    auto it = textures.find(name);
+GLuint AssetManager::loadTexture(StringId id) {
+    auto it = textures.find(id);
     if (it != textures.end()) {
         return it->second;
     }
 
-    auto table = lua.script_file(ASSETS_FOLDER "textures/" + name + ASSETS_EXT);
-    if (!table.valid()) {
-        logger->error(ERR_STR_LOAD_ASSET, name);
-        return 0;
-    }
-    sol::table data = table;
-    std::string textureFile = data["file"].get_or(std::string("error.png"));
+    sol::table assetData = lua["database"]["textures"][id];
+    std::string textureFile = assetData["file"].get_or(std::string("error.png"));
+
     int width, height, channels;
     auto textureData = stbi_load((ASSETS_FOLDER "textures/" + textureFile).c_str(), &width, &height, &channels, 4);
 
@@ -659,15 +645,15 @@ GLuint AssetManager::loadTexture(std::string name) {
 
     // Load and set image options
     // todo should do some proper parsing and error checking
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, data["wrapU"].get_or(GL_REPEAT));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, data["wrapV"].get_or(GL_REPEAT));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, assetData["wrapU"].get_or(GL_REPEAT));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, assetData["wrapV"].get_or(GL_REPEAT));
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, data["minFilter"].get_or(GL_NEAREST));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, data["magFilter"].get_or(GL_LINEAR));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, assetData["minFilter"].get_or(GL_NEAREST));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, assetData["magFilter"].get_or(GL_LINEAR));
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
 
-    if (data["mipmaps"].get_or(true)) {
+    if (assetData["mipmaps"].get_or(true)) {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
@@ -676,7 +662,7 @@ GLuint AssetManager::loadTexture(std::string name) {
     // Free image data
     stbi_image_free(textureData);
 
-    textures.insert(std::make_pair(name, textureId));
+    textures.emplace(id, textureId);
     return textureId;
 }
 

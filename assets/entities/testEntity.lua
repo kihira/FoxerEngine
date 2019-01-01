@@ -11,7 +11,7 @@ return {
         end
     },
     renderComponent = {
-        mesh = "testMesh"
+        mesh = 591432690
     },
     update = function(self)
         -- print("Hello, my name is " .. self.name)
@@ -38,7 +38,7 @@ return {
         "EVENT_TYPE_ENTITY_SPAWN"
     },
     onEvent = function(self, event)
-        if event:type() == 791803502 then
+        if event:type() == 791803502 then -- EVENT_TYPE_ENTITY_SPAWN
             if event:getUShort("entityId") == self:id() then
                 print("We've spawned!")
             end

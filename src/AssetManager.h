@@ -18,9 +18,9 @@ private:
     sol::state lua;
     Settings *settings;
     std::map<std::string, GLuint> shaders;
-    std::map<std::string, GLuint> textures;
+    std::map<StringId, GLuint> textures;
     std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
-    std::map<std::string, std::shared_ptr<Mesh>> meshes;
+    std::map<StringId, std::shared_ptr<Mesh>> meshes;
     std::map<StringId, std::shared_ptr<Entity>> entityPrototypes;
     std::map<StringId, std::shared_ptr<Level>> levels;
     std::map<StringId, std::string> stringIds; // todo move into StringId?
@@ -62,7 +62,7 @@ public:
      * @param name
      * @return
      */
-    std::shared_ptr<Mesh> loadMesh(std::string name);
+    std::shared_ptr<Mesh> loadMesh(StringId id);
 
     /**
      * Retrieves a loaded shader or attempts to load it from disk
@@ -88,7 +88,7 @@ public:
 
     std::shared_ptr<Level> loadLevel(StringId id);
 
-    GLuint loadTexture(std::string name);
+    GLuint loadTexture(StringId name);
 
     Settings *loadSettings();
 
