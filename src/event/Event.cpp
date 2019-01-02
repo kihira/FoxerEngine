@@ -5,6 +5,10 @@
 
 Event::Event(StringId type) : type(type) {}
 
+Event::Event(const char *type) {
+    Event::type = processString(type);
+}
+
 StringId Event::getType() {
     return type;
 }

@@ -40,6 +40,8 @@ private:
 public:
     explicit Event(StringId type);
 
+    explicit Event(const char *type);
+
     StringId getType();
 
     /**

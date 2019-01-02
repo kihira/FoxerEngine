@@ -25,7 +25,7 @@ void LevelManager::startUp() {
         PACKET_ID_LEVEL_LOAD,
         0,
         ENET_PACKET_FLAG_RELIABLE,
-        [](int packetID, void *data, size_t dataLength) {
+        [](PacketId packetID, void *data, size_t dataLength) {
             StringId levelId = static_cast<LevelInfoPacket *>(data)->levelId;
             gLevelManager.loadLevel(levelId);
         }

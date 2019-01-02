@@ -18,9 +18,15 @@ void EntityManager::startUp() {
     prototypes = std::map<StringId, std::shared_ptr<Entity>>();
 
     // Register entity handling packets
-    gNetworkManager.registerPacket({ENTITY_SPAWN_ID, 0, ENET_PACKET_FLAG_UNSEQUENCED, [](int packetID, void *data, size_t dataLength){
-        gEntityManager.handleEntitySpawnPacket(packetID, data, dataLength);
-    }});
+    gNetworkManager.registerPacket(
+            {
+                    ENTITY_SPAWN_ID,
+                    0,
+                    ENET_PACKET_FLAG_UNSEQUENCED,
+                    [](PacketId packetID, void *data, size_t dataLength) {
+                        gEntityManager.handleEntitySpawnPacket(packetID, data, dataLength);
+                    }
+            });
     SPDLOG_DEBUG("Entity Manager Start Up Complete");
 }
 

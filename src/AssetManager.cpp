@@ -119,19 +119,24 @@ void AssetManager::startUp() {
     // Register event type
     eventTable.new_usertype<Event>(
             "event",
-            sol::constructors<Event(StringId)>(),
+            sol::constructors<Event(StringId), Event(const char *)>(),
             "setBool", &Event::setArg<bool>,
-            "setFloat", &Event::setArg<float>,
-            "setInt", &Event::setArg<int>,
-            "setShort", &Event::setArg<short>,
-            "setUShort", &Event::setArg<unsigned short>,
-            "setStringId", &Event::setArg<StringId>,
             "getBool", &Event::getArg<bool>,
+            "setFloat", &Event::setArg<float>,
             "getFloat", &Event::getArg<float>,
+            "setInt", &Event::setArg<int>,
             "getInt", &Event::getArg<int>,
+            "setShort", &Event::setArg<short>,
             "getShort", &Event::getArg<short>,
+            "setUShort", &Event::setArg<unsigned short>,
             "getUShort", &Event::getArg<unsigned short>,
+            "setStringId", &Event::setArg<StringId>,
             "getStringId", &Event::getArg<StringId>,
+            "setUInt", &Event::setArg<StringId>,
+            "getUInt", &Event::getArg<StringId>,
+                    // Entity ID
+            "setEntityId", &Event::setArg<EntityId>,
+            "getEntityId", &Event::getArg<EntityId>,
             "type", &Event::getType,
             "push", &Event::push
     );

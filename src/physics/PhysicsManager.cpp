@@ -65,12 +65,6 @@ void PhysicsManager::EndContact(b2Contact *contact) {
 }
 
 bool PhysicsManager::onEvent(Event &event) {
-    switch (event.getType()) {
-        case SID("EVENT_TYPE_PHYSICS_UPDATE"):
-            break;
-        default:
-            break;
-    }
     return false;
 }
 

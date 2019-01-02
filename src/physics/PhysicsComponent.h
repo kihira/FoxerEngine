@@ -48,6 +48,12 @@ public:
 
     void setPositionAndRotation(glm::vec2 &position, float rotation);
 
+    /**
+     * Sets the angular velocity for the body
+     * @param velocity
+     */
+    void setAngularVelocity(float velocity);
+
     void beginContact();
 
     void endContact();

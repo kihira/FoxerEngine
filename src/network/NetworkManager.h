@@ -9,9 +9,9 @@
 
 #define PACKET_ID_CLIENT_DATA 1
 
-typedef void (* PacketHandlerFn)(int packetID, void *data, size_t dataLength);
 typedef enet_uint16 ClientId;
 typedef enet_uint8 PacketId;
+typedef void (* PacketHandlerFn)(PacketId packetID, void *data, size_t dataLength);
 
 struct PacketMeta {
     PacketId id;

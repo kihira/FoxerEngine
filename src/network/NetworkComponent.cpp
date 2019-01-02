@@ -5,27 +5,8 @@
 #include "../Managers.h"
 #include "NetworkManager.h"
 #include "../physics/PhysicsComponent.h"
-#include "../packets/PhysicsUpdatePacket.h"
 
 void NetworkComponent::update() {
-    if (!isAuthoritive) return;
-
-    auto physicsComponent = entity->getComponent<PhysicsComponent>();
-    if (glm::length(entity->getPrevPosition() - entity->getPosition()) > 0.5f ||
-        glm::length(entity->getPrevRotation() - entity->getRotation()) > 0.5f ) {
-        PhysicsUpdatePacketData data = {
-                entity->getId(),
-                physicsComponent->getPosition(),
-                physicsComponent->getRotation(),
-                physicsComponent->getVelocity()
-        };
-
-        if (gNetworkManager.isServer()) {
-            gNetworkManager.sendToAllClients(ENTITY_UPDATE_ID, &data, sizeof(PhysicsUpdatePacketData));
-        } else {
-            gNetworkManager.sendToServer(ENTITY_UPDATE_ID, &data, sizeof(PhysicsUpdatePacketData));
-        }
-    }
 }
 
 Component *NetworkComponent::clone(std::shared_ptr<Entity> entity) {

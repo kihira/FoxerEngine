@@ -31,7 +31,7 @@ void NetworkManager::startUp() {
                     PACKET_ID_CLIENT_DATA,
                     0,
                     ENET_PACKET_FLAG_RELIABLE,
-                    [](int packetID, void *data, size_t dataLength) {
+                    [](PacketId packetID, void *data, size_t dataLength) {
                         ClientId clientId = static_cast<ClientData *>(data)->clientId;
                         gNetworkManager.clientId = clientId;
                         spdlog::get("network")->debug("Client ID is: {:d}", clientId);
