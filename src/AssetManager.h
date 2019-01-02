@@ -17,9 +17,8 @@ private:
     std::shared_ptr<spdlog::logger> logger;
     sol::state lua;
     Settings *settings;
-    std::map<std::string, GLuint> shaders;
     std::map<StringId, GLuint> textures;
-    std::map<std::string, std::shared_ptr<Shader>> shaderPrograms;
+    std::map<StringId, std::shared_ptr<Shader>> shaderPrograms;
     std::map<StringId, std::shared_ptr<Mesh>> meshes;
     std::map<StringId, std::shared_ptr<Entity>> entityPrototypes;
     std::map<StringId, std::shared_ptr<Level>> levels;
@@ -59,29 +58,29 @@ public:
 
     /**
      * Retrieves a loaded mesh or attempts to load it from disk
-     * @param name
-     * @return
+     * @param id ID of the mesh asset
+     * @return The mesh
      */
     std::shared_ptr<Mesh> loadMesh(StringId id);
 
     /**
-     * Retrieves a loaded shader or attempts to load it from disk
-     * @param name
-     * @param shaderType
-     * @return
+     * Loads a shader from disk and compules it
+     * @param fileName Name of the shader file
+     * @param shaderType Type of shader, Vertex or Fragment
+     * @return The compiled shader
      */
-    GLuint loadShader(const std::string &name, GLenum shaderType);
+    GLuint loadShader(const std::string &fileName, GLenum shaderType);
 
     /**
-     * Retrieves a shader program or attempts to laod it from disk
-     * @param name Name of the program
+     * Retrieves a shader program or attempts to load it from disk
+     * @param id ID of the program asset
      * @return The shader program
      */
-    std::shared_ptr<Shader> loadShaderProgram(std::string name);
+    std::shared_ptr<Shader> loadShaderProgram(StringId id);
 
     /**
      * Loads an entity class that can then be spawned later on
-     * @param id The StringId of the entity
+     * @param id ID of the entity asset
      * @return The prototype entity that can be used for spawning
      */
     std::shared_ptr<Entity> loadEntityPrototype(StringId id);

@@ -13,5 +13,12 @@ database = {
             file = "floor.png",
 
         }
+    },
+    shaders = {
+        [2946951896] = {
+            name = "SHADER_DEFAULT",
+            fragFile = "simple_frag.glsl",
+            vertFile = "simple_vert.glsl"
+        }
     }
 }

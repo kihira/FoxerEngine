@@ -44,6 +44,9 @@ add_subdirectory(${LIBRARIES_ROOT}/glfw)
 target_link_libraries(${PROJECT_NAME} glfw)
 
 # Enet
+if (MSVC) 
+	target_link_libraries(${PROJECT_NAME} winmm.lib)
+endif()
 add_subdirectory(${LIBRARIES_ROOT}/enet)
 target_link_libraries(${PROJECT_NAME} enet)
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/enet/include)

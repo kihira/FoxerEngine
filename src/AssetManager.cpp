@@ -21,11 +21,9 @@
 
 #define ASSETS_FOLDER "./assets/"
 #define ASSETS_EXT ".lua"
-#define ERR_SHADER "ERROR"
+#define ERR_SHADER SID("SHADER_ERROR")
 #define ERR_MESH SID("MESH_ERROR")
 #define ERR_SIZE 1024
-
-#define ERR_STR_LOAD_ASSET "Failed to load asset definition for {}"
 
 const char *errVertShaderSrc = R"(
 #version 330 core
@@ -78,7 +76,6 @@ void AssetManager::startUp() {
     logger = spdlog::get("main")->clone("asset");
 
     loadDatabase();
-
     loadStringIds();
 
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::io);
@@ -218,6 +215,9 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
         return it->second;
     }
 
+	// TODO temp
+	if (id == ERR_MESH) return getErrorMesh();
+
     std::string assetData = lua["database"]["meshes"][id];
 
     // Attempt to load file
@@ -281,17 +281,12 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
     return mesh;
 }
 
-GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
-    auto it = shaders.find(name);
-    if (it != shaders.end()) {
-        return it->second;
-    }
-
+GLuint AssetManager::loadShader(const std::string &fileName, GLenum shaderType) {
     // Load shader source
     std::ifstream file;
-    file.open(ASSETS_FOLDER "shaders/" + name + ".glsl", std::ios::in);
+    file.open(ASSETS_FOLDER "shaders/" + fileName, std::ios::in);
     if (!file.is_open()) {
-        logger->error("Error opening shader file: {}", name);
+        logger->error("Error opening shader file: {}", fileName);
         return 0;
     }
 
@@ -310,56 +305,67 @@ GLuint AssetManager::loadShader(const std::string &name, GLenum shaderType) {
     if (!err)
     {
         glGetShaderInfoLog(shader, ERR_SIZE, nullptr, errData);
-        logger->error("Failed to compile shader {}: {}", name, errData);
+        logger->error("Failed to compile shader {}: {}", fileName, errData);
         return 0;
     }
 
     GLERRCHECK();
 
-    // If we've made it this far, it's loaded and compiled so we'll save it
-    shaders[name] = shader;
+    // If we've made it this far, it's loaded and compiled
     return shader;
 }
 
-std::shared_ptr<Shader> AssetManager::loadShaderProgram(std::string name) {
-    // Read shader definition
-    std::ifstream file;
-    file.open(ASSETS_FOLDER "shaders/" + name + ASSETS_EXT, std::ios::in);
-    if (!file.is_open()) {
-        logger->error("Error opening shader definition file: {}", name);
-        return getErrorShader();
+std::shared_ptr<Shader> AssetManager::loadShaderProgram(StringId id) {
+    auto it = shaderPrograms.find(id);
+    if (it != shaderPrograms.end()) {
+        return it->second;
     }
 
-    // Read first line for vert shader name, second line for frag shader
-    std::string vertShaderName, fragShaderName;
-    file >> vertShaderName >> fragShaderName;
+	// TODO temp
+	if (id == ERR_SHADER) return getErrorShader();
 
-    file.close();
+    sol::table assetData = lua["database"]["shaders"][id];
 
     // Load base shaders
     GLuint vertShader, fragShader, program;
-    vertShader = loadShader(vertShaderName, GL_VERTEX_SHADER);
-    fragShader = loadShader(fragShaderName, GL_FRAGMENT_SHADER);
+    vertShader = loadShader(assetData["vertFile"], GL_VERTEX_SHADER);
+    fragShader = loadShader(assetData["fragFile"], GL_FRAGMENT_SHADER);
 
+    // Create program and link them together
     program = glCreateProgram();
     glAttachShader(program, vertShader);
     glAttachShader(program, fragShader);
     glLinkProgram(program);
 
+    // Delete shaders as they're no longer needed
+    glDeleteShader(vertShader);
+    glDeleteShader(fragShader);
+
+    // Verify program is good to go
     GLint err;
     GLchar errData[ERR_SIZE];
     glGetProgramiv(program, GL_LINK_STATUS, &err);
     if (!err) {
         glGetProgramInfoLog(program, ERR_SIZE, nullptr, errData);
-        logger->error("Failed to link shader {}: {}", name, errData);
+        logger->error("Failed to link shader {}: {}", id, errData);
         return getErrorShader();
     }
-
     GLERRCHECK();
 
-    // Store shader and return
+    // Create shader object and register uniforms
     auto shader = std::make_shared<Shader>(program);
-    shaderPrograms[name] = shader;
+    shader->registerUniform("model");
+    shader->registerUniform("view");
+    shader->registerUniform("projection");
+
+    if (assetData["uniforms"] != sol::lua_nil) {
+        auto uniforms = assetData.get<std::vector<std::string>>("uniforms");
+        for (auto &uniform : uniforms) {
+            shader->registerUniform(uniform);
+        }
+    }
+
+    shaderPrograms.emplace(id, shader);
 
     return shader;
 }
@@ -521,7 +527,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
     if (entityTable["renderComponent"] != sol::lua_nil) {
         auto renderTable = entityTable["renderComponent"];
         auto meshId = renderTable["mesh"].get_or(ERR_MESH);
-        auto shaderId = renderTable["shader"].get_or(std::string(ERR_SHADER));
+        auto shaderId = renderTable["shader"].get_or(ERR_SHADER);
         auto mesh = loadMesh(meshId);
         auto shader = loadShaderProgram(shaderId);
         auto renderComponent = new RenderComponent(entity, shader, mesh);
