@@ -14,6 +14,7 @@ struct EventMeta {
 class EventManager : public EventHandler {
 private:
     std::shared_ptr<spdlog::logger> logger;
+    std::vector<EventHandler *> globalHandlers;
     std::map<StringId, std::vector<EventHandler *>> handlers;
     std::map<StringId, EventMeta> eventsMeta; // Stores information about what should be in an event. Used for networking
     EventNetworkHandler *networkHandler;
@@ -25,6 +26,14 @@ public:
     void startUp();
 
     void shutDown();
+
+    /**
+     * Registers an event handler for ALL events.
+     * Global handlers have priority over standard handlers and can prevent an event from filtering down
+     * This should be used sparingly as many events are often fired per update.
+     * @param handler Pointer to the handler
+     */
+    void registerHandler(EventHandler *handler);
 
     /**
      * Registers an event handler that will be called when that is fired.

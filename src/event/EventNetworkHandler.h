@@ -6,6 +6,7 @@
 
 /**
  * Class to handle sending and receiving events over the network
+ * This class is only loaded once a server or client has been started
  */
 class EventNetworkHandler : public EventHandler {
 public:

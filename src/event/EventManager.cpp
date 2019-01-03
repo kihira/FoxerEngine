@@ -18,6 +18,12 @@ void EventManager::shutDown() {
     delete networkHandler;
 }
 
+void EventManager::registerHandler(EventHandler *handler) {
+    globalHandlers.push_back(handler);
+    logger->debug("Registered global event handler");
+}
+
+
 void EventManager::registerHandler(StringId type, EventHandler *handler) {
     if (handlers.find(type) == handlers.end()) {
         handlers.emplace(type, std::vector<EventHandler *>());
@@ -32,11 +38,16 @@ void EventManager::registerHandler(const std::vector<StringId> &events, EventHan
     }
 }
 
-
 void EventManager::push(Event &event) {
+    for (auto handler : globalHandlers) {
+        if (handler->onEvent(event)) {
+            return;
+        }
+    }
+
     for (auto handler : handlers[event.getType()]) {
         if (handler->onEvent(event)) {
-            break;
+            return;
         }
     }
 }

@@ -124,30 +124,48 @@ void Event::setArg<StringId>(const char *name, StringId value) {
 // todo error checking
 template<>
 float Event::getArg<float>(const char *name) {
-    return arguments[name].asFloat;
+    auto it = arguments.find(name);
+    if (it == arguments.end()) return 0.f;
+
+    return it->second.asFloat;
 }
 
 template<>
 int Event::getArg<int>(const char *name) {
-    return arguments[name].asInt;
+    auto it = arguments.find(name);
+    if (it == arguments.end()) return 0;
+
+    return it->second.asInt;
 }
 
 template<>
 unsigned short Event::getArg<unsigned short>(const char *name) {
-    return arguments[name].asUShort;
+    auto it = arguments.find(name);
+    if (it == arguments.end()) return 0;
+
+    return it->second.asUShort;
 }
 
 template<>
 short Event::getArg<short>(const char *name) {
-    return arguments[name].asShort;
+    auto it = arguments.find(name);
+    if (it == arguments.end()) return 0;
+
+    return it->second.asShort;
 }
 
 template<>
 bool Event::getArg<bool>(const char *name) {
-    return arguments[name].asBool;
+    auto it = arguments.find(name);
+    if (it == arguments.end()) return false;
+
+    return it->second.asBool;
 }
 
 template<>
 StringId Event::getArg<StringId>(const char *name) {
-    return arguments[name].asStringId;
+    auto it = arguments.find(name);
+    if (it == arguments.end()) return 0;
+
+    return it->second.asStringId;
 }

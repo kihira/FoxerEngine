@@ -11,22 +11,40 @@ EventNetworkHandler::EventNetworkHandler() {
         0,
         static_cast<ENetPacketFlag>(0),
         [](PacketId packetId, void *data, size_t dataLength) {
-            auto event = Event((StringId) 0);
+            // Parse and deserialise event data
+            auto event = Event((StringId) 0); // Should really not do this, bad practice
             event.deserialise(data);
+            event.setArg("noNetwork", true); // Don't want an infinite loop
+            event.push();
+
+            // Cleanup
             free(data);
         }
     });
 
-    gEventManager.registerHandler(SID("EVENT_TYPE_INPUT_PLAYER"), this);
+    gEventManager.registerHandler(this);
 }
 
 bool EventNetworkHandler::onEvent(Event &event) {
-    if (gNetworkManager.isServer()) return false;
+    if (event.getArg<bool>("noNetwork")) return false;
 
+    // Serialise event
     void *data = nullptr;
     auto size = event.serialise(data);
-    gNetworkManager.sendToServer(PACKET_ID_EVENT, data, size);
-    free(data);
 
+    // Send to server/client(s)
+    if (gNetworkManager.isServer()) {
+        auto clientId = event.getArg<ClientId>("sendToClient");
+        if (clientId > 0) {
+            gNetworkManager.sendToClient(clientId, PACKET_ID_EVENT, data, size);
+        } else {
+            gNetworkManager.sendToAllClients(PACKET_ID_EVENT, data, size);
+        }
+    } else {
+        gNetworkManager.sendToServer(PACKET_ID_EVENT, data, size);
+    }
+
+    // Cleanup
+    free(data);
     return false;
 }
