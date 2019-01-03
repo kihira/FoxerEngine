@@ -3,10 +3,11 @@ database = {
         [248972157] = "level.lua"
     },
     entities = {
-        [591432690] = "player.lua"
+        [591432690] = "player.lua", -- ENTITY_PLAYER
+        [4045036281] = "floor.lua" -- ENTITY_FLOOR
     },
     meshes = {
-        [3061288721] = "floor.obj"
+        [3061288721] = "floor.obj" -- MESH_FLOOR
     },
     textures = {
         [2300579869] = {

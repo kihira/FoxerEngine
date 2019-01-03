@@ -43,7 +43,10 @@ return {
     },
     onEvent = function(self, event)
         if event:type() == 697357692 then -- EVENT_TYPE_ASSIGN_PLAYER
-            if event:getEntityId("entityId") == self:id() and event:getClientId("clientId") == engine.network.clientId() then
+            if (not event:getEntityId("entityId") == self:id()) then return end
+
+            -- If we're server or the client itself, say we have control
+            if engine.network.isServer or (event:getClientId("clientId") == engine.network.clientId()) then
                 print("We've been given control of an entity!")
                 self.hasControl = true;
             end

@@ -57,9 +57,11 @@ bool EventManager::onEvent(Event &event) {
     switch (event.getType()) {
         case SID("EVENT_TYPE_SERVER_START"): {
             networkHandler = new EventNetworkHandler();
+            break;
         }
         case SID("EVENT_TYPE_CLIENT_START"): {
             networkHandler = new EventNetworkHandler();
+            break;
         }
     }
     return false;

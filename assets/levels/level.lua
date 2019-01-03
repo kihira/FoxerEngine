@@ -4,7 +4,7 @@ level = {
     players = 2,
     entities = {
         {
-            prototypeId = 591432690,
+            prototypeId = 4045036281,
             entityId = 12345,
             position = engine.math.vec3.new(1, 0, 1),
             rotation = engine.math.vec3.new(0, 0, 0)
