@@ -9,6 +9,11 @@ properly serialised as long as the correct event definition exists.
 By default, all events generated on the client will be sent to the server
 and all server events sent to ALL clients.
 
+When an event is received on the server/client, the following argument is
+set to allow for side detection
+- `fromServer` *bool* client | server - Indicates where the packet
+originated from
+
 Two extra arguments are supported on events when used in a networked
 environment:
 - `noNetwork` *bool* client | server - Indicates that the event should not be
@@ -28,16 +33,15 @@ a default value will be returned instead depending on the type:
 
 ## Events
 #### EVENT_TYPE_LEVEL_UNLOAD
-*server*
 - *StringId* levelId - Level ID
 
 #### EVENT_TYPE_LEVEL_LOAD
-*server*
 - *StringId* levelId - Level ID
 
-#### EVENT_TYPE_ENTITY_SPAWNED
-*client*
-- *unsigned short* entityId - ID of the entity spawned
+#### EVENT_TYPE_ENTITY_SPAWN
+Fired when an entity is spawned on the server side
+- *StringId* prototypeId - ID of the prototype
+- *EntityId* entityId - ID of the entity spawned
 
 #### EVENT_TYPE_PLAYER_CONNECTED
-- *unsigned short* clientId - ID of the connected client
+- *ClientId* clientId - ID of the connected client

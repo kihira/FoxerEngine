@@ -15,29 +15,36 @@ database = {
         }
     },
     shaders = {
-        [2946951896] = {
-            name = "SHADER_DEFAULT",
+        [2946951896] = { -- SHADER_DEFAULT
             fragFile = "simple_frag.glsl",
             vertFile = "simple_vert.glsl"
         }
     },
     events = {
-        [1994444546] = {
-            name = "EVENT_TYPE_PLAYER_CONNECTED",
+        [1994444546] = { -- EVENT_TYPE_PLAYER_CONNECTED
             args = {
                 ["clientId"] = {
                     type = "TYPE_USHORT"
                 }
             }
         },
-        [1770460267] = {
-            name = "EVENT_TYPE_INPUT_PLAYER",
+        [1770460267] = { -- EVENT_TYPE_INPUT_PLAYER
             args = {
                 ["entityId"] = {
                     type = "TYPE_USHORT"
                 },
                 ["inputBitmask"] = {
                     type = "TYPE_UINT"
+                }
+            }
+        },
+        [791803502] = { -- EVENT_TYPE_ENTITY_SPAWN
+            args = {
+                ["entityId"] = {
+                    type = "TYPE_USHORT"
+                },
+                ["prototypeId"] = {
+                    type = "TYPE_STRING_ID"
                 }
             }
         }

@@ -6,14 +6,7 @@
 #include <spdlog/spdlog.h>
 #include "Entity.h"
 
-#define ENTITY_SPAWN_ID 12
-
-struct EntitySpawnPacketData {
-    StringId prototypeId;
-    EntityId entityId;
-};
-
-class EntityManager {
+class EntityManager : public EventHandler {
 private:
     std::shared_ptr<spdlog::logger> logger;
     std::map<StringId, std::shared_ptr<Entity>> prototypes;
@@ -72,13 +65,7 @@ public:
      */
     std::shared_ptr<Entity> getEntity(EntityId id);
 
-    /**
-     * Callback for when an entity spawn packet is received
-     * @param packetID
-     * @param data
-     * @param dataLength
-     */
-    void handleEntitySpawnPacket(int packetID, void *data, size_t dataLength);
+    bool onEvent(Event &event) override;
 };
 
 

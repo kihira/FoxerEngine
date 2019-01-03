@@ -5,6 +5,7 @@
 #include "../network/NetworkManager.h"
 #include "../util/assert.h"
 #include "../AssetManager.h"
+#include "../event/EventManager.h"
 
 
 EntityManager::EntityManager() = default; // noop
@@ -13,28 +14,18 @@ EntityManager::~EntityManager() = default; // noop
 
 void EntityManager::startUp() {
     logger = spdlog::get("main")->clone("entity");
-    SPDLOG_DEBUG("Entity Manager Start Up");
+    SPDLOG_LOGGER_TRACE(logger, "Entity Manager Start Up Begin");
 
-    prototypes = std::map<StringId, std::shared_ptr<Entity>>();
+    // Register event handler
+    gEventManager.registerHandler(SID("EVENT_TYPE_ENTITY_SPAWN"), this);
 
-    // Register entity handling packets
-    gNetworkManager.registerPacket(
-            {
-                    ENTITY_SPAWN_ID,
-                    0,
-                    ENET_PACKET_FLAG_UNSEQUENCED,
-                    [](PacketId packetID, void *data, size_t dataLength) {
-                        gEntityManager.handleEntitySpawnPacket(packetID, data, dataLength);
-                    }
-            });
-    SPDLOG_DEBUG("Entity Manager Start Up Complete");
+    SPDLOG_LOGGER_TRACE(logger, "Entity Manager Start Up Complete");
 }
 
 void EntityManager::shutDown() {
 
 }
 
-// todo it's a little confusing having individual entities using the term id and also id per prototype...
 void EntityManager::registerPrototype(StringId id, std::shared_ptr<Entity> prototype) {
     ASSERT(prototype != nullptr);
     if (prototypes.find(id) != prototypes.end()) {
@@ -73,10 +64,6 @@ std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId, EntityId enti
     auto entity = prototype->clone(entityId);
     ASSERT(entity != nullptr);
 
-//    auto event = Event(SID("EVENT_TYPE_ENTITY_SPAWN"));
-//    event.setArg("entityId", entity->getId());
-//    gEventManager.push(event);
-
     entities.emplace(entityId, entity);
     return entity;
 }
@@ -96,20 +83,19 @@ void EntityManager::update() {
     }
 }
 
-void EntityManager::handleEntitySpawnPacket(int packetID, void *data, size_t dataLength) {
-    if (gNetworkManager.isServer()) return; // Shouldn't process spawn packets on server
-    EntitySpawnPacketData packetData = *(EntitySpawnPacketData *)data;
-
-    if (prototypes.find(packetData.prototypeId) == prototypes.end()) {
-        logger->error("Attempted to spawn a {} but no prototype was found", packetData.prototypeId);
-        return;
-    }
-    auto entity = prototypes[packetData.prototypeId]->clone(packetData.entityId);
-}
-
 std::shared_ptr<Entity> EntityManager::getEntity(EntityId id) {
     if (entities.find(id) == entities.end()) {
         return nullptr;
     }
     return entities[id];
+}
+
+bool EntityManager::onEvent(Event &event) {
+    switch (event.getType()) {
+        // Entity has been spawned on server, time for us to spawn it clientside too
+        case SID("EVENT_TYPE_ENTITY_SPAWN"): {
+            spawn(event.getArg<StringId>("prototypeId"), event.getArg<EntityId>("entityId"));
+        }
+    }
+    return false;
 }

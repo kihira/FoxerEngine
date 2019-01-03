@@ -10,7 +10,7 @@
 class PlayerComponent : public Component {
 private:
     bool isLocalPlayer;
-    unsigned short ClientId;
+    unsigned short controllerClientId;
 public:
     explicit PlayerComponent(const std::shared_ptr<Entity> &entity);
 
