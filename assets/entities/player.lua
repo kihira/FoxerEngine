@@ -51,9 +51,10 @@ return {
                 self.hasControl = true;
             end
         elseif event:type() == 1770460267 then -- EVENT_TYPE_INPUT_PLAYER
-            if (not event:getEntityId("entityId") == self:id()) then return end
+            if (event:getEntityId("entityId") ~= self:id()) then return end
             if (not self.hasControl) then return end
 
+            print(event:getEntityId("entityId") .. " " .. self:id())
             local inputBitmask = event:getUShort("inputBitmask");
             if (inputBitmask & 1 > 0) then
                 print("Forward!")

@@ -46,6 +46,9 @@ Fired when an entity is spawned on the server side
 #### EVENT_TYPE_PLAYER_CONNECTED
 - *ClientId* clientId - ID of the connected client
 
+#### EVENT_TYPE_PLAYER_DISCONNECTED
+- *ClientId* clientId - ID of the disconnect client
+
 #### EVENT_TYPE_ENTITY_DESTROY
 Fired AFTER an entity has been destroyed
 - *EntityId* entityId - ID of the entity destroyed

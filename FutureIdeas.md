@@ -5,7 +5,9 @@ A bunch of ideas of how I could improve/tweak this in the future
 - Switch to a 3D physics library
 
 ### Scripting
-- Preprocess lua files to convert Strings into SIDS for events etc
+- Preprocess lua files to convert Strings into SIDs for events etc
+- Allow accessing event args by simply doing `event.argName`. Should be
+possible via the use of meta_functions::index. See Entity
 
 ### Events
 - Allow delaying execution of events

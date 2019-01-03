@@ -27,6 +27,11 @@ database = {
                 "clientId"
             }
         },
+        [415743068] = { -- EVENT_TYPE_PLAYER_DISCONNECTED
+            args = {
+                "clientId"
+            }
+        },
         [1770460267] = { -- EVENT_TYPE_INPUT_PLAYER
             args = {
                 "entityId",

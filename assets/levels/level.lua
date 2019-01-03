@@ -13,25 +13,38 @@ level = {
     update = function(self) end,
     events = {
         "EVENT_TYPE_LEVEL_LOAD",
-        "EVENT_TYPE_PLAYER_CONNECTED"
+        "EVENT_TYPE_PLAYER_CONNECTED",
+        "EVENT_TYPE_PLAYER_DISCONNECTED"
     },
     onEvent = function(self, event)
-        if (event:type() == 1994444546) then --- EVENT_TYPE_PLAYER_CONNECTED
+        if (event:type() == 1994444546) then -- EVENT_TYPE_PLAYER_CONNECTED
             print("Player connected!")
             print("Client ID: " .. event:getUShort("clientId"))
 
             -- Spawn player entity and assign it
             local player = engine.entity.spawnEntity("ENTITY_PLAYER")
-            player.controllingClient = event:getUShort("clientId")
+            local clientId = event:getClientId("clientId")
+            player.controllingClient = clientId
+            self.players[clientId] = player
 
             -- Send event out so client know its can control it
             local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")
-            assignEvent:setClientId("clientId", event:getClientId("clientId"))
+            assignEvent:setClientId("clientId", clientId)
             assignEvent:setEntityId("entityId", player:id())
             assignEvent:push()
 
-        elseif event:type() == 1205121214 then --- EVENT_TYPE_LEVEL_LOAD
+        elseif event:type() == 415743068 then -- EVENT_TYPE_PLAYER_DISCONNECTED
+            local clientId = event:getClientId("clientId")
+            print("Client " .. clientId .. " disconnected")
+
+            -- Ask engine to destroy and remove our reference
+            engine.entity.destroy(self.players[clientId]:id())
+            self.players[clientId] = nil
+
+        elseif event:type() == 1205121214 then -- EVENT_TYPE_LEVEL_LOAD
             print("Level loaded!")
+            -- Setup data stuff
+            self.players = {}
         end
         return false;
     end

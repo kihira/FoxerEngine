@@ -43,6 +43,9 @@ void NetworkManager::shutDown() {
     if (host != nullptr) {
         stopServer();
     }
+    if (clientId > 0) {
+        enet_peer_disconnect_now(peer, 0);
+    }
 
     enet_deinitialize();
 }
