@@ -15,6 +15,7 @@ EventNetworkHandler::EventNetworkHandler() {
             auto event = Event((StringId) 0); // Should really not do this, bad practice
             event.deserialise(data);
             event.setArg("noNetwork", true); // Don't want an infinite loop
+            event.setArg("fromServer", !gNetworkManager.isServer());
             event.push();
 
             // Cleanup

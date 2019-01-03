@@ -47,6 +47,7 @@ std::shared_ptr<Entity> EntityManager::spawn(StringId prototypeId) {
     ASSERT(entity != nullptr);
 
     auto event = Event(SID("EVENT_TYPE_ENTITY_SPAWN"));
+    event.setArg("prototypeId", prototypeId);
     event.setArg("entityId", entity->getId());
     event.push();
 
@@ -94,6 +95,7 @@ bool EntityManager::onEvent(Event &event) {
     switch (event.getType()) {
         // Entity has been spawned on server, time for us to spawn it clientside too
         case SID("EVENT_TYPE_ENTITY_SPAWN"): {
+            if (!event.getArg<bool>("fromServer")) return false;
             spawn(event.getArg<StringId>("prototypeId"), event.getArg<EntityId>("entityId"));
         }
     }

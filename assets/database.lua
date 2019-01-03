@@ -23,29 +23,25 @@ database = {
     events = {
         [1994444546] = { -- EVENT_TYPE_PLAYER_CONNECTED
             args = {
-                ["clientId"] = {
-                    type = "TYPE_USHORT"
-                }
+                "clientId"
             }
         },
         [1770460267] = { -- EVENT_TYPE_INPUT_PLAYER
             args = {
-                ["entityId"] = {
-                    type = "TYPE_USHORT"
-                },
-                ["inputBitmask"] = {
-                    type = "TYPE_UINT"
-                }
+                "entityId",
+                "inputBitmask"
             }
         },
         [791803502] = { -- EVENT_TYPE_ENTITY_SPAWN
             args = {
-                ["entityId"] = {
-                    type = "TYPE_USHORT"
-                },
-                ["prototypeId"] = {
-                    type = "TYPE_STRING_ID"
-                }
+                "entityId",
+                "prototypeId"
+            }
+        },
+        [697357692] = { -- EVENT_TYPE_ASSIGN_PLAYER
+            args = {
+                "entityId",
+                "clientId"
             }
         }
     }

@@ -758,10 +758,11 @@ void AssetManager::loadDatabase() {
         for (auto &event : events) {
             StringId eventId = event.first.as<StringId>();
 
-            sol::table argsTables = event.second;
+            sol::table eventMetaTable = event.second;
+            std::vector<std::string> args = eventMetaTable["args"].get<std::vector<std::string>>();
             auto eventMeta = EventMeta();
-            for (auto &arg : argsTables) {
-                eventMeta.args.push_back(arg.first.as<std::string>());
+            for (auto &arg : args) {
+                eventMeta.args.push_back(arg);
             }
 
             eventMetas.emplace(eventId, eventMeta);
