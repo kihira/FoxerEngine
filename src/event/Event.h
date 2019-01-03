@@ -56,6 +56,12 @@ public:
 
     template <typename T>
     T getArg(const char *name);
+
+    const std::map<std::string, Variant> &getArguments() const;
+
+    unsigned int serialise(void *&data);
+
+    void deserialise(void *data);
 };
 
 #endif //GAMEENGINE301CR_EVENT_H

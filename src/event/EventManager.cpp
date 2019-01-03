@@ -1,3 +1,5 @@
+#include <utility>
+
 
 #include "EventManager.h"
 
@@ -8,13 +10,12 @@ EventManager::~EventManager() = default;
 void EventManager::startUp() {
     logger = spdlog::get("main")->clone("event");
 
-    // Register some default events
-    handlers.emplace(SID("EVENT_TYPE_LEVEL_STARTED"), std::vector<EventHandler *>());
-    handlers.emplace(SID("EVENT_TYPE_PLAYER_SPAWNED"), std::vector<EventHandler *>());
+    registerHandler(SID("EVENT_TYPE_SERVER_START"), this);
+    registerHandler(SID("EVENT_TYPE_CLIENT_START"), this);
 }
 
 void EventManager::shutDown() {
-
+    delete networkHandler;
 }
 
 void EventManager::registerHandler(StringId type, EventHandler *handler) {
@@ -38,4 +39,24 @@ void EventManager::push(Event &event) {
             break;
         }
     }
+}
+
+bool EventManager::onEvent(Event &event) {
+    switch (event.getType()) {
+        case SID("EVENT_TYPE_SERVER_START"): {
+            networkHandler = new EventNetworkHandler();
+        }
+        case SID("EVENT_TYPE_CLIENT_START"): {
+            networkHandler = new EventNetworkHandler();
+        }
+    }
+    return false;
+}
+
+const EventMeta EventManager::getEventMeta(StringId id) {
+    return eventsMeta[id];
+}
+
+void EventManager::loadEvents(std::map<StringId, EventMeta> eventMetas) {
+    EventManager::eventsMeta = std::move(eventMetas);
 }

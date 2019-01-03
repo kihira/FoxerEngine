@@ -28,6 +28,45 @@ void Event::push() {
     gEventManager.push(*this);
 }
 
+unsigned int Event::serialise(void *&data) {
+    auto size = sizeof(StringId) * arguments.size() + sizeof(StringId);
+    auto eventData = static_cast<StringId *>(malloc(size)); // todo can just serialise the exact length of the data but this works for now
+    eventData[0] = type;
+
+    // We only serialise argument values, we know argument names from the asset metadata
+    auto eventMeta = gEventManager.getEventMeta(type);
+    unsigned short pos = 1;
+
+    for (auto &argName : eventMeta.args) {
+        auto argValue = arguments[argName];
+        eventData[pos] = argValue.asStringId;
+        pos += 1;
+    }
+
+    data = eventData;
+    return size;
+}
+
+void Event::deserialise(void *data) {
+    auto argData = static_cast<StringId *>(data);
+    type = *argData;
+    auto eventMeta = gEventManager.getEventMeta(*static_cast<StringId *>(data));
+    argData += 1;
+
+    for (auto &argName : eventMeta.args) {
+        // todo use proper type
+        Variant variant{};
+        variant.type = Variant::TYPE_STRING_ID;
+        variant.asStringId = *argData;
+        arguments.emplace(argName, variant);
+        argData += 1;
+    }
+}
+
+const std::map<std::string, Variant> &Event::getArguments() const {
+    return arguments;
+}
+
 template<>
 void Event::setArg<float>(const char *name, float value) {
     Variant variant{};

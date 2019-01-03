@@ -10,13 +10,17 @@
 
 class Level : public EventHandler {
 private:
-    StringId id;
+    const StringId id;
     std::string name;
     sol::protected_function updateFn;
     sol::function onEventFn;
 
     std::vector<StringId> events;
 public:
+    explicit Level(StringId id);
+
+    virtual ~Level();
+
     void update();
 
     const std::string &getName() const;

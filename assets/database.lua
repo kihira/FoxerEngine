@@ -20,5 +20,26 @@ database = {
             fragFile = "simple_frag.glsl",
             vertFile = "simple_vert.glsl"
         }
+    },
+    events = {
+        [1994444546] = {
+            name = "EVENT_TYPE_PLAYER_CONNECTED",
+            args = {
+                ["clientId"] = {
+                    type = "TYPE_USHORT"
+                }
+            }
+        },
+        [1770460267] = {
+            name = "EVENT_TYPE_INPUT_PLAYER",
+            args = {
+                ["entityId"] = {
+                    type = "TYPE_USHORT"
+                },
+                ["inputBitmask"] = {
+                    type = "TYPE_UINT"
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,10 @@
 
 #include "Level.h"
 
+Level::Level(StringId id) : id(id) {}
+
+Level::~Level() {}
+
 void Level::update() {
     if (updateFn != sol::lua_nil) {
         auto updateResult = updateFn(this);

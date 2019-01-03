@@ -178,6 +178,14 @@ void AssetManager::startUp() {
     networkTable["isServer"] = []() { return gNetworkManager.isServer(); };
     networkTable["isClient"] = []() { return !gNetworkManager.isServer(); };
     networkTable["clientsCount"] = []() { return gNetworkManager.clientsCount(); };
+    networkTable["registerPacket"] = [](PacketId packetId, sol::function callback) {
+        gNetworkManager.registerPacket({
+            packetId,
+            0,
+            ENET_PACKET_FLAG_RELIABLE,
+            ((PacketHandlerFn) &callback) // todo test
+    });
+    };
 
     // Network component
     networkTable.new_usertype<NetworkComponent>(
@@ -577,7 +585,7 @@ std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
 
     // Load data from lua file
     sol::table levelTable = lua["level"];
-    auto level = std::make_shared<Level>();
+    auto level = std::make_shared<Level>(id);
     level->setUpdateFn(levelTable["update"]);
 
     // Load entities
@@ -727,4 +735,24 @@ void AssetManager::loadStringIds() {
 
 void AssetManager::loadDatabase() {
     lua.script_file(ASSETS_FOLDER "database.lua");
+
+    // Load events into event manager
+    if (lua["database"]["events"] != sol::lua_nil) {
+        sol::table events = lua["database"]["events"];
+        std::map<StringId, EventMeta> eventMetas;
+
+        for (auto &event : events) {
+            StringId eventId = event.first.as<StringId>();
+
+            sol::table argsTables = event.second;
+            auto eventMeta = EventMeta();
+            for (auto &arg : argsTables) {
+                eventMeta.args.push_back(arg.first.as<std::string>());
+            }
+
+            eventMetas.emplace(eventId, eventMeta);
+        }
+
+        gEventManager.loadEvents(eventMetas);
+    }
 }
