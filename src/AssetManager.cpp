@@ -17,7 +17,6 @@
 #include "event/EventManager.h"
 #include "network/NetworkManager.h"
 #include "network/NetworkComponent.h"
-#include "PlayerComponent.h"
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -103,9 +102,8 @@ void AssetManager::startUp() {
             "name", sol::property(&Entity::getName, &Entity::setName),
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
-            "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); },
-            "getNetworkComponent", [](std::shared_ptr<Entity> entity) -> NetworkComponent * { return entity->getComponent<NetworkComponent>(); },
-            "getPlayerComponent", [](std::shared_ptr<Entity> entity) -> PlayerComponent * { return entity->getComponent<PlayerComponent>(); },
+            "getPhysicsComponent", &Entity::getComponent<PhysicsComponent>,
+            "getNetworkComponent", &Entity::getComponent<NetworkComponent>,
             sol::meta_function::index, &Entity::dynamicGet,
             sol::meta_function::new_index, &Entity::dynamicSet
     );
@@ -558,12 +556,6 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
         renderComponent->setActive(false);
 
         entity->addComponent<RenderComponent>(renderComponent);
-    }
-
-    // Create player component
-    if (entityTable["playerComponent"] != sol::lua_nil) {
-        auto playerComponent = new PlayerComponent(entity);
-        entity->addComponent<PlayerComponent>(playerComponent);
     }
 
     // Events

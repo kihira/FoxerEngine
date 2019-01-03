@@ -43,30 +43,29 @@ return {
     },
     onEvent = function(self, event)
         if event:type() == 697357692 then -- EVENT_TYPE_ASSIGN_PLAYER
-            if (not event:getEntityId("entityId") == self:id()) then return end
-
+            if (event:getEntityId("entityId") ~= self:id()) then return end
             -- If we're server or the client itself, say we have control
             if engine.network.isServer or (event:getClientId("clientId") == engine.network.clientId()) then
-                print("We've been given control of an entity!")
                 self.hasControl = true;
             end
         elseif event:type() == 1770460267 then -- EVENT_TYPE_INPUT_PLAYER
             if (event:getEntityId("entityId") ~= self:id()) then return end
             if (not self.hasControl) then return end
 
-            print(event:getEntityId("entityId") .. " " .. self:id())
+            -- Process input
             local inputBitmask = event:getUShort("inputBitmask");
+            local physics = self:getPhysicsComponent();
             if (inputBitmask & 1 > 0) then
-                print("Forward!")
+                physics.velocity = physics.velocity + engine.math.vec2.new(0, 1)
             end
             if (inputBitmask & 2 > 0) then
-                print("Backward!")
+                physics.velocity = physics.velocity - engine.math.vec2.new(0, -1)
             end
             if (inputBitmask & 4 > 0) then
-                print("Left!")
+                physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)
             end
             if (inputBitmask & 8 > 0) then
-                print("Right!")
+                physics.velocity = physics.velocity + engine.math.vec2.new(-1, 0)
             end
         end
     end
