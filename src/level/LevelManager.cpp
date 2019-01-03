@@ -3,13 +3,7 @@
 #include "../Managers.h"
 #include "../AssetManager.h"
 #include "../event/EventManager.h"
-#include "../network/NetworkManager.h"
 
-#define PACKET_ID_LEVEL_LOAD 31
-
-struct LevelInfoPacket {
-    StringId levelId;
-};
 
 LevelManager::LevelManager() = default;
 
@@ -20,16 +14,6 @@ void LevelManager::startUp() {
     spdlog::register_logger(logger);
 
     gEventManager.registerHandler(SID("EVENT_TYPE_PLAYER_CONNECTED"), this);
-    // TODO could look into creating an event that indicates a certain event should only be sent to one client etc
-    gNetworkManager.registerPacket({
-        PACKET_ID_LEVEL_LOAD,
-        0,
-        ENET_PACKET_FLAG_RELIABLE,
-        [](PacketId packetID, void *data, size_t dataLength) {
-            StringId levelId = static_cast<LevelInfoPacket *>(data)->levelId;
-            gLevelManager.loadLevel(levelId);
-        }
-    });
 }
 
 void LevelManager::shutDown() {
@@ -69,10 +53,15 @@ void LevelManager::update() {
 bool LevelManager::onEvent(Event &event) {
     switch (event.getType()) {
         case SID("EVENT_TYPE_PLAYER_CONNECTED"): {
-            // Tell connected client to load currently active level
-            LevelInfoPacket data { activeLevel->getId() };
-            gNetworkManager.sendToClient(event.getArg<ClientId>("clientId"), PACKET_ID_LEVEL_LOAD, &data, sizeof(LevelInfoPacket));
-            return false;
+            auto levelLoadEvent = Event(SID("EVENT_TYPE_LEVEL_LOAD_SERVER"));
+            levelLoadEvent.setArg("sendToClient", event.getArg<unsigned short>("clientId"));
+            levelLoadEvent.setArg("levelId", activeLevel->getId());
+            levelLoadEvent.push();
+            break;
+        }
+        case SID("EVENT_TYPE_LEVEL_LOAD_SERVER"): {
+            loadLevel(event.getArg<StringId>("levelId"));
+            break;
         }
     }
     return false;

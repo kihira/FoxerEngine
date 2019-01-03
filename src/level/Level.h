@@ -12,7 +12,7 @@ class Level : public EventHandler {
 private:
     const StringId id;
     std::string name;
-    sol::protected_function updateFn;
+    sol::function updateFn;
     sol::function onEventFn;
 
     std::vector<StringId> events;
@@ -28,7 +28,7 @@ public:
 
     void setName(const std::string &name);
 
-    void setUpdateFn(const sol::protected_function &updateFn);
+    void setUpdateFn(const sol::function &updateFn);
 
     void setOnEventFn(const sol::function &onEventFn);
 

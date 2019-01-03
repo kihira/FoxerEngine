@@ -3,20 +3,15 @@
 
 Level::Level(StringId id) : id(id) {}
 
-Level::~Level() {}
+Level::~Level() = default;
 
 void Level::update() {
     if (updateFn != sol::lua_nil) {
-        auto updateResult = updateFn(this);
-        if (!updateResult.valid()) {
-            sol::error err = updateResult;
-            std::cerr << "Error updating Level (" << name << "):" << std::endl
-                      << err.what() << std::endl;
-        }
+        updateFn(this);
     }
 }
 
-void Level::setUpdateFn(const sol::protected_function &updateFn) {
+void Level::setUpdateFn(const sol::function &updateFn) {
     Level::updateFn = updateFn;
 }
 
