@@ -32,6 +32,8 @@ private:
 public:
     Entity(EntityId id, std::string name);
 
+    virtual ~Entity();
+
     void update();
 
     /**

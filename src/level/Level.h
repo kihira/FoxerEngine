@@ -16,6 +16,7 @@ private:
     sol::function onEventFn;
 
     std::vector<StringId> events;
+    std::unordered_map<std::string, sol::object> entries;
 public:
     explicit Level(StringId id);
 
@@ -38,6 +39,22 @@ public:
     bool canHandleEvents();
 
     StringId getId() const;
+
+    /**
+     * Used by Sol/Lua to dynamically set values on the level.
+     * Allows for a large amount of freedom within scripting
+     * @param key The key name
+     * @param value The key value
+     */
+    void dynamicSet(std::string key, sol::stack_object value);
+
+    /**
+     * Used by Sol/Lua to dynamically get values on the level.
+     * Allows for a large amount of freedom within scripti
+     * @param key The key name
+     * @return The value
+     */
+    sol::object dynamicGet(std::string key);
 
     bool onEvent(Event &event) override;
 };

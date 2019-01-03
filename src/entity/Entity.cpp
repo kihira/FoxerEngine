@@ -8,6 +8,13 @@
 
 Entity::Entity(const unsigned short id, std::string name) : id(id), name(std::move(name)) {}
 
+Entity::~Entity() {
+    for (auto component : components) {
+        delete component.second;
+    }
+}
+
+
 void Entity::update() {
     if (updateFn != sol::lua_nil) {
         updateFn(this);

@@ -92,6 +92,7 @@ void AssetManager::startUp() {
     sol::table entityTable = engineTable.create_named("entity");
     engineTable["entity"]["spawnEntity"] = [](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); };
     engineTable["entity"]["getEntity"] = [](EntityId id) -> std::shared_ptr<Entity> { return gEntityManager.getEntity(id); };
+    engineTable["entity"]["destroy"] = [](EntityId id) { gEntityManager.destroy(id); };
 
     // Register entity type
     entityTable.new_usertype<Entity>(
@@ -220,7 +221,9 @@ void AssetManager::startUp() {
     engineTable.new_usertype<Level>(
             "level",
             "noconstructor", sol::no_constructor,
-            "name", sol::property(&Level::getName, &Level::setName)
+            "name", sol::property(&Level::getName, &Level::setName),
+            sol::meta_function::index, &Level::dynamicGet,
+            sol::meta_function::new_index, &Level::dynamicSet
     );
 }
 

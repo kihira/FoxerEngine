@@ -44,6 +44,11 @@ database = {
                 "entityId",
                 "clientId"
             }
+        },
+        [501658455] = { -- EVENT_TYPE_ENTITY_DESTROY
+            args = {
+                "entityId"
+            }
         }
     }
 }

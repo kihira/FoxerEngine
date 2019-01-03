@@ -86,10 +86,27 @@ void EntityManager::update() {
 
 std::shared_ptr<Entity> EntityManager::getEntity(EntityId id) {
     if (entities.find(id) == entities.end()) {
+        logger->warn("Attempted to fetch an entity with id {} but it does not exist", id);
         return nullptr;
     }
     return entities[id];
 }
+
+void EntityManager::destroy(EntityId id) {
+    if (entities.find(id) == entities.end()) {
+        logger->warn("Attempted to destroy an entity with id {} but it does not exist", id);
+        return;
+    }
+
+    // todo look into cleaning up pointer?
+    auto entity = entities[id];
+    entities.erase(id);
+
+    auto event = Event(SID("EVENT_TYPE_ENTITY_DESTROY"));
+    event.setArg("entityId", id);
+    event.push();
+}
+
 
 bool EntityManager::onEvent(Event &event) {
     switch (event.getType()) {
@@ -97,6 +114,11 @@ bool EntityManager::onEvent(Event &event) {
         case SID("EVENT_TYPE_ENTITY_SPAWN"): {
             if (!event.getArg<bool>("fromServer")) return false;
             spawn(event.getArg<StringId>("prototypeId"), event.getArg<EntityId>("entityId"));
+        }
+        // Entity has been destroyed on server
+        case SID("EVENT_TYPE_ENTITY_DESTROY"): {
+            if (!event.getArg<bool>("fromServer")) return false;
+            destroy(event.getArg<EntityId>("entityId"));
         }
     }
     return false;

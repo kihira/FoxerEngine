@@ -65,6 +65,12 @@ public:
      */
     std::shared_ptr<Entity> getEntity(EntityId id);
 
+    /**
+     * Destroys an entity
+     * @param id Entity ID
+     */
+    void destroy(EntityId id);
+
     bool onEvent(Event &event) override;
 };
 
