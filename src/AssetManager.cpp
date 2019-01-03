@@ -17,6 +17,7 @@
 #include "event/EventManager.h"
 #include "network/NetworkManager.h"
 #include "network/NetworkComponent.h"
+#include "PlayerComponent.h"
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -102,7 +103,10 @@ void AssetManager::startUp() {
             "position", sol::property(&Entity::getPosition, &Entity::setPosition),
             "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
             "getPhysicsComponent", [](std::shared_ptr<Entity> entity) -> PhysicsComponent * { return entity->getComponent<PhysicsComponent>(); },
-            "getNetworkComponent", [](std::shared_ptr<Entity> entity) -> NetworkComponent * { return entity->getComponent<NetworkComponent>(); }
+            "getNetworkComponent", [](std::shared_ptr<Entity> entity) -> NetworkComponent * { return entity->getComponent<NetworkComponent>(); },
+            "getPlayerComponent", [](std::shared_ptr<Entity> entity) -> PlayerComponent * { return entity->getComponent<PlayerComponent>(); },
+            sol::meta_function::index, &Entity::dynamicGet,
+            sol::meta_function::new_index, &Entity::dynamicSet
     );
 
     // Input functions
@@ -134,9 +138,12 @@ void AssetManager::startUp() {
             "getStringId", &Event::getArg<StringId>,
             "setUInt", &Event::setArg<StringId>,
             "getUInt", &Event::getArg<StringId>,
-                    // Entity ID
+            // Entity ID
             "setEntityId", &Event::setArg<EntityId>,
             "getEntityId", &Event::getArg<EntityId>,
+            // Client ID
+            "setClientId", &Event::setArg<ClientId>,
+            "getClientId", &Event::getArg<ClientId>,
             "type", &Event::getType,
             "push", &Event::push
     );
@@ -178,14 +185,15 @@ void AssetManager::startUp() {
     networkTable["isServer"] = []() { return gNetworkManager.isServer(); };
     networkTable["isClient"] = []() { return !gNetworkManager.isServer(); };
     networkTable["clientsCount"] = []() { return gNetworkManager.clientsCount(); };
-    networkTable["registerPacket"] = [](PacketId packetId, sol::function callback) {
-        gNetworkManager.registerPacket({
-            packetId,
-            0,
-            ENET_PACKET_FLAG_RELIABLE,
-            ((PacketHandlerFn) &callback) // todo test
-    });
-    };
+    networkTable["clientId"] = []() { return gNetworkManager.getClientId(); };
+//    networkTable["registerPacket"] = [](PacketId packetId, sol::function callback) {
+//        gNetworkManager.registerPacket({
+//            packetId,
+//            0,
+//            ENET_PACKET_FLAG_RELIABLE,
+//            ((PacketHandlerFn) &callback) // todo test
+//    });
+//    };
 
     // Network component
     networkTable.new_usertype<NetworkComponent>(
@@ -547,6 +555,12 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
         renderComponent->setActive(false);
 
         entity->addComponent<RenderComponent>(renderComponent);
+    }
+
+    // Create player component
+    if (entityTable["playerComponent"] != sol::lua_nil) {
+        auto playerComponent = new PlayerComponent(entity);
+        entity->addComponent<PlayerComponent>(playerComponent);
     }
 
     // Events

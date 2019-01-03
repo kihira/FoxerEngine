@@ -13,6 +13,7 @@ return {
     renderComponent = {
         mesh = 591432690
     },
+    playerComponent = {},
     update = function(self)
         -- print("Hello, my name is " .. self.name)
     end,
@@ -36,18 +37,19 @@ return {
             end
         end)
     end,
-    -- events to listen for
     events = {
-        "EVENT_TYPE_ENTITY_SPAWN",
+        "EVENT_TYPE_ASSIGN_PLAYER",
         "EVENT_TYPE_INPUT_PLAYER"
     },
     onEvent = function(self, event)
-        if event:type() == 791803502 then -- EVENT_TYPE_ENTITY_SPAWN
-            if event:getUShort("entityId") == self:id() then
-                print("We've spawned!")
+        if event:type() == 697357692 then -- EVENT_TYPE_ASSIGN_PLAYER
+            if event:getEntityId("entityId") == self:id() and event:getClientId("clientId") == engine.network.clientId() then
+                print("We've been given control of an entity!")
+                self.hasControl = true;
             end
         elseif event:type() == 1770460267 then -- EVENT_TYPE_INPUT_PLAYER
             if (not event:getEntityId("entityId") == self:id()) then return end
+            if (not self.hasControl) then return end
 
             local inputBitmask = event:getUShort("inputBitmask");
             if (inputBitmask & 1 > 0) then

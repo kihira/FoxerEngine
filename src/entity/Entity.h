@@ -28,6 +28,7 @@ private:
     std::string name;
     std::map<std::type_index, Component *> components;
     std::vector<StringId> events;
+    std::unordered_map<std::string, sol::object> entries;
 public:
     Entity(EntityId id, std::string name);
 
@@ -60,6 +61,10 @@ public:
 
     void setName(const std::string &name);
 
+    /**
+     * Sets the events that this entity will listen for. Used only before an entity is constructed from a prototype
+     * @param events The events to listen for
+     */
     void setEvents(const std::vector<StringId> &events);
 
     const glm::vec3 &getPrevPosition() const;
@@ -67,6 +72,22 @@ public:
     const glm::vec3 &getPrevRotation() const;
 
     const EntityId getId() const;
+
+    /**
+     * Used by Sol/Lua to dynamically set values on the entity.
+     * Allows for a large amount of freedom within scripting
+     * @param key The key name
+     * @param value The key value
+     */
+    void dynamicSet(std::string key, sol::stack_object value);
+
+    /**
+     * Used by Sol/Lua to dynamically get values on the entity.
+     * Allows for a large amount of freedom within scripti
+     * @param key The key name
+     * @return The value
+     */
+    sol::object dynamicGet(std::string key);
 
     void addComponent(std::type_index type, Component *component);
 

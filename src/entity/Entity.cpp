@@ -21,11 +21,11 @@ const glm::vec3 &Entity::getPosition() const {
 void Entity::setPosition(const glm::vec3 &position) {
     Entity::position = position;
 
-    auto event = Event(SID("EVENT_TYPE_ENTITY_SET_POSITION"));
-    event.setArg("positionX", position.x);
-    event.setArg("positionY", position.y);
-    event.setArg("positionZ", position.z);
-    event.push();
+//    auto event = Event(SID("EVENT_TYPE_ENTITY_SET_POSITION"));
+//    event.setArg("positionX", position.x);
+//    event.setArg("positionY", position.y);
+//    event.setArg("positionZ", position.z);
+//    event.push();
 }
 
 const glm::vec3 &Entity::getRotation() const {
@@ -39,11 +39,11 @@ const std::string &Entity::getName() const {
 void Entity::setRotation(const glm::vec3 &rotation) {
     Entity::rotation = rotation;
 
-    auto event = Event(SID("EVENT_TYPE_ENTITY_SET_ROTATION"));
-    event.setArg("rotationX", rotation.x);
-    event.setArg("rotationY", rotation.y);
-    event.setArg("rotationZ", rotation.z);
-    event.push();
+//    auto event = Event(SID("EVENT_TYPE_ENTITY_SET_ROTATION"));
+//    event.setArg("rotationX", rotation.x);
+//    event.setArg("rotationY", rotation.y);
+//    event.setArg("rotationZ", rotation.z);
+//    event.push();
 }
 
 void Entity::setUpdateFn(const sol::protected_function &updateFn) {
@@ -119,3 +119,22 @@ void Entity::setEvents(const std::vector<StringId> &events) {
     Entity::events = events;
 }
 
+void Entity::dynamicSet(std::string key, sol::stack_object value) {
+    auto it = entries.find(key);
+    if (it == entries.cend()) {
+        entries.insert(it, { std::move(key), std::move(value) });
+    }
+    else {
+        std::pair<const std::string, sol::object>& kvp = *it;
+        sol::object& entry = kvp.second;
+        entry = sol::object(std::move(value));
+    }
+}
+
+sol::object Entity::dynamicGet(std::string key) {
+    auto it = entries.find(key);
+    if (it == entries.cend()) {
+        return sol::lua_nil;
+    }
+    return it->second;
+}

@@ -19,9 +19,19 @@ level = {
         if (event:type() == 1994444546) then --- EVENT_TYPE_PLAYER_CONNECTED
             print("Player connected!")
             print("Client ID: " .. event:getUShort("clientId"))
+
+            -- Spawn player entity and assign it
+            local player = engine.entity.spawnEntity("ENTITY_PLAYER")
+            player.controllingClient = event:getUShort("clientId")
+
+            -- Send event out so client know its can control it
+            local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")
+            assignEvent:setClientId("clientId", event:getClientId("clientId"))
+            assignEvent:setEntityId("entityId", player:id())
+            assignEvent:push()
+
         elseif event:type() == 1205121214 then --- EVENT_TYPE_LEVEL_LOAD
             print("Level loaded!")
-            -- engine.entity.spawnEntity("ENTITY_PLAYER")
         end
         return false;
     end

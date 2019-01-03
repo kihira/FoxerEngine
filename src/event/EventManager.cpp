@@ -39,6 +39,7 @@ void EventManager::registerHandler(const std::vector<StringId> &events, EventHan
 }
 
 void EventManager::push(Event &event) {
+    SPDLOG_LOGGER_DEBUG(logger, "Pushing event {}", event.getType());
     for (auto handler : globalHandlers) {
         if (handler->onEvent(event)) {
             return;

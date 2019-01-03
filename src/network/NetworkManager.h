@@ -132,6 +132,12 @@ public:
      * @return Number of connected clients, otherwise 0 if client
      */
     unsigned long clientsCount();
+
+    /**
+     * If this is a client, return it's assigned client ID, otherwise 0
+     * @return The client Id
+     */
+    ClientId getClientId() const;
 };
 
 

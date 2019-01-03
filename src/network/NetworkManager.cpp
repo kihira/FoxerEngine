@@ -217,3 +217,9 @@ ClientId NetworkManager::getNewClientId() {
 unsigned long NetworkManager::clientsCount() {
     return clients.size();
 }
+
+ClientId NetworkManager::getClientId() const {
+    return clientId;
+}
+
+

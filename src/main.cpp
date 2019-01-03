@@ -87,11 +87,11 @@ int main(int argc, char **argv) {
     gSoundManager.startUp();
     gLevelManager.startUp();
 
-    // Load initial level
-    gLevelManager.loadLevel(gAssetManager.loadSettings()->initialLevel);
-
     // Start as server or connect to one
     if (server) {
+        // Load initial level
+        gLevelManager.loadLevel(gAssetManager.loadSettings()->initialLevel);
+
         gNetworkManager.startServer();
     } else {
         gNetworkManager.connectToServer("localhost", 1234);
@@ -121,6 +121,7 @@ int main(int argc, char **argv) {
     profiler::dumpBlocksToFile("./profile_data.prof");
 #endif
 
+    // Shutdown loggers
     spdlog::drop_all();
 
     return 0;
