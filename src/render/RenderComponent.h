@@ -5,8 +5,9 @@
 
 #include "../entity/Component.h"
 #include <glm/mat4x4.hpp>
-#include "Mesh.h"
-#include "Shader.h"
+
+class Shader;
+class Mesh;
 
 class RenderComponent : public Component {
 private:

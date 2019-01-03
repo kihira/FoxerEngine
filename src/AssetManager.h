@@ -6,11 +6,14 @@
 #include <glad/glad.h>
 #include <sol.hpp>
 #include <spdlog/spdlog.h>
-#include "render/Mesh.h"
-#include "render/Shader.h"
-#include "entity/Entity.h"
-#include "level/Level.h"
+#include <map>
 #include "Settings.h"
+#include "util/StringId.h"
+
+class Mesh;
+class Shader;
+class Entity;
+class Level;
 
 class AssetManager {
 private:

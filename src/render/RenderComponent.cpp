@@ -5,6 +5,8 @@
 #include "RenderManager.h"
 #include "../util/Vectors.h"
 #include "../entity/Entity.h"
+#include "Mesh.h"
+#include "Shader.h"
 
 RenderComponent::RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> &shader, std::shared_ptr<Mesh> &mesh) :
 Component(entity), shader(shader), mesh(mesh) {

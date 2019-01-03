@@ -2,6 +2,7 @@
 #define GAMEENGINE301CR_SETTINGS_H
 
 #include <string>
+#include "util/StringId.h"
 
 struct Settings {
     std::string windowTitle = "Default Window";
