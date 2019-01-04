@@ -23,8 +23,8 @@ Global
 		{443F4961-BCE8-44DC-AB66-3A194E175208}.Release|x64.Build.0 = Release|x64
 		{443F4961-BCE8-44DC-AB66-3A194E175208}.Release|x86.ActiveCfg = Release|Win32
 		{443F4961-BCE8-44DC-AB66-3A194E175208}.Release|x86.Build.0 = Release|Win32
-		{443F4961-BCE8-44DC-AB66-3A194E175208}.ServerDebug|x64.ActiveCfg = Debug|x64
-		{443F4961-BCE8-44DC-AB66-3A194E175208}.ServerDebug|x64.Build.0 = Debug|x64
+		{443F4961-BCE8-44DC-AB66-3A194E175208}.ServerDebug|x64.ActiveCfg = ServerDebug|x64
+		{443F4961-BCE8-44DC-AB66-3A194E175208}.ServerDebug|x64.Build.0 = ServerDebug|x64
 		{443F4961-BCE8-44DC-AB66-3A194E175208}.ServerDebug|x86.ActiveCfg = Debug|x64
 		{443F4961-BCE8-44DC-AB66-3A194E175208}.ServerDebug|x86.Build.0 = Debug|x64
 	EndGlobalSection

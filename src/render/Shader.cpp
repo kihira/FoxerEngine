@@ -19,13 +19,13 @@ void Shader::registerUniform(std::string name) {
         return;
     }
 
-    GLint uniformLoc = glGetUniformLocation(program, name.c_str());
+    auto uniformLoc = glGetUniformLocation(program, name.c_str());
     if (uniformLoc == -1) {
-        spdlog::get("main")->error("Cannot find uniform  '{}' in the program", name);
-        return;
+        spdlog::get("main")->error("Cannot find uniform  '{}' in the program. This will cause undefined behaviour", name);
+		// Proceed to carry on registering as -1 is still valid, just nothing happens
     }
 
-    uniforms.insert(std::pair<std::string, GLuint>(name, uniformLoc));
+    uniforms.emplace(std::string(name), uniformLoc);
 }
 
 Shader::Shader(GLuint program) : program(program) {

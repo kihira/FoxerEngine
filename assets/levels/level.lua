@@ -20,6 +20,12 @@ level = {
             entityId = 10002,
             position = engine.math.vec3.new(10, 0, 10),
             rotation = engine.math.vec3.new(0)
+        },
+		{
+            prototypeId = 1675181212,
+            entityId = 10003,
+            position = engine.math.vec3.new(0, 0, 10),
+            rotation = engine.math.vec3.new(0)
         }
     },
     update = function(self) end,

@@ -18,3 +18,6 @@ possible via the use of meta_functions::index. See Entity
 - Allow full overriding of components when loading for levels
 - Only load data as defined in the level file
 - Handle if asset is missing from database
+
+### Rendering
+- Make light a component so it's easier to sync and manipulate

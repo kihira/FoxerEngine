@@ -3,6 +3,12 @@
 #include "RenderManager.h"
 #include "../Managers.h"
 #include "../AssetManager.h"
+#include "Shader.h"
+#include "Mesh.h"
+#include "RenderComponent.h"
+#include "WindowWrapper.h"
+#include "Camera.h"
+#include "Light.h"
 
 RenderManager::RenderManager() = default;
 
@@ -62,18 +68,34 @@ void RenderManager::startUp() {
     // Register lua stuff
     sol::table graphicsTable = gAssetManager.getLua().get<sol::table>("engine").create_named("graphics");
     graphicsTable["camera"] = gRenderManager.getCamera();
+	graphicsTable["addLight"] = [](Light *light) { gRenderManager.addLight(light); };
+	graphicsTable["removeLight"] = [](Light *light) { gRenderManager.removeLight(light); };
 
     // Register camera type
     graphicsTable.new_usertype<Camera>(
-            "CameraType",
-            "", sol::no_constructor,
-            "position", sol::property(&Camera::getPosition, &Camera::setPosition),
-            "target", sol::property(&Camera::getTarget, &Camera::setTarget),
-            "fov", sol::property(&Camera::getFov, &Camera::setFov)
+        "CameraType",
+        "", sol::no_constructor,
+        "position", sol::property(&Camera::getPosition, &Camera::setPosition),
+        "target", sol::property(&Camera::getTarget, &Camera::setTarget),
+        "fov", sol::property(&Camera::getFov, &Camera::setFov)
     );
+
+	// Register light type
+	graphicsTable.new_usertype<Light>(
+		"light",
+		"new", sol::constructors<Light(glm::vec3, glm::vec3)>(),
+		"position", sol::property(&Light::getPosition, &Light::setPosition),
+		"direction", sol::property(&Light::getDirection, &Light::setDirection),
+		"intensity", sol::property(&Light::getIntensity, &Light::setIntensity)
+	);
 }
 
 void RenderManager::shutDown() {
+	for (auto light : lights)
+	{
+		delete light;
+	}
+
     glfwDestroyWindow(windowWrapper->getWindow());
     glfwTerminate();
 }
@@ -81,10 +103,19 @@ void RenderManager::shutDown() {
 void RenderManager::useShader(std::shared_ptr<Shader> shader) {
     if (shader->getProgram() == currentShader) return;
 
+	// Setup shader
     glUseProgram(shader->getProgram());
     shader->setUniform("view", camera->getView());
     shader->setUniform("projection", camera->getProjection());
+
+	// todo temp to make lights work. Only one light supported for now
+	if (lights.size() > 0) {
+		lights[0]->apply(shader.get());
+	}
+
     GLERRCHECK();
+
+	// currentShader = shader->getProgram();
 }
 
 void RenderManager::frameStart() {
@@ -163,4 +194,14 @@ void RenderManager::GLERRCHECK_fn(const char *file, int line) {
 
 const Camera *RenderManager::getCamera() const {
     return camera.get();
+}
+
+void RenderManager::addLight(Light* light)
+{
+	lights.push_back(light);
+}
+
+void RenderManager::removeLight(Light* light)
+{
+	lights.erase(std::find(lights.begin(), lights.end(), light));
 }

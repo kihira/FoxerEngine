@@ -199,6 +199,7 @@
     <ClCompile Include="src\physics\PhysicsManager.cpp" />
     <ClCompile Include="src\physics\PhysicsNetworkHandler.cpp" />
     <ClCompile Include="src\render\Camera.cpp" />
+    <ClCompile Include="src\render\Light.cpp" />
     <ClCompile Include="src\render\Material.cpp" />
     <ClCompile Include="src\render\Mesh.cpp" />
     <ClCompile Include="src\render\RenderComponent.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="src\physics\PhysicsManager.h" />
     <ClInclude Include="src\physics\PhysicsNetworkHandler.h" />
     <ClInclude Include="src\render\Camera.h" />
+    <ClInclude Include="src\render\Light.h" />
     <ClInclude Include="src\render\Material.h" />
     <ClInclude Include="src\render\Mesh.h" />
     <ClInclude Include="src\render\RenderComponent.h" />

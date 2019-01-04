@@ -4,7 +4,8 @@ database = {
     },
     entities = {
         [591432690] = "player.lua", -- ENTITY_PLAYER
-        [315271780] = "ground.lua" -- ENTITY_GROUND
+        [315271780] = "ground.lua", -- ENTITY_GROUND
+		[1675181212] = "groundRough.lua" -- ENTITY_GROUND_ROUGH
     },
     meshes = {
         [3415080175] = "spaceCraft1.obj", -- MESH_SPACECRAFT

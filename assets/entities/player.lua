@@ -1,6 +1,6 @@
 return {
     name = "Player",
-    position = engine.math.vec3.new(0.0),
+    position = engine.math.vec3.new(0, 2, 0),
     physicsComponent = {
         type = 2, -- dynamic body
         gravityScale = 0.3,

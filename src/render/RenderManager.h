@@ -6,10 +6,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
-#include "Shader.h"
-#include "Camera.h"
-#include "WindowWrapper.h"
-#include "RenderComponent.h"
+
+class Light;
+class RenderComponent;
+class Shader;
+class Camera;
+class WindowWrapper;
 
 #define GLERRCHECK() RenderManager::GLERRCHECK_fn(__FILE__, __LINE__)
 
@@ -20,6 +22,7 @@ private:
     GLuint currentShader = 0;
     std::shared_ptr<spdlog::logger> logger;
     std::vector<RenderComponent *> renderComponents;
+	std::vector<Light *> lights;
 
     static void glfwErrorCallback(int error, const char *desc);
 
@@ -64,6 +67,16 @@ public:
     WindowWrapper *getWindowWrapper() const;
 
     const Camera *getCamera() const;
+
+	/**
+	 * Adds a light that will be passed into shaders
+	 */
+	void addLight(Light *light);
+
+	/**
+	 * Removes a light from the render pipeline
+	 */
+	void removeLight(Light *light);
 
     static void GLERRCHECK_fn(const char *file, int line);
 };
