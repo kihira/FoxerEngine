@@ -753,7 +753,7 @@ void AssetManager::loadStringIds() {
 
     std::string line;
     while (getline(file, line)) {
-        auto spacePos = line.find(" ");
+	    const auto spacePos = line.find(' ');
         if (spacePos == std::string::npos) {
             logger->error("Failed to properly parse string ID line: {}", line);
             continue;
