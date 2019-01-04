@@ -18,7 +18,6 @@ return {
     },
     playerComponent = {},
     update = function(self)
-        print("Hello!")
         if (self.hasControl) then
             engine.graphics.camera.target = self.position
         end
@@ -51,12 +50,13 @@ return {
         if event:type() == 697357692 then -- EVENT_TYPE_ASSIGN_PLAYER
             if (event:getEntityId("entityId") ~= self:id()) then return end
             -- If we're server or the client itself, say we have control
-            if engine.network.isServer or (event:getClientId("clientId") == engine.network.clientId()) then
+            if engine.network.isServer() or (event:getClientId("clientId") == engine.network.clientId()) then
+                print("We have control " .. event:getClientId("clientId") .. " " .. engine.network.clientId())
                 self.hasControl = true;
             end
         elseif event:type() == 1770460267 then -- EVENT_TYPE_INPUT_PLAYER
             if (event:getEntityId("entityId") ~= self:id()) then return end
-            if (not self.hasControl) then return end
+            if (self.hasControl ~= true) then return end
 
             -- Process input
             local inputBitmask = event:getUShort("inputBitmask");
@@ -65,7 +65,7 @@ return {
                 physics.velocity = physics.velocity + engine.math.vec2.new(0, 1)
             end
             if (inputBitmask & 2 > 0) then
-                physics.velocity = physics.velocity - engine.math.vec2.new(0, -1)
+                physics.velocity = physics.velocity + engine.math.vec2.new(0, -1)
             end
             if (inputBitmask & 4 > 0) then
                 physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)

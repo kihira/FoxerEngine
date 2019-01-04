@@ -113,7 +113,7 @@ void NetworkManager::update(float deltaTime) {
                 enet_uint8 packetID = event.packet->data[0];
                 packetHandlers[packetID].packetHandler(packetID, event.packet->data + sizeof(enet_uint8),
                                                        event.packet->dataLength - sizeof(enet_uint8));
-                logger->debug("Received packet. ID: {:d} Length: {:d}", packetID, event.packet->dataLength);
+                // logger->debug("Received packet. ID: {:d} Length: {:d}", packetID, event.packet->dataLength);
                 enet_packet_destroy(event.packet);
                 break;
             }
