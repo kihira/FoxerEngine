@@ -17,9 +17,6 @@ EventNetworkHandler::EventNetworkHandler() {
             event.setArg("noNetwork", true); // Don't want an infinite loop
             event.setArg("fromServer", !gNetworkManager.isServer());
             event.push();
-
-            // Cleanup
-            free(data);
         }
     });
 
@@ -38,6 +35,8 @@ bool EventNetworkHandler::onEvent(Event &event) {
         auto clientId = event.getArg<ClientId>("sendToClient");
         if (clientId > 0) {
             gNetworkManager.sendToClient(clientId, PACKET_ID_EVENT, data, size);
+			free(data);
+			return true;
         } else {
             gNetworkManager.sendToAllClients(PACKET_ID_EVENT, data, size);
         }

@@ -38,7 +38,7 @@ level = {
             print("Client " .. clientId .. " disconnected")
 
             -- Ask engine to destroy and remove our reference
-            engine.entity.destroy(self.players[clientId]:id())
+            -- engine.entity.destroy(self.players[clientId]:id())
             self.players[clientId] = nil
 
         elseif event:type() == 1205121214 then -- EVENT_TYPE_LEVEL_LOAD

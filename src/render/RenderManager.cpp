@@ -115,6 +115,11 @@ void RenderManager::addRenderComponent(RenderComponent *component) {
     renderComponents.push_back(component);
 }
 
+void RenderManager::removeRenderComponent(RenderComponent* component)
+{
+	renderComponents.erase(std::find(renderComponents.begin(), renderComponents.end(), component));
+}
+
 /*
  * Static functions
  */

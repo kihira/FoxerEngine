@@ -15,4 +15,7 @@ CppProperties.json
 
 # Example files from libraries
 *examples/*
+
+# VS
 Debug/
+x64/

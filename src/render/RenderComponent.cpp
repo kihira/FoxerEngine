@@ -13,6 +13,10 @@ Component(entity), shader(shader), mesh(mesh) {
     gRenderManager.addRenderComponent(this);
 }
 
+RenderComponent::~RenderComponent() {
+	gRenderManager.removeRenderComponent(this);
+}
+
 void RenderComponent::update(float deltaTime) {
     transform = glm::translate(glm::mat4(1.f), entity->getPosition());
     transform = glm::rotate(transform, entity->getRotation().x, Vector::RIGHT);

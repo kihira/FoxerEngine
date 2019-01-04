@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ServerDebug|Win32">
+      <Configuration>ServerDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ServerDebug|x64">
+      <Configuration>ServerDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{443F4961-BCE8-44DC-AB66-3A194E175208}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ServerDebug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ServerDebug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ServerDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ServerDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ServerDebug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\libs\lua\include;.\libs\easy_profiler\easy_profiler_core\include;.\libs\tiny_obj_loader;.\libs\spdlog\include;.\libs\stb;.\libs\soloud\include;.\libs\sol;.\lua\include;.\libs\glm;.\libs\glfw\include;.\libs\glad\include;.\libs\enet\include;.\libs\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>.\libs\msvc\x64;.\libs\lua\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;lua53.lib;enet.lib;easy_profiler.lib;Box2D.lib;ws2_32.lib;winmm.lib;soloud.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ServerDebug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\libs\lua\include;.\libs\easy_profiler\easy_profiler_core\include;.\libs\tiny_obj_loader;.\libs\spdlog\include;.\libs\stb;.\libs\soloud\include;.\libs\sol;.\lua\include;.\libs\glm;.\libs\glfw\include;.\libs\glad\include;.\libs\enet\include;.\libs\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>.\libs\msvc\x64;.\libs\lua\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;lua53.lib;enet.lib;easy_profiler.lib;Box2D.lib;ws2_32.lib;winmm.lib;soloud.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>.\libs\lua\include;.\libs\easy_profiler\easy_profiler_core\include;.\libs\tiny_obj_loader;.\libs\spdlog\include;.\libs\stb;.\libs\soloud\include;.\libs\sol;.\lua\include;.\libs\glm;.\libs\glfw\include;.\libs\glad\include;.\libs\enet\include;.\libs\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>.\libs\msvc\x64;.\libs\lua\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;lua53.lib;enet.lib;easy_profiler.lib;Box2D.lib;ws2_32.lib;winmm.lib;soloud.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\libs\lua\include;.\libs\easy_profiler\easy_profiler_core\include;.\libs\tiny_obj_loader;.\libs\spdlog\include;.\libs\stb;.\libs\soloud\include;.\libs\sol;.\lua\include;.\libs\glm;.\libs\glfw\include;.\libs\glad\include;.\libs\enet\include;.\libs\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>.\libs\msvc\x64;.\libs\lua\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;lua53.lib;enet.lib;easy_profiler.lib;Box2D.lib;ws2_32.lib;winmm.lib;soloud.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ServerDebug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\libs\lua\include;.\libs\easy_profiler\easy_profiler_core\include;.\libs\tiny_obj_loader;.\libs\spdlog\include;.\libs\stb;.\libs\soloud\include;.\libs\sol;.\lua\include;.\libs\glm;.\libs\glfw\include;.\libs\glad\include;.\libs\enet\include;.\libs\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>.\libs\msvc\x64;.\libs\lua\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;lua53.lib;enet.lib;easy_profiler.lib;Box2D.lib;ws2_32.lib;winmm.lib;soloud.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\libs\lua\include;.\libs\easy_profiler\easy_profiler_core\include;.\libs\tiny_obj_loader;.\libs\spdlog\include;.\libs\stb;.\libs\soloud\include;.\libs\sol;.\lua\include;.\libs\glm;.\libs\glfw\include;.\libs\glad\include;.\libs\enet\include;.\libs\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>.\libs\msvc\x64;.\libs\lua\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;lua53.lib;enet.lib;easy_profiler.lib;Box2D.lib;ws2_32.lib;winmm.lib;soloud.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="libs\glad\src\glad.c" />
+    <ClCompile Include="src\AssetManager.cpp" />
+    <ClCompile Include="src\entity\Entity.cpp" />
+    <ClCompile Include="src\entity\EntityManager.cpp" />
+    <ClCompile Include="src\event\Event.cpp" />
+    <ClCompile Include="src\event\EventManager.cpp" />
+    <ClCompile Include="src\event\EventNetworkHandler.cpp" />
+    <ClCompile Include="src\InputManager.cpp" />
+    <ClCompile Include="src\level\Level.cpp" />
+    <ClCompile Include="src\level\LevelManager.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Managers.cpp" />
+    <ClCompile Include="src\network\NetworkComponent.cpp" />
+    <ClCompile Include="src\network\NetworkManager.cpp" />
+    <ClCompile Include="src\physics\PhysicsComponent.cpp" />
+    <ClCompile Include="src\physics\PhysicsManager.cpp" />
+    <ClCompile Include="src\physics\PhysicsNetworkHandler.cpp" />
+    <ClCompile Include="src\render\Camera.cpp" />
+    <ClCompile Include="src\render\Mesh.cpp" />
+    <ClCompile Include="src\render\RenderComponent.cpp" />
+    <ClCompile Include="src\render\RenderManager.cpp" />
+    <ClCompile Include="src\render\Shader.cpp" />
+    <ClCompile Include="src\render\WindowWrapper.cpp" />
+    <ClCompile Include="src\sound\SoundManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\AssetManager.h" />
+    <ClInclude Include="src\entity\Component.h" />
+    <ClInclude Include="src\entity\Entity.h" />
+    <ClInclude Include="src\entity\EntityManager.h" />
+    <ClInclude Include="src\event\Event.h" />
+    <ClInclude Include="src\event\EventHandler.h" />
+    <ClInclude Include="src\event\EventManager.h" />
+    <ClInclude Include="src\event\EventNetworkHandler.h" />
+    <ClInclude Include="src\InputManager.h" />
+    <ClInclude Include="src\level\Level.h" />
+    <ClInclude Include="src\level\LevelManager.h" />
+    <ClInclude Include="src\Managers.h" />
+    <ClInclude Include="src\network\NetworkComponent.h" />
+    <ClInclude Include="src\network\NetworkManager.h" />
+    <ClInclude Include="src\physics\PhysicsComponent.h" />
+    <ClInclude Include="src\physics\PhysicsManager.h" />
+    <ClInclude Include="src\physics\PhysicsNetworkHandler.h" />
+    <ClInclude Include="src\render\Camera.h" />
+    <ClInclude Include="src\render\Mesh.h" />
+    <ClInclude Include="src\render\RenderComponent.h" />
+    <ClInclude Include="src\render\RenderManager.h" />
+    <ClInclude Include="src\render\Shader.h" />
+    <ClInclude Include="src\render\WindowWrapper.h" />
+    <ClInclude Include="src\Settings.h" />
+    <ClInclude Include="src\sound\SoundManager.h" />
+    <ClInclude Include="src\util\assert.h" />
+    <ClInclude Include="src\util\StringId.h" />
+    <ClInclude Include="src\util\Vectors.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\database.lua" />
+    <None Include="assets\entities\floor.lua" />
+    <None Include="assets\entities\player.lua" />
+    <None Include="assets\settings.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\strings.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

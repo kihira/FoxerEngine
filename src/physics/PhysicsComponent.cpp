@@ -22,7 +22,7 @@ PhysicsComponent::PhysicsComponent(
 }
 
 void PhysicsComponent::update(float deltaTime) {
-    glm::vec3 pos;
+    glm::vec3 pos(0.f);
     pos.x = body->GetPosition().x;
     pos.z = body->GetPosition().y;
     entity->setPosition(pos);

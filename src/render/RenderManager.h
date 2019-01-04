@@ -59,6 +59,8 @@ public:
 
     void addRenderComponent(RenderComponent *component);
 
+	void removeRenderComponent(RenderComponent *component);
+
     WindowWrapper *getWindowWrapper() const;
 
     const Camera *getCamera() const;
