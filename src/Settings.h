@@ -12,6 +12,8 @@ struct Settings {
     float cameraFov = 75.f;
 
     StringId initialLevel = 0;
+
+    float tickRate = 1.f / 60.f;
 };
 
 #endif //GAMEENGINE301CR_SETTINGS_H

@@ -43,7 +43,7 @@ public:
 
     void frameEnd();
 
-    void update();
+    void update(float deltaTime);
 
     /**
      * Checks whether the GLFW window is attempting to close

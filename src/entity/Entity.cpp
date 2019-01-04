@@ -15,7 +15,7 @@ Entity::~Entity() {
 }
 
 
-void Entity::update() {
+void Entity::update(float deltaTime) {
     if (updateFn != sol::lua_nil) {
         updateFn(this);
     }
@@ -27,12 +27,6 @@ const glm::vec3 &Entity::getPosition() const {
 
 void Entity::setPosition(const glm::vec3 &position) {
     Entity::position = position;
-
-//    auto event = Event(SID("EVENT_TYPE_ENTITY_SET_POSITION"));
-//    event.setArg("positionX", position.x);
-//    event.setArg("positionY", position.y);
-//    event.setArg("positionZ", position.z);
-//    event.push();
 }
 
 const glm::vec3 &Entity::getRotation() const {
@@ -45,12 +39,6 @@ const std::string &Entity::getName() const {
 
 void Entity::setRotation(const glm::vec3 &rotation) {
     Entity::rotation = rotation;
-
-//    auto event = Event(SID("EVENT_TYPE_ENTITY_SET_ROTATION"));
-//    event.setArg("rotationX", rotation.x);
-//    event.setArg("rotationY", rotation.y);
-//    event.setArg("rotationZ", rotation.z);
-//    event.push();
 }
 
 void Entity::setUpdateFn(const sol::protected_function &updateFn) {

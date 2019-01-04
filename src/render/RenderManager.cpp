@@ -96,10 +96,10 @@ void RenderManager::frameEnd() {
     glfwPollEvents();
 }
 
-void RenderManager::update() {
+void RenderManager::update(float deltaTime) {
     for (auto renderComponent : renderComponents) {
         if (!renderComponent->isActive()) continue;
-        renderComponent->update(0);
+        renderComponent->update(deltaTime);
     }
 }
 

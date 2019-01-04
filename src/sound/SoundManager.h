@@ -26,7 +26,7 @@ public:
      */
     void shutDown();
 
-    void update();
+    void update(float deltaTime);
 };
 
 

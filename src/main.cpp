@@ -14,7 +14,7 @@
 
 void runMainLoop() {
     double lastTickTime = 0.0;
-    double tickRate = 1 / 60.0;
+    double tickRate = gAssetManager.loadSettings()->tickRate;
     double currentTime = glfwGetTime();
     double delta = currentTime - lastTickTime;
 
@@ -28,11 +28,11 @@ void runMainLoop() {
         while (delta >= tickRate) {
             gRenderManager.frameStart();
 
-            gPhysicsManager.update();
-            gNetworkManager.update();
-            gEntityManager.update();
-            gRenderManager.update();
-            gSoundManager.update();
+            gPhysicsManager.update(delta);
+            gNetworkManager.update(delta);
+            gEntityManager.update(delta);
+            gRenderManager.update(delta);
+            gSoundManager.update(delta);
 
             gRenderManager.frameEnd();
 
@@ -43,7 +43,7 @@ void runMainLoop() {
 
 void runMainLoopServer() {
     double lastTickTime = 0.0;
-    double tickRate = 1 / 60.0;
+    double tickRate = gAssetManager.loadSettings()->tickRate;
     double currentTime = glfwGetTime();
     double delta = currentTime - lastTickTime;
 
@@ -55,9 +55,9 @@ void runMainLoopServer() {
 
         lastTickTime = currentTime;
         while (delta >= tickRate) {
-            gPhysicsManager.update();
-            gNetworkManager.update();
-            gEntityManager.update();
+            gPhysicsManager.update(delta);
+            gNetworkManager.update(delta);
+            gEntityManager.update(delta);
 
             delta -= tickRate;
         }

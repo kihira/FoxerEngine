@@ -21,13 +21,13 @@ void PhysicsManager::shutDown() {
     delete world;
 }
 
-void PhysicsManager::update() {
+void PhysicsManager::update(float deltaTime) {
     EASY_FUNCTION(profiler::colors::Magenta);
     world->Step(timeStep, velocityIterations, positionIterations);
 
     for (auto component : components) {
         if (!component->isActive()) continue;
-        component->update(0);
+        component->update(deltaTime);
     }
 }
 

@@ -7,5 +7,6 @@ return {
     camera = {
         fov = 75
     },
-    initialLevel = "LEVEL_1"
+    initialLevel = "LEVEL_1",
+    tickRate = 1.0 / 60.0
 }

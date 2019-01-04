@@ -16,6 +16,6 @@ void SoundManager::shutDown() {
     soloud.deinit();
 }
 
-void SoundManager::update() {
+void SoundManager::update(float deltaTime) {
 
 }

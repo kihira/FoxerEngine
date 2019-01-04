@@ -81,7 +81,7 @@ public:
      */
     void stopServer();
 
-    void update();
+    void update(float deltaTime);
 
     /**
      * Registers a packet ID and it's handler so the packet can be properly routed to the correct handler

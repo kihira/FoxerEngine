@@ -31,7 +31,7 @@ public:
      */
     void shutDown();
 
-    void update();
+    void update(float deltaTime);
 
     /**
      * Registers an entity prototype that can be used when spawning new entities of the same type

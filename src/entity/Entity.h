@@ -34,7 +34,7 @@ public:
 
     virtual ~Entity();
 
-    void update();
+    void update(float deltaTime);
 
     /**
      * Creates a copy of the entity. This should not be called directly unless you are EntityManager

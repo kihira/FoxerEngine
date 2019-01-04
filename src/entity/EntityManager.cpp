@@ -77,10 +77,10 @@ inline EntityId EntityManager::getEntityId() {
     return id;
 }
 
-void EntityManager::update() {
+void EntityManager::update(float deltaTime) {
     EASY_FUNCTION();
     for (const auto &entity : entities) {
-        entity.second->update();
+        entity.second->update(deltaTime);
     }
 }
 

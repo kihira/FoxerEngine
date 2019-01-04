@@ -74,7 +74,7 @@ void NetworkManager::stopServer() {
     enet_host_destroy(host);
 }
 
-void NetworkManager::update() {
+void NetworkManager::update(float deltaTime) {
     EASY_FUNCTION();
     ENetEvent event;
     while (enet_host_service(host, &event, 0) > 0) {
