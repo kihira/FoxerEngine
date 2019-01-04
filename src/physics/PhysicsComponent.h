@@ -54,6 +54,8 @@ public:
      */
     void setAngularVelocity(float velocity);
 
+    const float getAngularVelocity() const;
+
     void beginContact();
 
     void endContact();

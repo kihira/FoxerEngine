@@ -7,22 +7,31 @@
 #include "../physics/PhysicsComponent.h"
 
 void NetworkComponent::update(float deltaTime) {
+    if (!gNetworkManager.isServer()) return;
     lastSyncTime -= deltaTime;
 
     if (lastSyncTime < 0.f) {
         lastSyncTime = syncRate;
 
+        auto physics = entity->getComponent<PhysicsComponent>();
         auto event = Event(SID("MESSAGE_PHYSICS_SYNC"));
 
         auto position = entity->getPosition();
         event.setArg("posX", position.x);
-        event.setArg("posY", position.y);
         event.setArg("posZ", position.z);
 
         auto rotation = entity->getRotation();
         event.setArg("rotX", rotation.x);
-        event.setArg("rotY", rotation.y);
         event.setArg("rotZ", rotation.z);
+
+        auto velocity = physics->getVelocity();
+        event.setArg("velX", velocity.x);
+        event.setArg("velZ", velocity.y);
+
+        auto angular = physics->getAngularVelocity();
+        event.setArg("velA", angular);
+
+        event.push();
     }
 }
 
@@ -37,4 +46,8 @@ NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, bool h
 
 bool NetworkComponent::hasAuthority() const {
     return isAuthoritive;
+}
+
+void NetworkComponent::setSyncRate(float syncRate) {
+    NetworkComponent::syncRate = syncRate;
 }

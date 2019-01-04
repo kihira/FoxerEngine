@@ -16,8 +16,6 @@ private:
 
     float syncRate; // How often to update in seconds
     float lastSyncTime;
-    glm::vec3 lastPosition;
-    glm::vec3 lastRotation;
 public:
     NetworkComponent(const std::shared_ptr<Entity> &entity, bool hasAuthority);
 
@@ -26,6 +24,12 @@ public:
     Component *clone(std::shared_ptr<Entity> entity) override;
 
     bool hasAuthority() const;
+
+    /**
+     * Sets how often this should send a synchronisation message in seconds
+     * @param syncRate
+     */
+    void setSyncRate(float syncRate);
 };
 
 

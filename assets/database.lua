@@ -54,6 +54,17 @@ database = {
             args = {
                 "entityId"
             }
+        },
+        [2577080706] = { -- MESSAGE_PHYSICS_SYNC
+            args = {
+                "posX",
+                "posZ",
+                "rotX",
+                "rotZ",
+                "velX",
+                "velZ",
+                "velA"
+            }
         }
     }
 }

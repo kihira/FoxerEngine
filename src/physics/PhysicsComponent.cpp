@@ -88,3 +88,7 @@ void PhysicsComponent::setAngularVelocity(float velocity) {
     body->SetAngularVelocity(velocity);
 }
 
+const float PhysicsComponent::getAngularVelocity() const {
+    return body->GetAngularVelocity();
+}
+
