@@ -26,7 +26,7 @@ void RenderComponent::update(float deltaTime) {
 
     gRenderManager.useShader(shader);
     shader->setUniform("model", transform);
-    mesh->render();
+    mesh->render(shader.get()); // todo temp
     GLERRCHECK();
 }
 

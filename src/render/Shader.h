@@ -4,12 +4,12 @@
 
 #include <map>
 
-class Shader {
+class Shader final {
 private:
-    GLuint program = 0;
-    std::map<std::string, GLint> uniforms;
+    unsigned int program = 0;
+    std::map<std::string, int> uniforms;
 public:
-    explicit Shader(GLuint program);
+    explicit Shader(unsigned int program);
 
     ~Shader();
 
@@ -27,7 +27,7 @@ public:
     template <typename T>
     void setUniform(const std::string &name, T value);
 
-    GLuint getProgram() const;
+    unsigned int getProgram() const;
 };
 
 

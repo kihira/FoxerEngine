@@ -4,10 +4,22 @@ level = {
     players = 2,
     entities = {
         {
-            prototypeId = 4045036281,
-            entityId = 12345,
-            position = engine.math.vec3.new(1, 0, 1),
-            rotation = engine.math.vec3.new(0, 0, 0)
+            prototypeId = 315271780,
+            entityId = 10000,
+            position = engine.math.vec3.new(0),
+            rotation = engine.math.vec3.new(0)
+        },
+		{
+            prototypeId = 315271780,
+            entityId = 10001,
+            position = engine.math.vec3.new(10, 0, 0),
+            rotation = engine.math.vec3.new(0)
+        },
+		{
+            prototypeId = 315271780,
+            entityId = 10002,
+            position = engine.math.vec3.new(10, 0, 10),
+            rotation = engine.math.vec3.new(0)
         }
     },
     update = function(self) end,

@@ -9,8 +9,8 @@
 - easy_profiler 2.0.1 [MIT](https://github.com/yse/easy_profiler/blob/develop/LICENSE.MIT)
 - spdlog 1.2.1 [MIT](https://github.com/gabime/spdlog/blob/v1.x/LICENSE)
 - stb_image.h 2.19 [Public Domain](https://github.com/nothings/stb/blob/master/docs/why_public_domain.md)
-- ASSIMP 4.10 [BSD](https://github.com/assimp/assimp/blob/master/LICENSE)
 - soloud 20181119 [zlib](https://github.com/jarikomppa/soloud/blob/master/LICENSE)
+- tinyobjloader 1.0.6 [MIT](https://github.com/syoyo/tinyobjloader/blob/master/LICENSE)
 
 ## Build
 All the libraries are contained within the repo and building the project

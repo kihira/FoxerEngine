@@ -5,4 +5,5 @@
 	<s:Boolean x:Key="/Default/RunConfigs/Config/=9592AFC8D4AF264DABE36CD3AD75190A/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/RunConfigs/Config/=9592AFC8D4AF264DABE36CD3AD75190A/Name/@EntryValue">FoxerEngine - Server</s:String>
 	<s:String x:Key="/Default/RunConfigs/Config/=9592AFC8D4AF264DABE36CD3AD75190A/ProjectGuid/@EntryValue">61493F44E8BCDC44AB663A194E175208</s:String>
-	<s:String x:Key="/Default/RunConfigs/Config/=9592AFC8D4AF264DABE36CD3AD75190A/Type/@EntryValue">project</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/RunConfigs/Config/=9592AFC8D4AF264DABE36CD3AD75190A/Type/@EntryValue">project</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=attrib/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -4,11 +4,13 @@ database = {
     },
     entities = {
         [591432690] = "player.lua", -- ENTITY_PLAYER
-        [4045036281] = "floor.lua" -- ENTITY_FLOOR
+        [315271780] = "ground.lua" -- ENTITY_GROUND
     },
     meshes = {
         [3415080175] = "spaceCraft1.obj", -- MESH_SPACECRAFT
-        [3061288721] = "floor.obj" -- MESH_FLOOR
+        [3061288721] = "floor.obj", -- MESH_FLOOR
+		[2381128972] = "groundTile.obj", -- MESH_GROUND
+		[4214878900] = "groundTileRough.obj" -- MESH_GROUND_ROUGH
     },
     textures = {
         [2300579869] = {
@@ -18,7 +20,12 @@ database = {
     shaders = {
         [2946951896] = { -- SHADER_DEFAULT
             fragFile = "simple_frag.glsl",
-            vertFile = "simple_vert.glsl"
+            vertFile = "simple_vert.glsl",
+			uniforms = {
+				"material.ambient",
+				"material.diffuse",
+				"material.specular"
+			}
         }
     },
     events = {

@@ -2,22 +2,30 @@
 #define GAMEENGINE301CR_MESH_H
 
 #include <glad/glad.h>
+#include <vector>
 
+class Material;
+class Shader;
 
-class Mesh {
+struct Surface final {
+	unsigned short offset;
+	unsigned short count;
+	Material *material;
+};
+
+class Mesh final {
 private:
     GLuint vao;
-    GLuint ibo;
-    GLuint vbo;
-    GLsizei vertexCount;
+    GLuint vbos[2];
     GLenum mode;
     GLenum indicesType;
+	std::vector<Surface *> surfaces;
 public:
-    Mesh(GLuint vao, GLuint ibo, GLuint vbo, GLsizei vertexCount, GLenum mode, GLenum indicesType);
+	Mesh(GLuint vao, GLuint vbos[2], GLenum mode, GLenum indicesType, std::vector<Surface *> surfaces);
 
-    virtual ~Mesh();
+    ~Mesh();
 
-    void render();
+    void render(Shader *shader) const;
 };
 
 

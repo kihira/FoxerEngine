@@ -7,7 +7,6 @@
 #include <stb_image.h>
 #include <tiny_obj_loader.h>
 #include "Managers.h"
-#include "util/assert.h"
 #include "render/RenderComponent.h"
 #include "Box2D/Collision/Shapes/b2CircleShape.h"
 #include "Box2D/Collision/Shapes/b2PolygonShape.h"
@@ -23,6 +22,8 @@
 #include "render/Shader.h"
 #include "entity/Entity.h"
 #include "level/Level.h"
+#include "render/Material.h"
+#include <glm/gtc/type_ptr.inl>
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -269,12 +270,39 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
         return getErrorMesh();
     }
 
-    GLuint vao, vertexBuffer, indicesBuffer;
+	// todo just a quick loader, should improve this for the future
+	std::vector<Material *> mats;
+	for (auto &matDef : materials) {
+		auto material = new Material(glm::make_vec3(matDef.ambient), glm::make_vec3(matDef.diffuse), glm::make_vec3(matDef.specular));
+		mats.push_back(material);
+	}
+
+	// Create surfaces. From what I've seen, materials/indices should be in order
+	std::vector<Surface *> surfaces;
+	Surface *surface = nullptr;
+	auto currMatId = -1;
+    for (auto i = 0; i < shapes[0].mesh.material_ids.size(); ++i) {
+	    auto matId = shapes[0].mesh.material_ids[i];
+
+		if (currMatId != matId) {
+			// Start new surface
+			surface = new Surface();
+			surface->material = mats[matId];
+			surface->offset = i * 3;
+			surfaces.push_back(surface);
+
+			currMatId = matId;
+		}
+		surface->count += 3;
+    }
+
+    GLuint vao;
+	GLuint vbos[2];
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glGenBuffers(2, &vbos[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
 
     // Position
     auto posSize = attrib.vertices.size() * sizeof(float);
@@ -300,19 +328,17 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
 
     // Indices data
     std::vector<unsigned short> indices;
-    // indices.reserve(shapes[0].mesh.indices.size());
-
+    indices.reserve(shapes[0].mesh.indices.size());
     for (auto &index : shapes[0].mesh.indices) {
         indices.push_back(index.vertex_index);
     }
 
-    glGenBuffers(1, &indicesBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
 
     GLERRCHECK();
 
-    auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, indices.size(), GL_TRIANGLES, GL_UNSIGNED_SHORT);
+	auto mesh = std::make_shared<Mesh>(vao, vbos, GL_TRIANGLES, GL_UNSIGNED_SHORT, surfaces);
     meshes.emplace(id, mesh);
     return mesh;
 }
@@ -395,7 +421,7 @@ std::shared_ptr<Shader> AssetManager::loadShaderProgram(StringId id) {
     shader->registerUniform("projection");
 
     if (assetData["uniforms"] != sol::lua_nil) {
-        auto uniforms = assetData.get<std::vector<std::string>>("uniforms");
+        auto uniforms = assetData["uniforms"].get<std::vector<std::string>>();
         for (auto &uniform : uniforms) {
             shader->registerUniform(uniform);
         }
@@ -412,30 +438,36 @@ std::shared_ptr<Mesh> AssetManager::getErrorMesh() {
         return it->second;
     }
 
-    GLuint vao, vboVertices, vboIndices;
+    GLuint vao;
+	GLuint vbos[2];
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    glGenBuffers(1, &vboVertices);
-    glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(errCubeVertices), errCubeVertices, GL_STATIC_DRAW);
+    glGenBuffers(2, &vbos[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof errCubeVertices, errCubeVertices, GL_STATIC_DRAW);
     // Position
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
     // Normal
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid *)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(3 * sizeof(float)));
     // UV
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid *)(6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<GLvoid *>(6 * sizeof(float)));
 
-    glGenBuffers(1, &vboIndices);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(errCubeIndices), errCubeIndices, GL_STATIC_DRAW);
 
     GLERRCHECK();
 
-    auto mesh = std::make_shared<Mesh>(vao, vboIndices, vboVertices, 36, GL_TRIANGLES, GL_UNSIGNED_SHORT);
+	auto surface = new Surface();
+	surface->offset = 0;
+	surface->count = 36;
+	surface->material = new Material(glm::vec3(0.f), glm::vec3(0.f), glm::vec3(0.f));
+	std::vector<Surface *> surfaces { surface };
+
+	auto mesh = std::make_shared<Mesh>(vao, vbos, GL_TRIANGLES, GL_UNSIGNED_SHORT, surfaces);
     meshes[ERR_MESH] = mesh;
 
     return mesh;

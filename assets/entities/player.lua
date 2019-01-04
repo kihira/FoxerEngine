@@ -11,7 +11,8 @@ return {
         end
     },
     renderComponent = {
-        mesh = 3415080175
+        mesh = 3415080175,
+		shader = 2946951896
     },
     networkComponent = {
         syncRate = 1 / 10

@@ -56,7 +56,8 @@ void RenderManager::startUp() {
 
     // Set OpenGL state stuff
     glClearColor(0, 0, 0, 1);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
     // Register lua stuff
     sol::table graphicsTable = gAssetManager.getLua().get<sol::table>("engine").create_named("graphics");

@@ -16,6 +16,15 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{48e44433-9398-4412-9ef8-f2cf7f561237}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\entities">
+      <UniqueIdentifier>{9b3929cb-b785-497e-a3fb-a2cc75785f7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\levels">
+      <UniqueIdentifier>{35578dd9-62eb-4447-bd10-8f9f181cd54d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\shaders">
+      <UniqueIdentifier>{a4722f4e-f666-4a94-85c3-07cb506e7481}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AssetManager.cpp">
@@ -88,6 +97,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libs\glad\src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -176,6 +188,9 @@
     <ClInclude Include="src\util\Vectors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\database.lua">
@@ -184,11 +199,23 @@
     <None Include="assets\settings.lua">
       <Filter>Assets</Filter>
     </None>
-    <None Include="assets\entities\floor.lua">
-      <Filter>Assets</Filter>
-    </None>
     <None Include="assets\entities\player.lua">
-      <Filter>Assets</Filter>
+      <Filter>Assets\entities</Filter>
+    </None>
+    <None Include="assets\entities\ground.lua">
+      <Filter>Assets\entities</Filter>
+    </None>
+    <None Include="assets\levels\level.lua">
+      <Filter>Assets\levels</Filter>
+    </None>
+    <None Include="assets\levels\mainmenu.lua">
+      <Filter>Assets\levels</Filter>
+    </None>
+    <None Include="assets\shaders\simple_frag.glsl">
+      <Filter>Assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\simple_vert.glsl">
+      <Filter>Assets\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

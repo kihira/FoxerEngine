@@ -199,6 +199,7 @@
     <ClCompile Include="src\physics\PhysicsManager.cpp" />
     <ClCompile Include="src\physics\PhysicsNetworkHandler.cpp" />
     <ClCompile Include="src\render\Camera.cpp" />
+    <ClCompile Include="src\render\Material.cpp" />
     <ClCompile Include="src\render\Mesh.cpp" />
     <ClCompile Include="src\render\RenderComponent.cpp" />
     <ClCompile Include="src\render\RenderManager.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="src\physics\PhysicsManager.h" />
     <ClInclude Include="src\physics\PhysicsNetworkHandler.h" />
     <ClInclude Include="src\render\Camera.h" />
+    <ClInclude Include="src\render\Material.h" />
     <ClInclude Include="src\render\Mesh.h" />
     <ClInclude Include="src\render\RenderComponent.h" />
     <ClInclude Include="src\render\RenderManager.h" />
@@ -238,9 +240,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\database.lua" />
-    <None Include="assets\entities\floor.lua" />
+    <None Include="assets\entities\ground.lua" />
     <None Include="assets\entities\player.lua" />
+    <None Include="assets\levels\level.lua" />
+    <None Include="assets\levels\mainmenu.lua" />
     <None Include="assets\settings.lua" />
+    <None Include="assets\shaders\simple_frag.glsl" />
+    <None Include="assets\shaders\simple_vert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\strings.txt" />
