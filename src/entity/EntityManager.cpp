@@ -114,11 +114,13 @@ bool EntityManager::onEvent(Event &event) {
         case SID("EVENT_TYPE_ENTITY_SPAWN"): {
             if (!event.getArg<bool>("fromServer")) return false;
             spawn(event.getArg<StringId>("prototypeId"), event.getArg<EntityId>("entityId"));
+            break;
         }
         // Entity has been destroyed on server
         case SID("EVENT_TYPE_ENTITY_DESTROY"): {
             if (!event.getArg<bool>("fromServer")) return false;
             destroy(event.getArg<EntityId>("entityId"));
+            break;
         }
     }
     return false;

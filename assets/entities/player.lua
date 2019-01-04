@@ -18,7 +18,10 @@ return {
     },
     playerComponent = {},
     update = function(self)
-        -- print("Hello, my name is " .. self.name)
+        print("Hello!")
+        if (self.hasControl) then
+            engine.graphics.camera.target = self.position
+        end
     end,
     onSpawn = function(self)
         engine.input.registerKeyHandler(function(key, scancode, action, mods)

@@ -43,6 +43,10 @@ level = {
 
         elseif event:type() == 1205121214 then -- EVENT_TYPE_LEVEL_LOAD
             print("Level loaded!")
+
+            engine.graphics.camera.position = engine.math.vec3.new(10, 10, 10)
+            engine.graphics.camera.target = engine.math.vec3.new(0)
+
             -- Setup data stuff
             self.players = {}
         end
