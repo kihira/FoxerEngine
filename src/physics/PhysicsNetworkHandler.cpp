@@ -19,7 +19,7 @@ PhysicsNetworkHandler::PhysicsNetworkHandler() {
     gNetworkManager.registerPacket({
         PACKET_ID_PHYSICS_UPDATE,
         0,
-        ENET_PACKET_FLAG_RELIABLE,
+        static_cast<ENetPacketFlag>(0),
         [](PacketId packetId, void *data, size_t dataLength) {
             auto packetData = static_cast<PacketPhysicsUpdate *>(data);
             auto entity = gEntityManager.getEntity(packetData->entityId);

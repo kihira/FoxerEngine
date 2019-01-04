@@ -16,6 +16,7 @@
 #include "physics/PhysicsManager.h"
 #include "event/EventManager.h"
 #include "network/NetworkManager.h"
+#include "network/NetworkComponent.h"
 #include "render/Mesh.h"
 #include "render/Shader.h"
 #include "entity/Entity.h"

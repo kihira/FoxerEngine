@@ -21,7 +21,7 @@ PhysicsComponent::PhysicsComponent(
     gPhysicsManager.addPhysicsComponent(this);
 }
 
-void PhysicsComponent::update() {
+void PhysicsComponent::update(float deltaTime) {
     glm::vec3 pos;
     pos.x = body->GetPosition().x;
     pos.z = body->GetPosition().y;

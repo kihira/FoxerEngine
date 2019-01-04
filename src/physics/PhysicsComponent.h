@@ -26,7 +26,7 @@ public:
     PhysicsComponent(const std::shared_ptr<Entity> &entity, b2BodyDef &bodyDef, b2FixtureDef &fixtureDef,
                          sol::function &beginContactFn, sol::function &endContactFn);
 
-    void update() override;
+    void update(float deltaTime) override;
 
     Component *clone(std::shared_ptr<Entity> entity) override;
 

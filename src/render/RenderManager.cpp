@@ -99,7 +99,7 @@ void RenderManager::frameEnd() {
 void RenderManager::update() {
     for (auto renderComponent : renderComponents) {
         if (!renderComponent->isActive()) continue;
-        renderComponent->update();
+        renderComponent->update(0);
     }
 }
 

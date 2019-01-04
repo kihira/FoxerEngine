@@ -19,7 +19,7 @@ public:
 
     virtual ~Component() = default;
 
-    virtual void update() = 0;
+    virtual void update(float deltaTime) = 0;
 
     virtual Component *clone(std::shared_ptr<Entity> entity) = 0;
 

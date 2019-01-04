@@ -17,7 +17,7 @@ private:
 public:
     RenderComponent(const std::shared_ptr<Entity> &entity, std::shared_ptr<Shader> &shader, std::shared_ptr<Mesh> &mesh);
 
-    void update() override;
+    void update(float deltaTime) override;
 
     Component *clone(std::shared_ptr<Entity> entity) override;
 };

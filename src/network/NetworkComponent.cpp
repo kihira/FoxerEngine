@@ -6,7 +6,24 @@
 #include "NetworkManager.h"
 #include "../physics/PhysicsComponent.h"
 
-void NetworkComponent::update() {
+void NetworkComponent::update(float deltaTime) {
+    lastSyncTime -= deltaTime;
+
+    if (lastSyncTime < 0.f) {
+        lastSyncTime = syncRate;
+
+        auto event = Event(SID("MESSAGE_PHYSICS_SYNC"));
+
+        auto position = entity->getPosition();
+        event.setArg("posX", position.x);
+        event.setArg("posY", position.y);
+        event.setArg("posZ", position.z);
+
+        auto rotation = entity->getRotation();
+        event.setArg("rotX", rotation.x);
+        event.setArg("rotY", rotation.y);
+        event.setArg("rotZ", rotation.z);
+    }
 }
 
 Component *NetworkComponent::clone(std::shared_ptr<Entity> entity) {

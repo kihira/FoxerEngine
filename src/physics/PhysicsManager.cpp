@@ -27,7 +27,7 @@ void PhysicsManager::update() {
 
     for (auto component : components) {
         if (!component->isActive()) continue;
-        component->update();
+        component->update(0);
     }
 }
 
