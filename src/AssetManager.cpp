@@ -1,9 +1,11 @@
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
+#define TINYOBJLOADER_IMPLEMENTATION
 
 #include "AssetManager.h"
 #include <fstream>
 #include <stb_image.h>
+#include <tiny_obj_loader.h>
 #include "Managers.h"
 #include "util/assert.h"
 #include "render/RenderComponent.h"
@@ -236,6 +238,9 @@ void AssetManager::shutDown() {
 }
 
 std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
+    if (gNetworkManager.isServer()) {
+        return nullptr; // todo temp
+    }
     auto it = meshes.find(id);
     if (it != meshes.end()) {
         return it->second;
@@ -254,26 +259,14 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
         return getErrorMesh();
     }
 
-    std::vector<glm::vec3> normals;
-    std::vector<glm::vec3> vertices;
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string err;
 
-    std::string line;
-    while (getline(file, line)) {
-        if (line[0] == 'v' && line[1] == 'n') { // normal
-            glm::vec3 normal;
-            char *next;
-            float t = strtof(line.c_str(), &next);
-            sscanf(line.c_str(), "%f %f %f\n", &normal.x, &normal.y, &normal.z);
-            normals.push_back(normal);
-        } else if (line[0] == 'v' && line[1] == 't') { // texture coord
-
-        } else if (line[0] == 'v') { // position
-            glm::vec3 vertex;
-            sscanf(line.c_str(), "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
-            vertices.push_back(vertex);
-        } else if (line[0] == 'f') { // Face
-
-        }
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, (ASSETS_FOLDER "meshes/" + assetData).c_str(), ASSETS_FOLDER "materials/", true) || !err.empty()) {
+        logger->error("Error loading obj file: {}", err);
+        return getErrorMesh();
     }
 
     GLuint vao, vertexBuffer, indicesBuffer;
@@ -281,28 +274,45 @@ std::shared_ptr<Mesh> AssetManager::loadMesh(StringId id) {
     glBindVertexArray(vao);
 
     glGenBuffers(1, &vertexBuffer);
-    glGenBuffers(1, &indicesBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
-    GLsizei vertexSize = sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2);
-
     // Position
+    auto posSize = attrib.vertices.size() * sizeof(float);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-    // Normal
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, (GLvoid *)sizeof(glm::vec3));
+    glBufferData(GL_ARRAY_BUFFER, posSize, &attrib.vertices[0], GL_STATIC_READ);
+//
+//    // Normal
+//    auto normalSize = attrib.normals.size() * sizeof(float);
+//    glEnableVertexAttribArray(1);
+//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)posSize);
+//
+//    // Texcoord
+//    auto uvSize = attrib.texcoords.size() * sizeof(float);
+//    glEnableVertexAttribArray(1);
+//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid *)(posSize + normalSize));
+//
+//    glBufferData(GL_ARRAY_BUFFER, posSize + normalSize + uvSize, nullptr, GL_STATIC_READ);
+//    glBufferSubData(GL_ARRAY_BUFFER, 0, posSize, &attrib.vertices[0]);
+//    glBufferSubData(GL_ARRAY_BUFFER, posSize, normalSize, &attrib.normals[0]);
+//    glBufferSubData(GL_ARRAY_BUFFER, posSize + normalSize, uvSize, &attrib.texcoords[0]);
 
-    // Normal
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, vertexSize, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+    // Indices data
+    std::vector<unsigned short> indices;
+    // indices.reserve(shapes[0].mesh.indices.size());
 
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_READ);
+    for (auto &index : shapes[0].mesh.indices) {
+        indices.push_back(index.vertex_index);
+    }
+
+    glGenBuffers(1, &indicesBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
 
     GLERRCHECK();
 
-    auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, 0, GL_TRIANGLES, GL_UNSIGNED_SHORT);
+    auto mesh = std::make_shared<Mesh>(vao, indicesBuffer, vertexBuffer, indices.size(), GL_TRIANGLES, GL_UNSIGNED_SHORT);
     meshes.emplace(id, mesh);
     return mesh;
 }

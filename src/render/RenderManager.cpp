@@ -55,7 +55,7 @@ void RenderManager::startUp() {
     camera->resize(settings->windowWidth, settings->windowHeight);
 
     // Set OpenGL state stuff
-    glClearColor(0.5, 0.5, 0, 1);
+    glClearColor(0, 0, 0, 1);
     glDisable(GL_CULL_FACE);
 
     // Register lua stuff
@@ -152,7 +152,7 @@ void RenderManager::GLERRCHECK_fn(const char *file, int line) {
             break;
     }
 
-    spdlog::get("renderer")->error("({}:{}) GL ERROR 0x{:x}: {}", file, line, err, error);
+    spdlog::get("renderer")->error("({}:{:d}) GL ERROR 0x{:x}: {}", file, line, err, error);
 }
 
 const Camera *RenderManager::getCamera() const {

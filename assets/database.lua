@@ -7,12 +7,12 @@ database = {
         [4045036281] = "floor.lua" -- ENTITY_FLOOR
     },
     meshes = {
+        [3415080175] = "spaceCraft1.obj", -- MESH_SPACECRAFT
         [3061288721] = "floor.obj" -- MESH_FLOOR
     },
     textures = {
         [2300579869] = {
-            file = "floor.png",
-
+            file = "floor.png"
         }
     },
     shaders = {

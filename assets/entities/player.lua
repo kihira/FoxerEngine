@@ -11,7 +11,7 @@ return {
         end
     },
     renderComponent = {
-        mesh = 591432690
+        mesh = 3415080175
     },
     networkComponent = {
         syncRate = 1 / 10
@@ -62,16 +62,16 @@ return {
             local inputBitmask = event:getUShort("inputBitmask");
             local physics = self:getPhysicsComponent();
             if (inputBitmask & 1 > 0) then
-                physics.velocity = physics.velocity + engine.math.vec2.new(0, 1)
-            end
-            if (inputBitmask & 2 > 0) then
                 physics.velocity = physics.velocity + engine.math.vec2.new(0, -1)
             end
+            if (inputBitmask & 2 > 0) then
+                physics.velocity = physics.velocity + engine.math.vec2.new(0, 1)
+            end
             if (inputBitmask & 4 > 0) then
-                physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)
+                physics.velocity = physics.velocity + engine.math.vec2.new(-1, 0)
             end
             if (inputBitmask & 8 > 0) then
-                physics.velocity = physics.velocity + engine.math.vec2.new(-1, 0)
+                physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)
             end
         end
     end

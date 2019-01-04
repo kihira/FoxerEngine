@@ -113,6 +113,9 @@ target_link_libraries(${PROJECT_NAME} spdlog)
 #add_subdirectory(${LIBRARIES_ROOT}/assimp)
 #target_link_libraries(${PROJECT_NAME} assimp)
 
+# tiny obj loader
+target_include_directories(${PROJECT_NAME} PRIVATE ${LIBRARIES_ROOT}/tiny_obj_loader)
+
 # Symlink assets to an output resources folder
 set(SOURCE_RESOURCES ${CMAKE_SOURCE_DIR}/assets)
 set(DESTINATION_RESOURCES $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
