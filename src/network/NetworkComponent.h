@@ -9,7 +9,7 @@
 /**
  * Component for synchronising physics and position across the network
  */
-class NetworkComponent : Component {
+class NetworkComponent : public Component {
 private:
     unsigned short clientAuthority; // The client ID that has authority
     bool isAuthoritive; // Whether this component has authority over the entity its attached to
@@ -18,6 +18,10 @@ private:
     float lastSyncTime;
 public:
     NetworkComponent(const std::shared_ptr<Entity> &entity, bool hasAuthority);
+
+    NetworkComponent(const std::shared_ptr<Entity> &entity, float syncRate);
+
+    ~NetworkComponent() override;
 
     void update(float deltaTime) override;
 

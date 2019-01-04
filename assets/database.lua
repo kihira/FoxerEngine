@@ -65,6 +65,11 @@ database = {
                 "velZ",
                 "velA"
             }
+        },
+        [3819351460] = { -- EVENT_TYPE_LEVEL_LOAD_SERVER
+            args = {
+                "levelId"
+            }
         }
     }
 }

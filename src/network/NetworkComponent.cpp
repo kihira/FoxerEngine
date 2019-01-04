@@ -6,6 +6,18 @@
 #include "NetworkManager.h"
 #include "../physics/PhysicsComponent.h"
 
+NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, bool hasAuthority) : Component(entity), isAuthoritive(hasAuthority) {
+    gNetworkManager.addNetworkComponent(this);
+}
+
+NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, float syncRate) : Component(entity), syncRate(syncRate) {
+    gNetworkManager.addNetworkComponent(this);
+}
+
+NetworkComponent::~NetworkComponent() {
+    gNetworkManager.removeNetworkComponent(this);
+}
+
 void NetworkComponent::update(float deltaTime) {
     if (!gNetworkManager.isServer()) return;
     lastSyncTime -= deltaTime;
@@ -39,10 +51,6 @@ Component *NetworkComponent::clone(std::shared_ptr<Entity> entity) {
     auto newComponent = new NetworkComponent(entity, isAuthoritive);
     return newComponent;
 }
-
-NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, bool hasAuthority) : Component(entity),
-                                                                                               isAuthoritive(
-                                                                                                       hasAuthority) {}
 
 bool NetworkComponent::hasAuthority() const {
     return isAuthoritive;

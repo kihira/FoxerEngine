@@ -9,6 +9,8 @@
 
 #define PACKET_ID_CLIENT_DATA 1
 
+class NetworkComponent;
+
 typedef enet_uint16 ClientId;
 typedef enet_uint8 PacketId;
 typedef void (* PacketHandlerFn)(PacketId packetID, void *data, size_t dataLength);
@@ -31,6 +33,7 @@ private:
     ENetPeer *peer;
     std::shared_ptr<spdlog::logger> logger;
     std::map<PacketId, PacketMeta> packetHandlers;
+    std::vector<NetworkComponent *> networkComponents;
 
     // Server only data
     bool server; // Whether we are a server or not
@@ -138,6 +141,19 @@ public:
      * @return The client Id
      */
     ClientId getClientId() const;
+
+    /**
+     * Adds the network component to the list
+     * @param component
+     */
+    void addNetworkComponent(NetworkComponent *component);
+
+    /**
+     * Removes the network component from the list
+     * DOES NOT delete the pointer
+     * @param component
+     */
+    void removeNetworkComponent(NetworkComponent *component);
 };
 
 

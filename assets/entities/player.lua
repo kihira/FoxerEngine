@@ -13,6 +13,9 @@ return {
     renderComponent = {
         mesh = 591432690
     },
+    networkComponent = {
+        syncRate = 1 / 10
+    },
     playerComponent = {},
     update = function(self)
         -- print("Hello, my name is " .. self.name)

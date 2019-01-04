@@ -562,6 +562,16 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
         entity->addComponent<RenderComponent>(renderComponent);
     }
 
+    // Create network component
+    if (entityTable["networkComponent"] != sol::lua_nil) {
+        auto networkTable = entityTable["networkComponent"];
+        auto syncRate = networkTable["syncRate"].get_or(.1f);
+        auto networkComponent = new NetworkComponent(entity, syncRate);
+        networkComponent->setActive(false);
+
+        entity->addComponent<NetworkComponent>(networkComponent);
+    }
+
     // Events
     if (entityTable["events"] != sol::lua_nil && entityTable["onEvent"] != sol::lua_nil) {
         std::vector<const char *> eventIds = entityTable["events"].get<std::vector<const char *>>();

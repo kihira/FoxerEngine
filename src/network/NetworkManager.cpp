@@ -5,6 +5,7 @@
 #include "../util/assert.h"
 #include "NetworkManager.h"
 #include "../event/Event.h"
+#include "NetworkComponent.h"
 
 
 NetworkManager::NetworkManager() = default; // noop
@@ -76,6 +77,13 @@ void NetworkManager::stopServer() {
 
 void NetworkManager::update(float deltaTime) {
     EASY_FUNCTION();
+
+    // Update components first
+    for (auto component : networkComponents) {
+        if (!component->isActive()) break;
+        component->update(deltaTime);
+    }
+
     ENetEvent event;
     while (enet_host_service(host, &event, 0) > 0) {
         switch (event.type) {
@@ -225,4 +233,11 @@ ClientId NetworkManager::getClientId() const {
     return clientId;
 }
 
+void NetworkManager::addNetworkComponent(NetworkComponent *component) {
+    networkComponents.push_back(component);
+}
+
+void NetworkManager::removeNetworkComponent(NetworkComponent *component) {
+    networkComponents.erase(std::find(networkComponents.begin(), networkComponents.end(), component));
+}
 

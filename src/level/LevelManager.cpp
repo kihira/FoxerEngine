@@ -13,7 +13,10 @@ void LevelManager::startUp() {
     logger = spdlog::get("main")->clone("level");
     spdlog::register_logger(logger);
 
-    gEventManager.registerHandler(SID("EVENT_TYPE_PLAYER_CONNECTED"), this);
+    gEventManager.registerHandler({
+        SID("EVENT_TYPE_PLAYER_CONNECTED"),
+        SID("EVENT_TYPE_LEVEL_LOAD_SERVER")
+        }, this);
 }
 
 void LevelManager::shutDown() {
@@ -53,6 +56,7 @@ void LevelManager::update() {
 bool LevelManager::onEvent(Event &event) {
     switch (event.getType()) {
         case SID("EVENT_TYPE_PLAYER_CONNECTED"): {
+            if (event.getArg<bool>("fromServer")) break;
             auto levelLoadEvent = Event(SID("EVENT_TYPE_LEVEL_LOAD_SERVER"));
             levelLoadEvent.setArg("sendToClient", event.getArg<unsigned short>("clientId"));
             levelLoadEvent.setArg("levelId", activeLevel->getId());
