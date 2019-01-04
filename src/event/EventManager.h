@@ -50,6 +50,13 @@ public:
     void registerHandler(const std::vector<StringId> &events, EventHandler *handler);
 
     /**
+     * Deregisters an event handler for a specific event
+     * @param type The event
+     * @param handler The handler
+     */
+    void deregisterHandler(StringId type, EventHandler *handler);
+
+    /**
      * Pushes an event into the queue to be resolved immediately
      * @param event The event
      */

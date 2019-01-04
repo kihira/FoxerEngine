@@ -74,3 +74,8 @@ const EventMeta EventManager::getEventMeta(StringId id) {
 void EventManager::loadEvents(std::map<StringId, EventMeta> eventMetas) {
     EventManager::eventsMeta = std::move(eventMetas);
 }
+
+void EventManager::deregisterHandler(StringId type, EventHandler *handler) {
+    auto eventHandlers = handlers[type];
+    eventHandlers.erase(std::find(eventHandlers.begin(), eventHandlers.end(), handler));
+}

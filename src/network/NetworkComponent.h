@@ -5,11 +5,12 @@
 
 #include <glm/vec3.hpp>
 #include "../entity/Component.h"
+#include "../event/EventHandler.h"
 
 /**
  * Component for synchronising physics and position across the network
  */
-class NetworkComponent : public Component {
+class NetworkComponent : public Component, public EventHandler {
 private:
     unsigned short clientAuthority; // The client ID that has authority
     bool isAuthoritive; // Whether this component has authority over the entity its attached to
@@ -34,6 +35,8 @@ public:
      * @param syncRate
      */
     void setSyncRate(float syncRate);
+
+    bool onEvent(Event &event) override;
 };
 
 

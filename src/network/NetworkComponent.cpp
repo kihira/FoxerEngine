@@ -5,6 +5,7 @@
 #include "../Managers.h"
 #include "NetworkManager.h"
 #include "../physics/PhysicsComponent.h"
+#include "../event/EventManager.h"
 
 NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, bool hasAuthority) : Component(entity), isAuthoritive(hasAuthority) {
     gNetworkManager.addNetworkComponent(this);
@@ -16,6 +17,7 @@ NetworkComponent::NetworkComponent(const std::shared_ptr<Entity> &entity, float 
 
 NetworkComponent::~NetworkComponent() {
     gNetworkManager.removeNetworkComponent(this);
+    gEventManager.deregisterHandler(SID("MESSAGE_PHYSICS_SYNC"), this);
 }
 
 void NetworkComponent::update(float deltaTime) {
@@ -27,6 +29,7 @@ void NetworkComponent::update(float deltaTime) {
 
         auto physics = entity->getComponent<PhysicsComponent>();
         auto event = Event(SID("MESSAGE_PHYSICS_SYNC"));
+        event.setArg("entityId", entity->getId());
 
         auto position = entity->getPosition();
         event.setArg("posX", position.x);
@@ -48,7 +51,10 @@ void NetworkComponent::update(float deltaTime) {
 }
 
 Component *NetworkComponent::clone(std::shared_ptr<Entity> entity) {
-    auto newComponent = new NetworkComponent(entity, isAuthoritive);
+    auto newComponent = new NetworkComponent(entity, syncRate);
+    if (!gNetworkManager.isServer()) {
+        gEventManager.registerHandler(SID("MESSAGE_PHYSICS_SYNC"), newComponent);
+    }
     return newComponent;
 }
 
@@ -58,4 +64,25 @@ bool NetworkComponent::hasAuthority() const {
 
 void NetworkComponent::setSyncRate(float syncRate) {
     NetworkComponent::syncRate = syncRate;
+}
+
+bool NetworkComponent::onEvent(Event &event) {
+    switch (event.getType()) {
+        case SID("MESSAGE_PHYSICS_SYNC"): {
+            if (entity->getId() != event.getArg<EntityId>("entityId")) break;
+
+            // Parse event
+            auto position = glm::vec2(event.getArg<float>("posX"), event.getArg<float>("posZ"));
+            auto velocity = glm::vec2(event.getArg<float>("velX"), event.getArg<float>("velZ"));
+            auto rotation = glm::vec2(event.getArg<float>("rotX"), event.getArg<float>("rotZ"));
+            auto angular = event.getArg<float>("velA");
+
+            auto physics = entity->getComponent<PhysicsComponent>();
+            physics->setPositionAndRotation(position, rotation.x);
+            physics->setVelocity(velocity);
+            physics->setAngularVelocity(angular);
+            break;
+        }
+    }
+    return false;
 }

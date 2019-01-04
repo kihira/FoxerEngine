@@ -80,7 +80,7 @@ void NetworkManager::update(float deltaTime) {
 
     // Update components first
     for (auto component : networkComponents) {
-        if (!component->isActive()) break;
+        if (!component->isActive()) continue;
         component->update(deltaTime);
     }
 
