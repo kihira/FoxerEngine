@@ -5,6 +5,9 @@ return {
         type = 2, -- dynamic body
         gravityScale = 0.3,
         linearDamping = 2,
+		shape = 1,
+		halfWidth = 4,
+		halfHeight = 2,
         beginContact = function()
         end,
         endContact = function()
@@ -24,24 +27,6 @@ return {
         end
     end,
     onSpawn = function(self)
-        engine.input.registerKeyHandler(function(key, scancode, action, mods)
-            local inputBitmask = 0;
-            if (key == 87) then --forward
-                inputBitmask = inputBitmask + 1
-            elseif (key == 83) then --backward
-                inputBitmask = inputBitmask + 2
-            elseif (key == 65) then --left
-                inputBitmask = inputBitmask + 4
-            elseif (key == 68) then --right
-                inputBitmask = inputBitmask + 8
-            end
-            if (inputBitmask > 0) then
-                local event = engine.event.event.new("EVENT_TYPE_INPUT_PLAYER")
-                event:setEntityId("entityId", self:id())
-                event:setUShort("inputBitmask", inputBitmask)
-                event:push()
-            end
-        end)
     end,
     events = {
         "EVENT_TYPE_ASSIGN_PLAYER",
@@ -50,14 +35,34 @@ return {
     onEvent = function(self, event)
         if event:type() == 697357692 then -- EVENT_TYPE_ASSIGN_PLAYER
             if (event:getEntityId("entityId") ~= self:id()) then return end
-            -- If we're server or the client itself, say we have control
+            -- If we're server or the client itself, we have control
             if engine.network.isServer() or (event:getClientId("clientId") == engine.network.clientId()) then
-                print("We have control " .. event:getClientId("clientId") .. " " .. engine.network.clientId())
+				-- as we have control, can listen for inputs
+				engine.input.registerKeyHandler(function(key, scancode, action, mods)
+					local inputBitmask = 0;
+					if (key == 87) then --forward
+						inputBitmask = inputBitmask + 1
+					elseif (key == 83) then --backward
+						inputBitmask = inputBitmask + 2
+					elseif (key == 65) then --left
+						inputBitmask = inputBitmask + 4
+					elseif (key == 68) then --right
+						inputBitmask = inputBitmask + 8
+					end
+					if (inputBitmask > 0) then
+						local event = engine.event.event.new("EVENT_TYPE_INPUT_PLAYER")
+						event:setEntityId("entityId", self:id())
+						event:setUShort("inputBitmask", inputBitmask)
+						event:push()
+					end
+				end)
                 self.hasControl = true;
+				self.controllingClient = event:getClientId("clientId")
             end
         elseif event:type() == 1770460267 then -- EVENT_TYPE_INPUT_PLAYER
             if (event:getEntityId("entityId") ~= self:id()) then return end
             if (self.hasControl ~= true) then return end
+			-- if (self.controllingClient ~= event:getClientId("fromClient")) then return end
 
             -- Process input
             local inputBitmask = event:getUShort("inputBitmask");

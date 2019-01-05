@@ -193,6 +193,7 @@ void AssetManager::startUp() {
     networkTable["isClient"] = []() { return !gNetworkManager.isServer(); };
     networkTable["clientsCount"] = []() { return gNetworkManager.clientsCount(); };
     networkTable["clientId"] = []() { return gNetworkManager.getClientId(); };
+	networkTable["getClientIds"] = []() { return gNetworkManager.getClientIds(); };
 //    networkTable["registerPacket"] = [](PacketId packetId, sol::function callback) {
 //        gNetworkManager.registerPacket({
 //            packetId,

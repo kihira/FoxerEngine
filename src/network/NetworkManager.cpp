@@ -110,10 +110,10 @@ void NetworkManager::update(float deltaTime) {
                 break;
             }
             case ENET_EVENT_TYPE_RECEIVE: {
-                enet_uint8 packetID = event.packet->data[0];
+                PacketId packetID = event.packet->data[0];
                 packetHandlers[packetID].packetHandler(packetID, event.packet->data + sizeof(enet_uint8),
                                                        event.packet->dataLength - sizeof(enet_uint8));
-                // logger->debug("Received packet. ID: {:d} Length: {:d}", packetID, event.packet->dataLength);
+                logger->trace("Received packet. ID: {:d} Length: {:d}", packetID, event.packet->dataLength);
                 enet_packet_destroy(event.packet);
                 break;
             }
@@ -239,5 +239,14 @@ void NetworkManager::addNetworkComponent(NetworkComponent *component) {
 
 void NetworkManager::removeNetworkComponent(NetworkComponent *component) {
     networkComponents.erase(std::find(networkComponents.begin(), networkComponents.end(), component));
+}
+
+std::vector<ClientId> NetworkManager::getClientIds() {
+	std::vector<ClientId> clientIds;
+	clientIds.reserve(clients.size());
+	for (auto &client : clients) {
+		clientIds.push_back(client.first);
+	}
+	return clientIds;
 }
 

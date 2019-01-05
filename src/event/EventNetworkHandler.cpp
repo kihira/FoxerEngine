@@ -12,10 +12,14 @@ EventNetworkHandler::EventNetworkHandler() {
         static_cast<ENetPacketFlag>(0),
         [](PacketId packetId, void *data, size_t dataLength) {
             // Parse and deserialise event data
-            auto event = Event((StringId) 0); // Should really not do this, bad practice
+            auto event = Event(static_cast<StringId>(0)); // Should really not do this, bad practice
             event.deserialise(data);
             event.setArg("noNetwork", true); // Don't want an infinite loop
             event.setArg("fromServer", !gNetworkManager.isServer());
+			// if (gNetworkManager.isServer())
+			// {
+			// 	event.setArg("fromClient", );
+			// }
             event.push();
         }
     });

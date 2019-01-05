@@ -154,6 +154,11 @@ public:
      * @param component
      */
     void removeNetworkComponent(NetworkComponent *component);
+
+	/**
+	 * Retrieves all connected clients IDs
+	 */
+	std::vector<ClientId> getClientIds();
 };
 
 

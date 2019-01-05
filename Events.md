@@ -9,10 +9,11 @@ properly serialised as long as the correct event definition exists.
 By default, all events generated on the client will be sent to the server
 and all server events sent to ALL clients.
 
-When an event is received on the server/client, the following argument is
+When an event is received on the server/client, the following argument(s) is
 set to allow for side detection
 - `fromServer` *bool* client | server - Indicates where the packet
 originated from
+- `fromClient` *ClientId* server - The ID of the client that sent this event
 
 Two extra arguments are supported on events when used in a networked
 environment:
