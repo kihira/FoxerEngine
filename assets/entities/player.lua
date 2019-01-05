@@ -20,7 +20,26 @@ return {
     playerComponent = {},
     update = function(self)
         if (self.hasControl) then
-            engine.graphics.camera.target = self.position
+           -- engine.graphics.camera.target = self.position
+            -- chase camera
+            local heading = engine.math.vec2.new(0, -30)
+            local theta = -self.rotation.y;
+            local cs = math.cos(theta)
+            local sn = math.sin(theta)
+
+            heading = engine.math.vec2.new(heading.x * cs - heading.y * sn, heading.x * sn + heading.y * cs)
+
+            local camPosition = engine.graphics.camera.position
+            camPosition.x = self.position.x + -heading.x
+            camPosition.y = self.position.y + 12
+            camPosition.z = self.position.z + -heading.y
+            engine.graphics.camera.position = camPosition
+
+            local camTarget = engine.graphics.camera.target
+            camTarget.x = self.position.x + heading.x
+            camTarget.y = 0
+            camTarget.z = self.position.z + heading.y
+            engine.graphics.camera.target = camTarget
         end
     end,
     onSpawn = function(self)
