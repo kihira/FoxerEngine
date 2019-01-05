@@ -24,6 +24,7 @@
 #include "level/Level.h"
 #include "render/Material.h"
 #include <glm/gtc/type_ptr.inl>
+#include "sound/Sample.h"
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -772,6 +773,28 @@ Settings *AssetManager::loadSettings() {
     settings->initialLevel = processString(data["initialLevel"].get_or(std::string("mainmenu")).c_str());
 
     return settings;
+}
+
+std::shared_ptr<Sample> AssetManager::loadSound(StringId id) {
+	auto it = sounds.find(id);
+	if (it != sounds.end()) {
+		return it->second;
+	}
+
+	if (lua["database"]["sounds"] == sol::lua_nil) {
+		logger->error("Attempted to load sound {} however no sounds exist in the database", id);
+		return nullptr; // todo blank sound
+	}
+	auto assetData = lua["database"]["sounds"][id];
+	if (assetData == sol::lua_nil)
+	{
+		logger->error("Attempted to load sound {} but was not able to find it in the database", id);
+		return nullptr; // todo blank sound
+	}
+
+	auto sample = std::make_shared<Sample>((ASSETS_FOLDER "sounds/" + assetData["file"].get<std::string>()).c_str());
+	sounds.emplace(id, sample);
+	return sample;
 }
 
 void AssetManager::loadStringIds() {

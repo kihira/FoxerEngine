@@ -7,7 +7,9 @@
 #include "../util/StringId.h"
 
 
-class SoundManager {
+class Clip;
+
+class SoundManager final {
 private:
     std::shared_ptr<spdlog::logger> logger;
     SoLoud::Soloud soloud;
@@ -27,6 +29,30 @@ public:
     void shutDown();
 
     void update(float deltaTime);
+
+	Clip play(StringId id);
+
+	/**
+	 * Sets the pan value for a clip
+	 * -1.f for full left, 0 for balanced and 1.f for full right
+	 */
+	void setPan(Clip &clip, float pan);
+
+	/**
+	 * Sets the volume for the current clip
+	 */
+	void setVolume(Clip &clip, float volume);
+
+	/**
+	 * Sets the global volume for all clips
+	 */
+	void setGlobalVolume(float volume);
+
+	float getVolume(Clip &clip);
+
+	float getGlobalVolume();
+
+    float getPan(Clip& clip);
 };
 
 

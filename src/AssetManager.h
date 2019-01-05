@@ -14,6 +14,7 @@ class Mesh;
 class Shader;
 class Entity;
 class Level;
+class Sample;
 
 class AssetManager {
 private:
@@ -26,6 +27,7 @@ private:
     std::map<StringId, std::shared_ptr<Entity>> entityPrototypes;
     std::map<StringId, std::shared_ptr<Level>> levels;
     std::map<StringId, std::string> stringIds; // todo move into StringId?
+	std::map<StringId, std::shared_ptr<Sample>> sounds;
 
     /**
      * Returns a default cube mesh that is used to show there is an error
@@ -90,9 +92,15 @@ public:
 
     std::shared_ptr<Level> loadLevel(StringId id);
 
+	/**
+	 * Loads a texture and returns it's OpenGL texture unit
+	 * TODO return a texture object instead?
+	 */
     GLuint loadTexture(StringId name);
 
     Settings *loadSettings();
+
+	std::shared_ptr<Sample> loadSound(StringId id);
 
     /**
      * Goes through all currently loaded assets and removes any that are not currently used.

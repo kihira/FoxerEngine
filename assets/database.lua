@@ -29,6 +29,11 @@ database = {
 			}
         }
     },
+	sounds = {
+		[2016780361] = { -- SOUND_BACKGROUND_MUSIC
+			file = "background.ogg"
+		}
+	},
     events = {
         [1994444546] = { -- EVENT_TYPE_PLAYER_CONNECTED
             args = {

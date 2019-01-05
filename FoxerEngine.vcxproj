@@ -206,6 +206,8 @@
     <ClCompile Include="src\render\RenderManager.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
     <ClCompile Include="src\render\WindowWrapper.cpp" />
+    <ClCompile Include="src\sound\Clip.cpp" />
+    <ClCompile Include="src\sound\Sample.cpp" />
     <ClCompile Include="src\sound\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +237,8 @@
     <ClInclude Include="src\render\Shader.h" />
     <ClInclude Include="src\render\WindowWrapper.h" />
     <ClInclude Include="src\Settings.h" />
+    <ClInclude Include="src\sound\Clip.h" />
+    <ClInclude Include="src\sound\Sample.h" />
     <ClInclude Include="src\sound\SoundManager.h" />
     <ClInclude Include="src\util\assert.h" />
     <ClInclude Include="src\util\StringId.h" />
