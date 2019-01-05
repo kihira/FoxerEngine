@@ -229,7 +229,8 @@ void AssetManager::startUp() {
         "physicsComponent",
         "", sol::no_constructor,
 		sol::base_classes, sol::bases<Component>(),
-        "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity)
+        "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity),
+		"angularVelocity", sol::property(&PhysicsComponent::getAngularVelocity, &PhysicsComponent::setAngularVelocity)
     );
 
     // Register level type

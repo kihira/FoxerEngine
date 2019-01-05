@@ -5,6 +5,7 @@ return {
         type = 2, -- dynamic body
         gravityScale = 0.3,
         linearDamping = 1,
+        angularDamping = 2,
 		shape = 1,
 		halfWidth = 3,
 		halfHeight = 8,
@@ -64,16 +65,34 @@ return {
             local inputBitmask = event:getUShort("inputBitmask");
             local physics = self:getPhysicsComponent();
             if (inputBitmask & 1 > 0) then
-                physics.velocity = physics.velocity + engine.math.vec2.new(0, -1)
+                local theta = -self.rotation.y;
+                local cs = math.cos(theta)
+                local sn = math.sin(theta)
+
+                local xForce = 0
+                local zForce = -1
+                local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
+
+                physics.velocity = physics.velocity + force
             end
             if (inputBitmask & 2 > 0) then
-                physics.velocity = physics.velocity + engine.math.vec2.new(0, 1)
+                local theta = -self.rotation.y;
+                local cs = math.cos(theta)
+                local sn = math.sin(theta)
+
+                local xForce = 0
+                local zForce = 1
+                local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
+
+                physics.velocity = physics.velocity + force
             end
             if (inputBitmask & 4 > 0) then
-                physics.velocity = physics.velocity + engine.math.vec2.new(-1, 0)
+                physics.angularVelocity = physics.angularVelocity + 0.5;
+                --physics.velocity = physics.velocity + engine.math.vec2.new(-1, 0)
             end
             if (inputBitmask & 8 > 0) then
-                physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)
+                physics.angularVelocity = physics.angularVelocity + -0.5;
+                -- physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)
             end
         end
     end
