@@ -22,6 +22,10 @@ public:
     void update(float deltaTime) override;
 
     Component *clone(std::shared_ptr<Entity> entity) override;
+
+    bool onEvent(Event& event) override;
+
+	void updateTransform();
 };
 
 
