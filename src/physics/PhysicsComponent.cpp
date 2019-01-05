@@ -63,15 +63,15 @@ void PhysicsComponent::setPositionAndRotation(glm::vec2 &position, float rotatio
     body->SetTransform(b2Vec2(position.x, position.y), rotation);
 }
 
-void PhysicsComponent::beginContact() {
+void PhysicsComponent::beginContact(PhysicsComponent *other) {
     if (beginContactFn != sol::lua_nil) {
-        beginContactFn();
+        beginContactFn(this, other);
     }
 }
 
-void PhysicsComponent::endContact() {
+void PhysicsComponent::endContact(PhysicsComponent *other) {
     if (endContactFn != sol::lua_nil) {
-        endContactFn();
+        endContactFn(this, other);
     }
 }
 

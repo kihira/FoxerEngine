@@ -56,9 +56,9 @@ public:
 
     const float getAngularVelocity() const;
 
-    void beginContact();
+    void beginContact(PhysicsComponent *other);
 
-    void endContact();
+    void endContact(PhysicsComponent *other);
 };
 
 

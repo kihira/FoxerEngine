@@ -5,13 +5,15 @@ database = {
     entities = {
         [591432690] = "player.lua", -- ENTITY_PLAYER
         [315271780] = "ground.lua", -- ENTITY_GROUND
-		[1675181212] = "groundRough.lua" -- ENTITY_GROUND_ROUGH
+		[1675181212] = "groundRough.lua", -- ENTITY_GROUND_ROUGH
+		[592045845] = "portal.lua" -- ENTITY_PORTAL
     },
     meshes = {
         [3415080175] = "spaceCraft1.obj", -- MESH_SPACECRAFT
         [3061288721] = "floor.obj", -- MESH_FLOOR
 		[2381128972] = "groundTile.obj", -- MESH_GROUND
-		[4214878900] = "groundTileRough.obj" -- MESH_GROUND_ROUGH
+        [4214878900] = "groundTileRough.obj", -- MESH_GROUND_ROUGH
+        [2795621949] = "portal.obj" -- MESH_PORTAL
     },
     textures = {
         [2300579869] = {

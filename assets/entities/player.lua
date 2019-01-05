@@ -8,10 +8,6 @@ return {
 		shape = 1,
 		halfWidth = 4,
 		halfHeight = 2,
-        beginContact = function()
-        end,
-        endContact = function()
-        end
     },
     renderComponent = {
         mesh = 3415080175,

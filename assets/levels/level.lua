@@ -21,10 +21,52 @@ level = {
             position = engine.math.vec3.new(10, 0, 10),
             rotation = engine.math.vec3.new(0)
         },
-		{
-            prototypeId = 1675181212,
+        {
+            prototypeId = 315271780,
             entityId = 10003,
             position = engine.math.vec3.new(0, 0, 10),
+            rotation = engine.math.vec3.new(0)
+        },
+        {
+            prototypeId = 315271780,
+            entityId = 10004,
+            position = engine.math.vec3.new(-10, 0, 0),
+            rotation = engine.math.vec3.new(0)
+        },
+		{
+            prototypeId = 315271780,
+            entityId = 10005,
+            position = engine.math.vec3.new(-10, 0, -10),
+            rotation = engine.math.vec3.new(0)
+        },
+        {
+            prototypeId = 315271780,
+            entityId = 10006,
+            position = engine.math.vec3.new(0, 0, -10),
+            rotation = engine.math.vec3.new(0)
+        },
+        {
+            prototypeId = 315271780,
+            entityId = 10007,
+            position = engine.math.vec3.new(10, 0, -10),
+            rotation = engine.math.vec3.new(0)
+        },
+        {
+            prototypeId = 315271780,
+            entityId = 10008,
+            position = engine.math.vec3.new(-10, 0, 10),
+            rotation = engine.math.vec3.new(0)
+        },
+		-- {
+        --     prototypeId = 1675181212,
+        --     entityId = 10200,
+        --     position = engine.math.vec3.new(0, 0, 10),
+        --     rotation = engine.math.vec3.new(0)
+        -- },
+        {
+            prototypeId = 592045845, -- ENTITY_PORTAL
+            entityId = 10100,
+            position = engine.math.vec3.new(0, 0, 0),
             rotation = engine.math.vec3.new(0)
         }
     },

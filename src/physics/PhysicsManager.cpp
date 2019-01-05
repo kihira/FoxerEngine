@@ -52,16 +52,16 @@ void PhysicsManager::BeginContact(b2Contact *contact) {
     auto componentA = static_cast<PhysicsComponent *>(contact->GetFixtureA()->GetUserData());
     auto componentB = static_cast<PhysicsComponent *>(contact->GetFixtureB()->GetUserData());
 
-    componentA->beginContact();
-    componentB->beginContact();
+    componentA->beginContact(componentB);
+    componentB->beginContact(componentA);
 }
 
 void PhysicsManager::EndContact(b2Contact *contact) {
     auto componentA = static_cast<PhysicsComponent *>(contact->GetFixtureA()->GetUserData());
     auto componentB = static_cast<PhysicsComponent *>(contact->GetFixtureB()->GetUserData());
 
-    componentA->endContact();
-    componentB->endContact();
+    componentA->endContact(componentB);
+    componentB->endContact(componentA);
 }
 
 bool PhysicsManager::onEvent(Event &event) {

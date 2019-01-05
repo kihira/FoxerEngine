@@ -11,6 +11,7 @@ possible via the use of meta_functions::index. See Entity
 
 ### Events
 - Allow delaying execution of events
+- Use event metadata to know whether we should send the packet reliably etc
 
 ### Assets
 - Create different loaders for each asset type

@@ -571,7 +571,10 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
             }
             case 1: {
                 auto shape = new b2PolygonShape();
-                shape->SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f));
+				auto centreX = physicsTable["centreX"].get_or(0.f);
+				auto centreZ = physicsTable["centreZ"].get_or(0.f);
+				auto centre = b2Vec2(centreX, centreZ);
+                shape->SetAsBox(physicsTable["halfWidth"].get_or(.5f), physicsTable["halfHeight"].get_or(.5f), centre, 0.f);
                 fixtureDef.shape = shape;
                 break;
             }
