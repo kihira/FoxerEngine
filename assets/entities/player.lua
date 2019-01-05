@@ -5,7 +5,7 @@ return {
         type = 2, -- dynamic body
         gravityScale = 0.3,
         linearDamping = 1,
-        angularDamping = 2,
+        angularDamping = 3,
 		shape = 1,
 		halfWidth = 3,
 		halfHeight = 8,
