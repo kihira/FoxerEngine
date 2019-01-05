@@ -14,6 +14,7 @@ return {
         centreZ = 2,
         beginContact = function(self, other)
             print("Hit!")
+            print(self:getEntity():id())
         end,
         endContact = function(self, other)
         end

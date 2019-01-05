@@ -30,6 +30,10 @@ public:
     bool isActive() const {
         return active;
     }
+
+    const std::shared_ptr<Entity>& getEntity() const {
+	    return entity;
+    };
 };
 
 

@@ -103,18 +103,25 @@ void AssetManager::startUp() {
 
     // Register entity type
     entityTable.new_usertype<Entity>(
-            "entity",
-            "new", sol::factories([](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); }),
-            "id", &Entity::getId,
-            // Register properties
-            "name", sol::property(&Entity::getName, &Entity::setName),
-            "position", sol::property(&Entity::getPosition, &Entity::setPosition),
-            "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
-            "getPhysicsComponent", &Entity::getComponent<PhysicsComponent>,
-            "getNetworkComponent", &Entity::getComponent<NetworkComponent>,
-            sol::meta_function::index, &Entity::dynamicGet,
-            sol::meta_function::new_index, &Entity::dynamicSet
+        "entity",
+        "new", sol::factories([](const char *id) -> std::shared_ptr<Entity> { return gEntityManager.spawn(processString(id)); }),
+        "id", &Entity::getId,
+        // Register properties
+        "name", sol::property(&Entity::getName, &Entity::setName),
+        "position", sol::property(&Entity::getPosition, &Entity::setPosition),
+        "rotation", sol::property(&Entity::getRotation, &Entity::setRotation),
+        "getPhysicsComponent", &Entity::getComponent<PhysicsComponent>,
+        "getNetworkComponent", &Entity::getComponent<NetworkComponent>,
+        sol::meta_function::index, &Entity::dynamicGet,
+        sol::meta_function::new_index, &Entity::dynamicSet
     );
+
+	// Register component type
+	entityTable.new_usertype<Component>(
+		"component",
+		"", sol::no_constructor,
+		"getEntity", &Component::getEntity
+		);
 
     // Input functions
     sol::table inputTable = engineTable.create_named("input");
@@ -219,18 +226,19 @@ void AssetManager::startUp() {
 
     // Physics component
     physicsTable.new_usertype<PhysicsComponent>(
-            "physicsComponent",
-            "", sol::no_constructor,
-            "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity)
+        "physicsComponent",
+        "", sol::no_constructor,
+		sol::base_classes, sol::bases<Component>(),
+        "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity)
     );
 
     // Register level type
     engineTable.new_usertype<Level>(
-            "level",
-            "noconstructor", sol::no_constructor,
-            "name", sol::property(&Level::getName, &Level::setName),
-            sol::meta_function::index, &Level::dynamicGet,
-            sol::meta_function::new_index, &Level::dynamicSet
+        "level",
+        "", sol::no_constructor,
+        "name", sol::property(&Level::getName, &Level::setName),
+        sol::meta_function::index, &Level::dynamicGet,
+        sol::meta_function::new_index, &Level::dynamicSet
     );
 }
 
