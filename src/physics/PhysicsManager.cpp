@@ -1,6 +1,8 @@
 
 #include "PhysicsManager.h"
+#include "../Managers.h"
 #include <easy/profiler.h>
+#include "../event/EventManager.h"
 
 PhysicsManager::PhysicsManager() = default; // noop
 
@@ -12,6 +14,8 @@ void PhysicsManager::startUp() {
     b2Vec2 gravity(0.f, 0.f);
     world = new b2World(gravity);
     world->SetContactListener(this);
+
+    gEventManager.registerHandler({SID("EVENT_TYPE_ENTITY_SET_POSITION"), SID("EVENT_TYPE_ENTITY_SET_ROTATION")}, this);
 
     auto event = Event(SID("EVENT_TYPE_PHYSICS_STARTUP"));
     event.push();
