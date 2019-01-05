@@ -6,8 +6,8 @@ return {
         gravityScale = 0.3,
         linearDamping = 2,
 		shape = 1,
-		halfWidth = 4,
-		halfHeight = 2,
+		halfWidth = 3,
+		halfHeight = 8,
     },
     renderComponent = {
         mesh = 3415080175,
