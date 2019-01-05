@@ -86,8 +86,9 @@ level = {
 				for i = 1, 2, 1 do
 					-- Spawn player entity and assign it
 					local player = engine.entity.spawnEntity("ENTITY_PLAYER")
-					local clientId = engine.network.getClientIds()[i];
-					player.controllingClient = clientId
+					local clientId = engine.network.getClientIds()[i]
+                    player.controllingClient = clientId
+                    player.position = engine.math.vec3.new(0, 2, 0);
 
 					-- Send event out so client know its can control it
 					local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")

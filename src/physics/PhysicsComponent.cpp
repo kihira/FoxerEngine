@@ -1,6 +1,5 @@
 
 #include "PhysicsComponent.h"
-#include "../util/assert.h"
 #include "../Managers.h"
 #include "PhysicsManager.h"
 
@@ -22,10 +21,19 @@ PhysicsComponent::PhysicsComponent(
 }
 
 void PhysicsComponent::update(float deltaTime) {
-    glm::vec3 pos(0.f);
-    pos.x = body->GetPosition().x;
-    pos.z = body->GetPosition().y;
-    entity->setPosition(pos);
+	ignoreEvent = true;
+	// Set position
+	auto position = entity->getPosition();
+    position.x = body->GetPosition().x;
+    position.z = body->GetPosition().y;
+    entity->setPosition(position);
+
+	// Set rotation
+	auto rotation = entity->getRotation();
+	rotation.y = body->GetAngle();
+	entity->setRotation(rotation);
+
+	ignoreEvent = false;
 }
 
 Component *PhysicsComponent::clone(std::shared_ptr<Entity> entity) {
@@ -73,6 +81,19 @@ void PhysicsComponent::endContact(PhysicsComponent *other) {
     if (endContactFn != sol::lua_nil) {
         endContactFn(this, other);
     }
+}
+
+bool PhysicsComponent::onEvent(Event& event) {
+	if (ignoreEvent) return false;
+	switch (event.getType()) {
+		case SID("EVENT_TYPE_ENTITY_POSITION"):
+			body->SetTransform(b2Vec2(entity->getPosition().x, entity->getPosition().z), body->GetAngle());
+			break;
+		case SID("EVENT_TYPE_ENTITY_ROTATION"):
+			body->SetTransform(body->GetPosition(), entity->getRotation().y);
+			break;
+	}
+	return false;
 }
 
 const glm::vec2 PhysicsComponent::getPosition() const {

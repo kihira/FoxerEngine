@@ -10,7 +10,7 @@
 /**
  * Component for synchronising physics and position across the network
  */
-class NetworkComponent : public Component, public EventHandler {
+class NetworkComponent : public Component {
 private:
     unsigned short clientAuthority; // The client ID that has authority
     bool isAuthoritive; // Whether this component has authority over the entity its attached to

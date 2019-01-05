@@ -74,8 +74,10 @@ database = {
             args = {
                 "entityId",
                 "posX",
+                "posY",
                 "posZ",
                 "rotX",
+                "rotY",
                 "rotZ",
                 "velX",
                 "velZ",

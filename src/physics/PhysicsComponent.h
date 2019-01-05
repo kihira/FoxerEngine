@@ -19,6 +19,9 @@ private:
     b2Body *body;
     b2Fixture *fixture;
 
+	// Used so we don't redundately set position during update loop
+	bool ignoreEvent = false;
+
     // Lua bindings
     sol::function beginContactFn;
     sol::function endContactFn;
@@ -46,6 +49,11 @@ public:
 
     const float getRotation() const;
 
+	/**
+	 * Sets the position and rotation for the physics body
+	 * Does not immediately update the entities position and rotation.
+	 * It is preferred to set the entity position and rotation instead of using this function
+	 */
     void setPositionAndRotation(glm::vec2 &position, float rotation);
 
     /**
@@ -59,6 +67,8 @@ public:
     void beginContact(PhysicsComponent *other);
 
     void endContact(PhysicsComponent *other);
+
+    bool onEvent(Event& event) override;
 };
 
 
