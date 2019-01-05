@@ -13,8 +13,9 @@ return {
         centreX = -5,
         centreZ = 2,
         beginContact = function(self, other)
-            print("Hit!")
-            print(self:getEntity():id())
+            if (engine.network.isClient()) then
+                engine.sound.play(3989746563)
+            end
         end,
         endContact = function(self, other)
         end

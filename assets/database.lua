@@ -34,7 +34,10 @@ database = {
 	sounds = {
 		[2016780361] = { -- SOUND_BACKGROUND_MUSIC
 			file = "background.ogg"
-		}
+        },
+        [3989746563] = { -- SOUND_POWERUP
+            file = "powerup.wav"
+        }
 	},
     events = {
         [1994444546] = { -- EVENT_TYPE_PLAYER_CONNECTED
@@ -87,6 +90,11 @@ database = {
         [3819351460] = { -- EVENT_TYPE_LEVEL_LOAD_SERVER
             args = {
                 "levelId"
+            }
+        },
+        [3302156521] = { -- EVENT_TYPE_PLAY_SOUND
+            args = {
+                "soundId"
             }
         }
     }
