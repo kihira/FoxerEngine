@@ -564,7 +564,7 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
         fixtureDef.density = physicsTable["density"].get_or(0.f);
         fixtureDef.friction = physicsTable["friction"].get_or(.2f);
         fixtureDef.restitution = physicsTable["restitution"].get_or(0.f);
-        // fixtureDef.isSensor = physicsTable["isSensor"].get_or(false);
+        fixtureDef.isSensor = physicsTable["isSensor"].get_or(false);
         // fixtureDef.filter;
 
         // Create shape
@@ -677,6 +677,7 @@ std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
             // Spawn entity
             auto entity = gEntityManager.spawn(prototypeId, entityId);
             entity->setPosition(entityTable["position"]);
+			entity->setRotation(entityTable["rotation"]);
         }
     }
 

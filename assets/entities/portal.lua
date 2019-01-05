@@ -8,6 +8,7 @@ return {
     physicsComponent = {
         type = 1,
         shape = 1,
+        isSensor = true,
         halfWidth = 2,
         halfHeight = 2,
         centreX = -5,
@@ -16,8 +17,6 @@ return {
             if (engine.network.isClient()) then
                 engine.sound.play(3989746563)
             end
-        end,
-        endContact = function(self, other)
         end
     }
 }
