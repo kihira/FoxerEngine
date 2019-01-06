@@ -9,9 +9,9 @@
 
 struct PacketPhysicsUpdate {
     EntityId entityId;
-    glm::vec2 position;
+    glm::vec3 position;
     glm::vec2 velocity;
-    float rotation;
+    glm::vec3 rotation;
     float angularVelocity;
 };
 
@@ -33,8 +33,9 @@ PhysicsNetworkHandler::PhysicsNetworkHandler() {
                 }
             }
 
+			entity->setPosition(packetData->position);
+			entity->setRotation(packetData->rotation);
             auto physicsComponent = entity->getComponent<PhysicsComponent>();
-            physicsComponent->setPositionAndRotation(packetData->position, packetData->rotation);
             physicsComponent->setVelocity(packetData->velocity);
             physicsComponent->setAngularVelocity(packetData->angularVelocity);
         }

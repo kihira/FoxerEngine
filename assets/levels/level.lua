@@ -68,6 +68,18 @@ level = {
             entityId = 10100,
             position = engine.math.vec3.new(0, 0, 0),
             rotation = engine.math.vec3.new(0)
+        },
+        {
+            prototypeId = 592045845, -- ENTITY_PORTAL
+            entityId = 10101,
+            position = engine.math.vec3.new(0, 0, -20),
+            rotation = engine.math.vec3.new(0)
+        },
+        {
+            prototypeId = 592045845, -- ENTITY_PORTAL
+            entityId = 10103,
+            position = engine.math.vec3.new(0, 0, -50),
+            rotation = engine.math.vec3.new(0)
         }
     },
     update = function(self) end,
@@ -86,8 +98,9 @@ level = {
 				for i = 1, 2, 1 do
 					-- Spawn player entity and assign it
 					local player = engine.entity.spawnEntity("ENTITY_PLAYER")
-					local clientId = engine.network.getClientIds()[i];
-					player.controllingClient = clientId
+					local clientId = engine.network.getClientIds()[i]
+                    player.controllingClient = clientId
+                    player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 20);
 
 					-- Send event out so client know its can control it
 					local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")

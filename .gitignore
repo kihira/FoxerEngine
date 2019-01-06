@@ -2,8 +2,10 @@
 cmake-build-*/
 
 # Build
-bin/
+bin/*
 build/
+!bin/
+!bin/FoxerEngine.exe
 
 # CLion
 .idea/

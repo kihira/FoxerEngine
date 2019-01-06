@@ -5,11 +5,12 @@
 #include <soloud.h>
 #include <spdlog/spdlog.h>
 #include "../util/StringId.h"
+#include "../event/EventHandler.h"
 
 
 class Clip;
 
-class SoundManager final {
+class SoundManager final : public EventHandler {
 private:
     std::shared_ptr<spdlog::logger> logger;
     SoLoud::Soloud soloud;
@@ -53,6 +54,8 @@ public:
 	float getGlobalVolume();
 
     float getPan(Clip& clip);
+
+    bool onEvent(Event& event) override;
 };
 
 

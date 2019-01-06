@@ -33,10 +33,12 @@ void NetworkComponent::update(float deltaTime) {
 
         auto position = entity->getPosition();
         event.setArg("posX", position.x);
+		event.setArg("posY", position.y);
         event.setArg("posZ", position.z);
 
         auto rotation = entity->getRotation();
         event.setArg("rotX", rotation.x);
+		event.setArg("rotY", rotation.y);
         event.setArg("rotZ", rotation.z);
 
         auto velocity = physics->getVelocity();
@@ -72,13 +74,14 @@ bool NetworkComponent::onEvent(Event &event) {
             if (entity->getId() != event.getArg<EntityId>("entityId")) break;
 
             // Parse event
-            auto position = glm::vec2(event.getArg<float>("posX"), event.getArg<float>("posZ"));
+            auto position = glm::vec3(event.getArg<float>("posX"), event.getArg<float>("posY"), event.getArg<float>("posZ"));
             auto velocity = glm::vec2(event.getArg<float>("velX"), event.getArg<float>("velZ"));
-            auto rotation = glm::vec2(event.getArg<float>("rotX"), event.getArg<float>("rotZ"));
+            auto rotation = glm::vec3(event.getArg<float>("rotX"), event.getArg<float>("rotY"), event.getArg<float>("rotZ"));
             auto angular = event.getArg<float>("velA");
 
             auto physics = entity->getComponent<PhysicsComponent>();
-            physics->setPositionAndRotation(position, rotation.x);
+			entity->setPosition(position);
+			entity->setRotation(rotation);
             physics->setVelocity(velocity);
             physics->setAngularVelocity(angular);
             break;
