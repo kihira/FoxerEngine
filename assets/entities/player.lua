@@ -20,7 +20,39 @@ return {
     playerComponent = {},
     update = function(self)
         if (self.hasControl) then
-           -- engine.graphics.camera.target = self.position
+            -- apply input
+            if (self.inputBitmask > 0) then
+                local physics = self:getPhysicsComponent();
+                if (self.inputBitmask & 1 == 1) then
+                    local theta = -self.rotation.y;
+                    local cs = math.cos(theta)
+                    local sn = math.sin(theta)
+    
+                    local xForce = 0
+                    local zForce = -1
+                    local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
+    
+                    physics.velocity = physics.velocity + force
+                end
+                if (self.inputBitmask & 2 == 2) then
+                    local theta = -self.rotation.y;
+                    local cs = math.cos(theta)
+                    local sn = math.sin(theta)
+    
+                    local xForce = 0
+                    local zForce = 1
+                    local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
+    
+                    physics.velocity = physics.velocity + force
+                end
+                if (self.inputBitmask & 4 == 4) then
+                    physics.angularVelocity = physics.angularVelocity + 0.05;
+                end
+                if (self.inputBitmask & 8 == 8) then
+                    physics.angularVelocity = physics.angularVelocity + -0.05;
+                end
+            end
+
             -- chase camera
             local heading = engine.math.vec2.new(0, -30)
             local theta = -self.rotation.y;
@@ -43,12 +75,7 @@ return {
         end
     end,
     onSpawn = function(self)
-        self.input = {
-            forward = false,
-            backward = false,
-            left = false,
-            right = false
-        }
+        self.inputBitmask = 0
     end,
     events = {
         "EVENT_TYPE_ASSIGN_PLAYER",
@@ -61,38 +88,29 @@ return {
             if engine.network.isServer() or (event:getClientId("clientId") == engine.network.clientId()) then
 				-- as we have control, can listen for inputs
                 engine.input.registerKeyHandler(function(key, scancode, action, mods)
-                    local isDown = true
-                    if (action == 0) then isDown = false end
+                    if (action > 1) then return end -- only listen for press and release
 
-                    if (key == 87) then --forward
-						self.forward = isDown
-					elseif (key == 83) then --backward
-						self.backward = isDown
-					elseif (key == 65) then --left
-						self.left = isDown
-					elseif (key == 68) then --right
-						self.right = isDown
-					end
+                    local modifier = 1
+                    if (action == 0) then modifier = -1 end
 
-					local inputBitmask = 0;
-					if (self.forward) then --forward
-                        inputBitmask = inputBitmask + 1
+					if (key == 87) then --forward
+                        self.inputBitmask = self.inputBitmask + 1 * modifier
+                    elseif (key == 83) then --backward
+                        self.inputBitmask = self.inputBitmask + 2 * modifier
                     end
-					if (self.backward) then --backward
-                        inputBitmask = inputBitmask + 2
+					if (key == 65) then --left
+                        self.inputBitmask = self.inputBitmask + 4 * modifier
                     end
-					if (self.left) then --left
-                        inputBitmask = inputBitmask + 4
+					if (key == 68) then --right
+						self.inputBitmask = self.inputBitmask + 8 * modifier
                     end
-					if (self.right) then --right
-						inputBitmask = inputBitmask + 8
-					end
-					if (inputBitmask > 0) then
-						local event = engine.event.event.new("EVENT_TYPE_INPUT_PLAYER")
-						event:setEntityId("entityId", self:id())
-						event:setUShort("inputBitmask", inputBitmask)
-						event:push()
-					end
+
+                    print(self.inputBitmask)
+                    
+                    local event = engine.event.event.new("EVENT_TYPE_INPUT_PLAYER")
+                    event:setEntityId("entityId", self:id())
+                    event:setUShort("inputBitmask", self.inputBitmask)
+                    event:push()
 				end)
                 self.hasControl = true;
 				self.controllingClient = event:getClientId("clientId")
@@ -100,41 +118,9 @@ return {
         elseif event:type() == 1770460267 then -- EVENT_TYPE_INPUT_PLAYER
             if (event:getEntityId("entityId") ~= self:id()) then return end
             if (self.hasControl ~= true) then return end
-			-- if (self.controllingClient ~= event:getClientId("fromClient")) then return end
 
             -- Process input
-            local inputBitmask = event:getUShort("inputBitmask");
-            local physics = self:getPhysicsComponent();
-            if (inputBitmask & 1 == 1) then
-                local theta = -self.rotation.y;
-                local cs = math.cos(theta)
-                local sn = math.sin(theta)
-
-                local xForce = 0
-                local zForce = -1
-                local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
-
-                physics.velocity = physics.velocity + force
-            end
-            if (inputBitmask & 2 == 2) then
-                local theta = -self.rotation.y;
-                local cs = math.cos(theta)
-                local sn = math.sin(theta)
-
-                local xForce = 0
-                local zForce = 1
-                local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
-
-                physics.velocity = physics.velocity + force
-            end
-            if (inputBitmask & 4 == 4) then
-                physics.angularVelocity = physics.angularVelocity + 0.5;
-                --physics.velocity = physics.velocity + engine.math.vec2.new(-1, 0)
-            end
-            if (inputBitmask & 8 == 8) then
-                physics.angularVelocity = physics.angularVelocity + -0.5;
-                -- physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)
-            end
+            self.inputBitmask = event:getUShort("inputBitmask");
         end
     end
 }
