@@ -82,7 +82,19 @@ level = {
             rotation = engine.math.vec3.new(0)
         }
     },
-    update = function(self) end,
+    update = function(self)
+        for k, v in pairs(self.portalsCompleted) do
+            local count = 0
+            for k1, v1 in pairs(v) do
+                count = count + 1
+            end
+
+            -- check if all portals have been completed
+            if (count == 3) then
+                print("Entity " .. k .. " has completed all portals and wins!")
+            end
+        end
+    end,
     events = {
         "EVENT_TYPE_LEVEL_LOAD",
         "EVENT_TYPE_PLAYER_CONNECTED",
@@ -102,6 +114,9 @@ level = {
                     player.controllingClient = clientId
                     player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 20);
 
+                    -- store player id in portals table so we can track
+                    self.portalsCompleted[player:id()] = {}
+
 					-- Send event out so client know its can control it
 					local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")
 					assignEvent:setClientId("clientId", clientId)
@@ -119,11 +134,19 @@ level = {
             -- self.players[clientId] = nil
 
         elseif event:type() == 1205121214 then -- EVENT_TYPE_LEVEL_LOAD
-            print("Level loaded!")
+            if (event:getStringId("levelId") == self:id()) then
+                print("Level loaded!")
 
-            engine.graphics.camera.position = engine.math.vec3.new(10, 10, 10)
-            engine.graphics.camera.target = engine.math.vec3.new(0)
-
+                -- setup some data structures
+                self.portalsCompleted = {}
+                self.portalHit = function(portalId, entityId)
+                    local portalsCompleted = self.portalsCompleted[entityId]
+                    -- If haven't hit this portal already, store it
+                    if (self.portalsCompleted[entityId][portalId] == nil) then
+                        self.portalsCompleted[entityId][portalId] = true
+                    end
+                end
+            end
         end
         return false;
     end

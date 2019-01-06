@@ -232,15 +232,6 @@ void AssetManager::startUp() {
         "velocity", sol::property(&PhysicsComponent::getVelocity, &PhysicsComponent::setVelocity),
 		"angularVelocity", sol::property(&PhysicsComponent::getAngularVelocity, &PhysicsComponent::setAngularVelocity)
     );
-
-    // Register level type
-    engineTable.new_usertype<Level>(
-        "level",
-        "", sol::no_constructor,
-        "name", sol::property(&Level::getName, &Level::setName),
-        sol::meta_function::index, &Level::dynamicGet,
-        sol::meta_function::new_index, &Level::dynamicSet
-    );
 }
 
 void AssetManager::shutDown() {

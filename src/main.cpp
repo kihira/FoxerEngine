@@ -31,6 +31,7 @@ void runMainLoop() {
             gPhysicsManager.update(delta);
             gNetworkManager.update(delta);
             gEntityManager.update(delta);
+			gLevelManager.update();
             gRenderManager.update(delta);
             gSoundManager.update(delta);
 
@@ -58,6 +59,7 @@ void runMainLoopServer() {
             gPhysicsManager.update(delta);
             gNetworkManager.update(delta);
             gEntityManager.update(delta);
+			gLevelManager.update();
 
             delta -= tickRate;
         }

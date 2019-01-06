@@ -75,12 +75,22 @@ void PhysicsComponent::beginContact(PhysicsComponent *other) {
     if (beginContactFn != sol::lua_nil) {
         beginContactFn(this, other);
     }
+
+	auto event = Event(SID("EVENT_TYPE_CONTACT_BEGIN"));
+	event.setArg("entityId", entity->getId());
+	event.setArg("otherEntityId", other->getEntity()->getId());
+	event.push();
 }
 
 void PhysicsComponent::endContact(PhysicsComponent *other) {
     if (endContactFn != sol::lua_nil) {
         endContactFn(this, other);
     }
+
+	auto event = Event(SID("EVENT_TYPE_CONTACT_END"));
+	event.setArg("entityId", entity->getId());
+	event.setArg("otherEntityId", other->getEntity()->getId());
+	event.push();
 }
 
 bool PhysicsComponent::onEvent(Event& event) {
