@@ -43,6 +43,12 @@ return {
         end
     end,
     onSpawn = function(self)
+        self.input = {
+            forward = false,
+            backward = false,
+            left = false,
+            right = false
+        }
     end,
     events = {
         "EVENT_TYPE_ASSIGN_PLAYER",
@@ -54,15 +60,31 @@ return {
             -- If we're server or the client itself, we have control
             if engine.network.isServer() or (event:getClientId("clientId") == engine.network.clientId()) then
 				-- as we have control, can listen for inputs
-				engine.input.registerKeyHandler(function(key, scancode, action, mods)
-					local inputBitmask = 0;
-					if (key == 87) then --forward
-						inputBitmask = inputBitmask + 1
+                engine.input.registerKeyHandler(function(key, scancode, action, mods)
+                    local isDown = true
+                    if (action == 0) then isDown = false end
+
+                    if (key == 87) then --forward
+						self.forward = isDown
 					elseif (key == 83) then --backward
-						inputBitmask = inputBitmask + 2
+						self.backward = isDown
 					elseif (key == 65) then --left
-						inputBitmask = inputBitmask + 4
+						self.left = isDown
 					elseif (key == 68) then --right
+						self.right = isDown
+					end
+
+					local inputBitmask = 0;
+					if (self.forward) then --forward
+                        inputBitmask = inputBitmask + 1
+                    end
+					if (self.backward) then --backward
+                        inputBitmask = inputBitmask + 2
+                    end
+					if (self.left) then --left
+                        inputBitmask = inputBitmask + 4
+                    end
+					if (self.right) then --right
 						inputBitmask = inputBitmask + 8
 					end
 					if (inputBitmask > 0) then
@@ -83,7 +105,7 @@ return {
             -- Process input
             local inputBitmask = event:getUShort("inputBitmask");
             local physics = self:getPhysicsComponent();
-            if (inputBitmask & 1 > 0) then
+            if (inputBitmask & 1 == 1) then
                 local theta = -self.rotation.y;
                 local cs = math.cos(theta)
                 local sn = math.sin(theta)
@@ -94,7 +116,7 @@ return {
 
                 physics.velocity = physics.velocity + force
             end
-            if (inputBitmask & 2 > 0) then
+            if (inputBitmask & 2 == 2) then
                 local theta = -self.rotation.y;
                 local cs = math.cos(theta)
                 local sn = math.sin(theta)
@@ -105,11 +127,11 @@ return {
 
                 physics.velocity = physics.velocity + force
             end
-            if (inputBitmask & 4 > 0) then
+            if (inputBitmask & 4 == 4) then
                 physics.angularVelocity = physics.angularVelocity + 0.5;
                 --physics.velocity = physics.velocity + engine.math.vec2.new(-1, 0)
             end
-            if (inputBitmask & 8 > 0) then
+            if (inputBitmask & 8 == 8) then
                 physics.angularVelocity = physics.angularVelocity + -0.5;
                 -- physics.velocity = physics.velocity + engine.math.vec2.new(1, 0)
             end
