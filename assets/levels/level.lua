@@ -66,20 +66,20 @@ level = {
         {
             prototypeId = 592045845, -- ENTITY_PORTAL
             entityId = 10100,
-            position = engine.math.vec3.new(0, 0, 0),
+            position = engine.math.vec3.new(0, 0, -50),
             rotation = engine.math.vec3.new(0)
         },
         {
             prototypeId = 592045845, -- ENTITY_PORTAL
             entityId = 10101,
-            position = engine.math.vec3.new(0, 0, -20),
-            rotation = engine.math.vec3.new(0)
+            position = engine.math.vec3.new(30, 0, -150),
+            rotation = engine.math.vec3.new(0, 30, 0)
         },
         {
             prototypeId = 592045845, -- ENTITY_PORTAL
             entityId = 10103,
-            position = engine.math.vec3.new(0, 0, -50),
-            rotation = engine.math.vec3.new(0)
+            position = engine.math.vec3.new(100, 0, -250),
+            rotation = engine.math.vec3.new(0, 90, 0)
         }
     },
     update = function(self)
@@ -102,8 +102,7 @@ level = {
     },
     onEvent = function(self, event)
         if (event:type() == 1994444546) then -- EVENT_TYPE_PLAYER_CONNECTED
-            print("Player connected!")
-            print("Client ID: " .. event:getUShort("clientId"))
+            print("Player connected! Client ID: " .. event:getUShort("clientId"))
 
 			-- Wait until we have two players connected before starting
 			if (engine.network.clientsCount() == 2) then
@@ -112,7 +111,7 @@ level = {
 					local player = engine.entity.spawnEntity("ENTITY_PLAYER")
 					local clientId = engine.network.getClientIds()[i]
                     player.controllingClient = clientId
-                    player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 20);
+                    player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 0);
 
                     -- store player id in portals table so we can track
                     self.portalsCompleted[player:id()] = {}

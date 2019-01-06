@@ -24,25 +24,11 @@ return {
             if (self.inputBitmask > 0) then
                 local physics = self:getPhysicsComponent();
                 if (self.inputBitmask & 1 == 1) then
-                    local theta = -self.rotation.y;
-                    local cs = math.cos(theta)
-                    local sn = math.sin(theta)
-    
-                    local xForce = 0
-                    local zForce = -1
-                    local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
-    
+                    local force = engine.math.rotateVec2(engine.math.vec2.new(0, -1), -self.rotation.y)
                     physics.velocity = physics.velocity + force
                 end
                 if (self.inputBitmask & 2 == 2) then
-                    local theta = -self.rotation.y;
-                    local cs = math.cos(theta)
-                    local sn = math.sin(theta)
-    
-                    local xForce = 0
-                    local zForce = 1
-                    local force = engine.math.vec2.new(xForce * cs - zForce * sn, xForce * sn + zForce * cs)
-    
+                    local force = engine.math.rotateVec2(engine.math.vec2.new(0, 1), -self.rotation.y)
                     physics.velocity = physics.velocity + force
                 end
                 if (self.inputBitmask & 4 == 4) then
@@ -54,12 +40,7 @@ return {
             end
 
             -- chase camera
-            local heading = engine.math.vec2.new(0, -30)
-            local theta = -self.rotation.y;
-            local cs = math.cos(theta)
-            local sn = math.sin(theta)
-
-            heading = engine.math.vec2.new(heading.x * cs - heading.y * sn, heading.x * sn + heading.y * cs)
+            local heading = engine.math.rotateVec2(engine.math.vec2.new(0, -30), -self.rotation.y)
 
             local camPosition = engine.graphics.camera.position
             camPosition.x = self.position.x + -heading.x
@@ -104,9 +85,8 @@ return {
 					if (key == 68) then --right
 						self.inputBitmask = self.inputBitmask + 8 * modifier
                     end
-
-                    print(self.inputBitmask)
                     
+                    -- Only send event if something has changed
                     local event = engine.event.event.new("EVENT_TYPE_INPUT_PLAYER")
                     event:setEntityId("entityId", self:id())
                     event:setUShort("inputBitmask", self.inputBitmask)

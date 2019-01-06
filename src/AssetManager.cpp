@@ -166,6 +166,12 @@ void AssetManager::startUp() {
      * Register math stuff
      */
     sol::table mathTable = engineTable.create_named("math");
+	mathTable["rotateVec2"] = [](glm::vec2 &vec2, float rotation) -> glm::vec2 {
+        auto cs = cos(rotation);
+        auto sn = sin(rotation);
+
+		return glm::vec2(vec2.x * cs - vec2.y *sn, vec2.x * sn + vec2.y * cs);
+	};
 
     // Register vec3 type
     mathTable.new_usertype<glm::vec3>(
