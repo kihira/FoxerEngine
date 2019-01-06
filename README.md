@@ -1,3 +1,10 @@
+# Foxer Engine
+## Demo
+An example demo game and binary can be found in the demo script file.
+
+The demo is a multiplayer game requiring two clients to connect before it will begin.
+The goal is to hit all the checkpoints first
+
 ## Libraries
 - GLFW 3.2.1 [zlib](http://www.glfw.org/license.html)
 - GLM 0.9.9.2 [MIT](https://github.com/g-truc/glm/blob/master/manual.md#section0)

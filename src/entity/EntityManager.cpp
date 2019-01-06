@@ -17,7 +17,11 @@ void EntityManager::startUp() {
     SPDLOG_LOGGER_TRACE(logger, "Entity Manager Start Up Begin");
 
     // Register event handler
-    gEventManager.registerHandler(SID("EVENT_TYPE_ENTITY_SPAWN"), this);
+    gEventManager.registerHandler({
+		SID("EVENT_TYPE_ENTITY_SPAWN"),
+		SID("EVENT_TYPE_LEVEL_UNLOAD"),
+		SID("EVENT_TYPE_ENTITY_DESTROY")
+    }, this);
 
     SPDLOG_LOGGER_TRACE(logger, "Entity Manager Start Up Complete");
 }
@@ -121,6 +125,10 @@ bool EntityManager::onEvent(Event &event) {
             if (!event.getArg<bool>("fromServer")) return false;
             destroy(event.getArg<EntityId>("entityId"));
             break;
+        }
+		case SID("EVENT_TYPE_LEVEL_LOAD"): {
+			// Clear entities list and the pointers should automatically be cleaned up as they're shared ptrs
+			entities.clear();
         }
     }
     return false;
