@@ -83,6 +83,8 @@ level = {
         }
     },
     update = function(self)
+        if (self.hasPlayerWon) then return end
+
         for k, v in pairs(self.portalsCompleted) do
             local count = 0
             for k1, v1 in pairs(v) do
@@ -92,13 +94,19 @@ level = {
             -- check if all portals have been completed
             if (count == 3) then
                 print("Entity " .. k .. " has completed all portals and wins!")
+
+                self.hasPlayerWon = true
+                local event = engine.event.event.new("EVENT_TYPE_PLAYER_WIN")
+                event:setEntityId("entityId", k)
+                event:push()
             end
         end
     end,
     events = {
         "EVENT_TYPE_LEVEL_LOAD",
         "EVENT_TYPE_PLAYER_CONNECTED",
-        "EVENT_TYPE_PLAYER_DISCONNECTED"
+        "EVENT_TYPE_PLAYER_DISCONNECTED",
+        "EVENT_TYPE_PLAYER_WIN"
     },
     onEvent = function(self, event)
         if (event:type() == 1994444546) then -- EVENT_TYPE_PLAYER_CONNECTED
@@ -145,7 +153,12 @@ level = {
                         self.portalsCompleted[entityId][portalId] = true
                     end
                 end
+                self.hasPlayerWon = false
             end
+        elseif event:type() == 3655313229 then -- EVENT_TYPE_PLAYER_WIN
+            if engine.network.isServer then return end
+
+            
         end
         return false;
     end
