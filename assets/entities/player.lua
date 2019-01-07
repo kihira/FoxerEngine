@@ -32,10 +32,10 @@ return {
                     physics.velocity = physics.velocity + force
                 end
                 if (self.inputBitmask & 4 == 4) then
-                    physics.angularVelocity = physics.angularVelocity + 0.0025;
+                    physics.angularVelocity = physics.angularVelocity - 0.0025;
                 end
                 if (self.inputBitmask & 8 == 8) then
-                    physics.angularVelocity = physics.angularVelocity + -0.0025;
+                    physics.angularVelocity = physics.angularVelocity + 0.0025;
                 end
             end
 
@@ -60,7 +60,8 @@ return {
     end,
     events = {
         "EVENT_TYPE_ASSIGN_PLAYER",
-        "EVENT_TYPE_INPUT_PLAYER"
+        "EVENT_TYPE_INPUT_PLAYER",
+        "EVENT_TYPE_PLAYER_WIN"
     },
     onEvent = function(self, event)
         if event:type() == 697357692 then -- EVENT_TYPE_ASSIGN_PLAYER
@@ -101,6 +102,18 @@ return {
 
             -- Process input
             self.inputBitmask = event:getUShort("inputBitmask");
+        elseif event:type() == 3655313229 then -- EVENT_TYPE_PLAYER_WIN
+            if engine.network.isServer() then return end
+
+            if event:getEntityId("entityId") == self:id() and self.hasControl then
+                engine.graphics.camera.position = engine.math.vec3.new(0, 900, 10)
+                engine.graphics.camera.target = engine.math.vec3.new(0, 900, 0)
+            else
+                engine.graphics.camera.position = engine.math.vec3.new(0, 800, 10)
+                engine.graphics.camera.target = engine.math.vec3.new(0, 800, 0)
+            end
+
+            self.hasControl = false
         end
     end
 }

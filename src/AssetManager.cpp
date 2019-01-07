@@ -675,8 +675,12 @@ std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
 
             // Spawn entity
             auto entity = gEntityManager.spawn(prototypeId, entityId);
-            entity->setPosition(entityTable["position"]);
-			entity->setRotation(entityTable["rotation"]);
+			if (entityTable["position"] != sol::lua_nil) {
+				 entity->setPosition(entityTable["position"]);
+			}
+			if (entityTable["rotation"] != sol::lua_nil) {
+				 entity->setRotation(entityTable["rotation"]);
+			}
         }
     }
 

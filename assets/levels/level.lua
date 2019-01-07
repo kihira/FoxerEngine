@@ -4,6 +4,18 @@ level = {
     players = 2,
     entities = {
         {
+            prototypeId = 2979648629,
+            entityId = 9000
+        },
+        {
+            prototypeId = 2252448813,
+            entityId = 9001
+        },
+        {
+            prototypeId = 1316782920,
+            entityId = 9002
+        },
+        {
             prototypeId = 315271780,
             entityId = 10000,
             position = engine.math.vec3.new(0),
@@ -105,8 +117,7 @@ level = {
     events = {
         "EVENT_TYPE_LEVEL_LOAD",
         "EVENT_TYPE_PLAYER_CONNECTED",
-        "EVENT_TYPE_PLAYER_DISCONNECTED",
-        "EVENT_TYPE_PLAYER_WIN"
+        "EVENT_TYPE_PLAYER_DISCONNECTED"
     },
     onEvent = function(self, event)
         if (event:type() == 1994444546) then -- EVENT_TYPE_PLAYER_CONNECTED
@@ -144,10 +155,15 @@ level = {
             if (event:getStringId("levelId") == self:id()) then
                 print("Level loaded!")
 
+                -- position camera so its not in a bad place
+                if (engine.network.isClient()) then
+                    engine.graphics.camera.position = engine.math.vec3.new(0, 1000, 10);
+                    engine.graphics.camera.target = engine.math.vec3.new(0, 1000, 0)
+                end
+
                 -- setup some data structures
                 self.portalsCompleted = {}
                 self.portalHit = function(portalId, entityId)
-                    local portalsCompleted = self.portalsCompleted[entityId]
                     -- If haven't hit this portal already, store it
                     if (self.portalsCompleted[entityId][portalId] == nil) then
                         self.portalsCompleted[entityId][portalId] = true
@@ -155,10 +171,6 @@ level = {
                 end
                 self.hasPlayerWon = false
             end
-        elseif event:type() == 3655313229 then -- EVENT_TYPE_PLAYER_WIN
-            if engine.network.isServer then return end
-
-            
         end
         return false;
     end

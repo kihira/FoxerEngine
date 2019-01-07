@@ -31,7 +31,7 @@ void PhysicsComponent::update(float deltaTime) {
 
 	// Set rotation
 	auto rotation = entity->getRotation();
-	rotation.y = glm::degrees(body->GetAngle());
+	rotation.y = glm::degrees(-body->GetAngle());
 	entity->setRotation(rotation);
 
 	ignoreEvent = false;
@@ -101,7 +101,7 @@ bool PhysicsComponent::onEvent(Event& event) {
 			body->SetTransform(b2Vec2(entity->getPosition().x, entity->getPosition().z), body->GetAngle());
 			break;
 		case SID("EVENT_TYPE_ENTITY_ROTATION"):
-			body->SetTransform(body->GetPosition(), glm::radians(entity->getRotation().y));
+			body->SetTransform(body->GetPosition(), glm::radians(-entity->getRotation().y));
 			break;
 	}
 	return false;
