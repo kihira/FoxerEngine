@@ -97,6 +97,30 @@ level = {
     update = function(self)
         if (self.hasPlayerWon) then return end
 
+        if self.levelStartDelay > 0 and engine.network.clientsCount() == 2 then
+            self.levelStartDelay = self.levelStartDelay - 1;
+
+            -- Start level after a bit of delay to let things sync
+            if self.levelStartDelay == 0 then 
+                for i = 1, 2, 1 do
+					-- Spawn player entity and assign it
+					local player = engine.entity.spawnEntity("ENTITY_PLAYER")
+					local clientId = engine.network.getClientIds()[i]
+                    player.controllingClient = clientId
+                    player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 0);
+
+                    -- store player id in portals table so we can track
+                    self.portalsCompleted[player:id()] = {}
+
+					-- Send event out so client know its can control it
+					local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")
+					assignEvent:setClientId("clientId", clientId)
+					assignEvent:setEntityId("entityId", player:id())
+					assignEvent:push()
+                end
+            end
+        end
+
         for k, v in pairs(self.portalsCompleted) do
             local count = 0
             for k1, v1 in pairs(v) do
@@ -122,27 +146,6 @@ level = {
     onEvent = function(self, event)
         if (event:type() == 1994444546) then -- EVENT_TYPE_PLAYER_CONNECTED
             print("Player connected! Client ID: " .. event:getUShort("clientId"))
-
-			-- Wait until we have two players connected before starting
-			if (engine.network.clientsCount() == 2) then
-				for i = 1, 2, 1 do
-					-- Spawn player entity and assign it
-					local player = engine.entity.spawnEntity("ENTITY_PLAYER")
-					local clientId = engine.network.getClientIds()[i]
-                    player.controllingClient = clientId
-                    player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 0);
-
-                    -- store player id in portals table so we can track
-                    self.portalsCompleted[player:id()] = {}
-
-					-- Send event out so client know its can control it
-					local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")
-					assignEvent:setClientId("clientId", clientId)
-					assignEvent:setEntityId("entityId", player:id())
-					assignEvent:push()
-				end
-			end
-
         elseif event:type() == 415743068 then -- EVENT_TYPE_PLAYER_DISCONNECTED
             local clientId = event:getClientId("clientId")
             print("Client " .. clientId .. " disconnected")
@@ -170,6 +173,7 @@ level = {
                     end
                 end
                 self.hasPlayerWon = false
+                self.levelStartDelay = 60
             end
         end
         return false;
