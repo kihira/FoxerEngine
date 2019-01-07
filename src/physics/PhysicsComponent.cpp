@@ -2,6 +2,7 @@
 #include "PhysicsComponent.h"
 #include "../Managers.h"
 #include "PhysicsManager.h"
+#include <glm/detail/func_trigonometric.inl>
 
 PhysicsComponent::PhysicsComponent(
         const std::shared_ptr<Entity> &entity,
@@ -30,7 +31,7 @@ void PhysicsComponent::update(float deltaTime) {
 
 	// Set rotation
 	auto rotation = entity->getRotation();
-	rotation.y = body->GetAngle();
+	rotation.y = glm::degrees(-body->GetAngle());
 	entity->setRotation(rotation);
 
 	ignoreEvent = false;
@@ -100,7 +101,7 @@ bool PhysicsComponent::onEvent(Event& event) {
 			body->SetTransform(b2Vec2(entity->getPosition().x, entity->getPosition().z), body->GetAngle());
 			break;
 		case SID("EVENT_TYPE_ENTITY_ROTATION"):
-			body->SetTransform(body->GetPosition(), entity->getRotation().y);
+			body->SetTransform(body->GetPosition(), glm::radians(-entity->getRotation().y));
 			break;
 	}
 	return false;
@@ -119,7 +120,6 @@ void PhysicsComponent::setAngularVelocity(float velocity) {
     body->SetAngularVelocity(velocity);
 }
 
-const float PhysicsComponent::getAngularVelocity() const {
+float PhysicsComponent::getAngularVelocity() const {
     return body->GetAngularVelocity();
 }
-

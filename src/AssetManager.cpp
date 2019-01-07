@@ -25,6 +25,7 @@
 #include "render/Material.h"
 #include <glm/gtc/type_ptr.inl>
 #include "sound/Sample.h"
+#include <glm/detail/func_trigonometric.inl>
 
 
 #define ASSETS_FOLDER "./assets/"
@@ -547,13 +548,13 @@ std::shared_ptr<Entity> AssetManager::loadEntityPrototype(StringId id) {
 
         b2BodyDef bodyDef;
         bodyDef.active = physicsTable["active"].get_or(true);
-        bodyDef.angle = entity->getRotation().y;
         bodyDef.angularDamping = physicsTable["angularDamping"].get_or(0.f);
         bodyDef.bullet = physicsTable["bullet"].get_or(false);
         bodyDef.linearDamping = physicsTable["linearDamping"].get_or(0.f);
         bodyDef.gravityScale = physicsTable["gravityScale"].get_or(1.f);
         bodyDef.type = static_cast<b2BodyType>(physicsTable["type"].get_or(0));
         bodyDef.position.Set(entity->getPosition().x, entity->getPosition().z);
+		bodyDef.angle = glm::radians(entity->getRotation().y);
         bodyDef.fixedRotation = physicsTable["fixedRotation"].get_or(false);
 
         // Create fixture def
@@ -674,8 +675,12 @@ std::shared_ptr<Level> AssetManager::loadLevel(StringId id) {
 
             // Spawn entity
             auto entity = gEntityManager.spawn(prototypeId, entityId);
-            entity->setPosition(entityTable["position"]);
-			entity->setRotation(entityTable["rotation"]);
+			if (entityTable["position"] != sol::lua_nil) {
+				 entity->setPosition(entityTable["position"]);
+			}
+			if (entityTable["rotation"] != sol::lua_nil) {
+				 entity->setRotation(entityTable["rotation"]);
+			}
         }
     }
 
