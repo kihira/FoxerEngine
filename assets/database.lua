@@ -96,6 +96,11 @@ database = {
             args = {
                 "soundId"
             }
+        },
+        [3655313229] = { -- EVENT_TYPE_PLAYER_WIN
+            args = {
+                "entityId"
+            }
         }
     }
 }

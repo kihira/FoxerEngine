@@ -17,6 +17,21 @@ void LevelManager::startUp() {
         SID("EVENT_TYPE_PLAYER_CONNECTED"),
         SID("EVENT_TYPE_LEVEL_LOAD_SERVER")
         }, this);
+
+	// Register lua
+	sol::table levelTable = gAssetManager.getLua()["engine"].get<sol::table>().create_named("level");
+	levelTable["load"] = [](StringId id) { gLevelManager.loadLevel(id); };
+	levelTable["getActive"] = []() -> std::shared_ptr<Level> { return gLevelManager.activeLevel; };
+
+    // Register level type
+    levelTable.new_usertype<Level>(
+        "level",
+        "", sol::no_constructor,
+        "name", sol::property(&Level::getName, &Level::setName),
+		"id", &Level::getId,
+        sol::meta_function::index, &Level::dynamicGet,
+        sol::meta_function::new_index, &Level::dynamicSet
+    );
 }
 
 void LevelManager::shutDown() {

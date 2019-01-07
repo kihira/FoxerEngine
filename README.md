@@ -1,3 +1,13 @@
+# Foxer Engine
+## Demo
+An example demo game and binary can be found in the demo script file.
+
+The demo is a multiplayer game requiring two clients to connect before it will begin.
+The goal is to hit all the checkpoints first
+
+### Assets
+The assets for the demo are from the [Space Kit](https://www.kenney.nl/assets/space-kit) pack created by Kennynl licensed under CC0
+
 ## Libraries
 - GLFW 3.2.1 [zlib](http://www.glfw.org/license.html)
 - GLM 0.9.9.2 [MIT](https://github.com/g-truc/glm/blob/master/manual.md#section0)
@@ -18,3 +28,5 @@ should be as simple as just building the CMake project.
 
 You are able to open CMakeLists.txt inside of Visual Studio 2017 or you
 can generate the required file for your IDE using the `cmake -G` command.
+
+A visual studio project is also provided as well as the library files for a Release x64 build. If you wish to build in Debug then Box2D needs to be compiled in Debug.

@@ -16,6 +16,8 @@ return {
         beginContact = function(self, other)
             if (engine.network.isClient()) then
                 engine.sound.play(3989746563)
+            else
+                engine.level.getActive().portalHit(self:getEntity():id(), other:getEntity():id())
             end
         end
     }

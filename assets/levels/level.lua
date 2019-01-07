@@ -66,32 +66,51 @@ level = {
         {
             prototypeId = 592045845, -- ENTITY_PORTAL
             entityId = 10100,
-            position = engine.math.vec3.new(0, 0, 0),
+            position = engine.math.vec3.new(0, 0, -50),
             rotation = engine.math.vec3.new(0)
         },
         {
             prototypeId = 592045845, -- ENTITY_PORTAL
             entityId = 10101,
-            position = engine.math.vec3.new(0, 0, -20),
-            rotation = engine.math.vec3.new(0)
+            position = engine.math.vec3.new(30, 0, -150),
+            rotation = engine.math.vec3.new(0, 30, 0)
         },
         {
             prototypeId = 592045845, -- ENTITY_PORTAL
             entityId = 10103,
-            position = engine.math.vec3.new(0, 0, -50),
-            rotation = engine.math.vec3.new(0)
+            position = engine.math.vec3.new(100, 0, -250),
+            rotation = engine.math.vec3.new(0, 90, 0)
         }
     },
-    update = function(self) end,
+    update = function(self)
+        if (self.hasPlayerWon) then return end
+
+        for k, v in pairs(self.portalsCompleted) do
+            local count = 0
+            for k1, v1 in pairs(v) do
+                count = count + 1
+            end
+
+            -- check if all portals have been completed
+            if (count == 3) then
+                print("Entity " .. k .. " has completed all portals and wins!")
+
+                self.hasPlayerWon = true
+                local event = engine.event.event.new("EVENT_TYPE_PLAYER_WIN")
+                event:setEntityId("entityId", k)
+                event:push()
+            end
+        end
+    end,
     events = {
         "EVENT_TYPE_LEVEL_LOAD",
         "EVENT_TYPE_PLAYER_CONNECTED",
-        "EVENT_TYPE_PLAYER_DISCONNECTED"
+        "EVENT_TYPE_PLAYER_DISCONNECTED",
+        "EVENT_TYPE_PLAYER_WIN"
     },
     onEvent = function(self, event)
         if (event:type() == 1994444546) then -- EVENT_TYPE_PLAYER_CONNECTED
-            print("Player connected!")
-            print("Client ID: " .. event:getUShort("clientId"))
+            print("Player connected! Client ID: " .. event:getUShort("clientId"))
 
 			-- Wait until we have two players connected before starting
 			if (engine.network.clientsCount() == 2) then
@@ -100,7 +119,10 @@ level = {
 					local player = engine.entity.spawnEntity("ENTITY_PLAYER")
 					local clientId = engine.network.getClientIds()[i]
                     player.controllingClient = clientId
-                    player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 20);
+                    player.position = engine.math.vec3.new(-20 + ((i-1)*40), 4, 0);
+
+                    -- store player id in portals table so we can track
+                    self.portalsCompleted[player:id()] = {}
 
 					-- Send event out so client know its can control it
 					local assignEvent = engine.event.event.new("EVENT_TYPE_ASSIGN_PLAYER")
@@ -119,11 +141,24 @@ level = {
             -- self.players[clientId] = nil
 
         elseif event:type() == 1205121214 then -- EVENT_TYPE_LEVEL_LOAD
-            print("Level loaded!")
+            if (event:getStringId("levelId") == self:id()) then
+                print("Level loaded!")
 
-            engine.graphics.camera.position = engine.math.vec3.new(10, 10, 10)
-            engine.graphics.camera.target = engine.math.vec3.new(0)
+                -- setup some data structures
+                self.portalsCompleted = {}
+                self.portalHit = function(portalId, entityId)
+                    local portalsCompleted = self.portalsCompleted[entityId]
+                    -- If haven't hit this portal already, store it
+                    if (self.portalsCompleted[entityId][portalId] == nil) then
+                        self.portalsCompleted[entityId][portalId] = true
+                    end
+                end
+                self.hasPlayerWon = false
+            end
+        elseif event:type() == 3655313229 then -- EVENT_TYPE_PLAYER_WIN
+            if engine.network.isServer then return end
 
+            
         end
         return false;
     end
