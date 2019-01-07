@@ -49,6 +49,9 @@ public:
 
     void setPosition(const glm::vec3 &position);
 
+	/**
+	 * Returns the rotation of the entity in degrees
+	 */
     const glm::vec3 &getRotation() const;
 
     const std::string &getName() const;

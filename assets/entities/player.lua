@@ -32,10 +32,10 @@ return {
                     physics.velocity = physics.velocity + force
                 end
                 if (self.inputBitmask & 4 == 4) then
-                    physics.angularVelocity = physics.angularVelocity + 0.05;
+                    physics.angularVelocity = physics.angularVelocity + 0.0025;
                 end
                 if (self.inputBitmask & 8 == 8) then
-                    physics.angularVelocity = physics.angularVelocity + -0.05;
+                    physics.angularVelocity = physics.angularVelocity + -0.0025;
                 end
             end
 

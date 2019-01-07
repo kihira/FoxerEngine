@@ -18,6 +18,7 @@ private:
     b2FixtureDef fixtureDef;
     b2Body *body;
     b2Fixture *fixture;
+	glm::vec2 offset = glm::vec2(0.f); // The offset of the physics body from the entities position
 
 	// Used so we don't redundately set position during update loop
 	bool ignoreEvent = false;
@@ -33,26 +34,54 @@ public:
 
     Component *clone(std::shared_ptr<Entity> entity) override;
 
+	/**
+	 * Sets whether this component is active or not
+	 */
     void setActive(bool active) override;
 
+	/*
+	 * Sets the linear damping for the physics body
+	 */
     void setLinearDamping(float damping);
 
+	/*
+	 * Sets the angular damping for the physics body
+	 */
     void setAngularDamping(float damping);
 
+	/**
+	 * Sets the gravity scale for the physics body
+	 */
     void setGravityScale(float scale);
 
+	/*
+	 * Gets the velocity for the physics body
+	 */
     glm::vec2 getVelocity() const;
 
+	/*
+	 * Sets the velocity for the physics body
+	 */
     void setVelocity(glm::vec2 &velocity);
 
+	/*
+	 * Gets the position of the physics body.
+	 * NOTE: The position of the body may not be the same as the entity as the physics body could be offset
+	 */
     const glm::vec2 getPosition() const;
 
+	/**
+	 * Returns the rotation in radians
+	 */
     const float getRotation() const;
 
 	/**
-	 * Sets the position and rotation for the physics body
+	 * Sets the position and rotation for the physics body.
+	 * Rotation is in degrees
 	 * Does not immediately update the entities position and rotation.
 	 * It is preferred to set the entity position and rotation instead of using this function
+	 * @param position The position
+	 * @param rotation The rotation in radians
 	 */
     void setPositionAndRotation(glm::vec2 &position, float rotation);
 
@@ -62,7 +91,17 @@ public:
      */
     void setAngularVelocity(float velocity);
 
-    const float getAngularVelocity() const;
+	/*
+	 * Gets the angular velocity for the physics body in radian/sec
+	 */
+    float getAngularVelocity() const;
+
+	/**
+	 * Sets the body offset relative to the entities position.
+	 * This should only be done during the prototype stage.
+	 * This does not update the position of the body
+	 */
+	void setOffset(glm::vec2 offset);
 
     void beginContact(PhysicsComponent *other);
 
