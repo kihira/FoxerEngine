@@ -96,6 +96,7 @@ level = {
     },
     update = function(self)
         if (self.hasPlayerWon) then return end
+        if (engine.network.isClient()) then return end
 
         if self.levelStartDelay > 0 and engine.network.clientsCount() == 2 then
             self.levelStartDelay = self.levelStartDelay - 1;

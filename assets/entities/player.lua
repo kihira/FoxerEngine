@@ -104,8 +104,9 @@ return {
             self.inputBitmask = event:getUShort("inputBitmask");
         elseif event:type() == 3655313229 then -- EVENT_TYPE_PLAYER_WIN
             if engine.network.isServer() then return end
+            if self.hasControl == nil then return end
 
-            if event:getEntityId("entityId") == self:id() and self.hasControl then
+            if event:getEntityId("entityId") == self:id() then
                 engine.graphics.camera.position = engine.math.vec3.new(0, 900, 10)
                 engine.graphics.camera.target = engine.math.vec3.new(0, 900, 0)
             else
