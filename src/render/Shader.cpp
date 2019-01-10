@@ -8,7 +8,7 @@
 #include "RenderManager.h"
 #include "../util/assert.h"
 
-void Shader::registerUniform(std::string name) {
+void Shader::registerUniform(const char *name) {
     if (uniforms.find(name) != uniforms.end()) {
         spdlog::get("main")->warn("Already registered a uniform with the name: {}", name);
         return;
@@ -19,13 +19,13 @@ void Shader::registerUniform(std::string name) {
         return;
     }
 
-    auto uniformLoc = glGetUniformLocation(program, name.c_str());
+    auto uniformLoc = glGetUniformLocation(program, name);
     if (uniformLoc == -1) {
         spdlog::get("main")->error("Cannot find uniform  '{}' in the program. This will cause undefined behaviour", name);
 		// Proceed to carry on registering as -1 is still valid, just nothing happens
     }
 
-    uniforms.emplace(std::string(name), uniformLoc);
+    uniforms.emplace(name, uniformLoc);
 }
 
 Shader::Shader(GLuint program) : program(program) {
@@ -37,7 +37,7 @@ Shader::~Shader() {
 }
 
 template<typename T>
-void Shader::setUniform(const std::string &name, T value) {
+void Shader::setUniform(const char *name, T value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -52,7 +52,7 @@ GLuint Shader::getProgram() const {
 }
 
 template <>
-void Shader::setUniform<float>(const std::string &name, float value) {
+void Shader::setUniform<float>(const char *name, float value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("renderer")->warn("No uniform with the name '{}' is registered", name);
@@ -64,7 +64,7 @@ void Shader::setUniform<float>(const std::string &name, float value) {
 }
 
 template <>
-void Shader::setUniform<glm::vec2>(const std::string &name, glm::vec2 value) {
+void Shader::setUniform<glm::vec2>(const char *name, glm::vec2 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -76,7 +76,7 @@ void Shader::setUniform<glm::vec2>(const std::string &name, glm::vec2 value) {
 }
 
 template <>
-void Shader::setUniform<glm::vec3>(const std::string &name, glm::vec3 value) {
+void Shader::setUniform<glm::vec3>(const char *name, glm::vec3 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -88,7 +88,7 @@ void Shader::setUniform<glm::vec3>(const std::string &name, glm::vec3 value) {
 }
 
 template <>
-void Shader::setUniform<glm::vec4>(const std::string &name, glm::vec4 value) {
+void Shader::setUniform<glm::vec4>(const char *name, glm::vec4 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -100,7 +100,7 @@ void Shader::setUniform<glm::vec4>(const std::string &name, glm::vec4 value) {
 }
 
 template <>
-void Shader::setUniform<glm::mat2x2>(const std::string &name, glm::mat2x2 value) {
+void Shader::setUniform<glm::mat2x2>(const char *name, glm::mat2x2 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -112,7 +112,7 @@ void Shader::setUniform<glm::mat2x2>(const std::string &name, glm::mat2x2 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat2x3>(const std::string &name, glm::mat2x3 value) {
+void Shader::setUniform<glm::mat2x3>(const char *name, glm::mat2x3 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -124,7 +124,7 @@ void Shader::setUniform<glm::mat2x3>(const std::string &name, glm::mat2x3 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat2x4>(const std::string &name, glm::mat2x4 value) {
+void Shader::setUniform<glm::mat2x4>(const char *name, glm::mat2x4 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -136,7 +136,7 @@ void Shader::setUniform<glm::mat2x4>(const std::string &name, glm::mat2x4 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat3x2>(const std::string &name, glm::mat3x2 value) {
+void Shader::setUniform<glm::mat3x2>(const char *name, glm::mat3x2 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -148,7 +148,7 @@ void Shader::setUniform<glm::mat3x2>(const std::string &name, glm::mat3x2 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat3x3>(const std::string &name, glm::mat3x3 value) {
+void Shader::setUniform<glm::mat3x3>(const char *name, glm::mat3x3 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -160,7 +160,7 @@ void Shader::setUniform<glm::mat3x3>(const std::string &name, glm::mat3x3 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat3x4>(const std::string &name, glm::mat3x4 value) {
+void Shader::setUniform<glm::mat3x4>(const char *name, glm::mat3x4 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -172,7 +172,7 @@ void Shader::setUniform<glm::mat3x4>(const std::string &name, glm::mat3x4 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat4x2>(const std::string &name, glm::mat4x2 value) {
+void Shader::setUniform<glm::mat4x2>(const char *name, glm::mat4x2 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -184,7 +184,7 @@ void Shader::setUniform<glm::mat4x2>(const std::string &name, glm::mat4x2 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat4x3>(const std::string &name, glm::mat4x3 value) {
+void Shader::setUniform<glm::mat4x3>(const char *name, glm::mat4x3 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
@@ -196,7 +196,7 @@ void Shader::setUniform<glm::mat4x3>(const std::string &name, glm::mat4x3 value)
 }
 
 template <>
-void Shader::setUniform<glm::mat4x4>(const std::string &name, glm::mat4x4 value) {
+void Shader::setUniform<glm::mat4x4>(const char *name, glm::mat4x4 value) {
     auto uniformLoc = uniforms.find(name);
     if (uniformLoc == uniforms.end()) {
         spdlog::get("main")->warn("No uniform with the name '{}' is registered", name);
