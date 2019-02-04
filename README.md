@@ -1,3 +1,9 @@
+# Foxer Engine
+3D, data-driven, multiplayer, cross-platform engine developed during final year of University
+There is a bit of ugly code in here as I was up against deadlines but it is fully functional.
+
+I list some plans I want to do with this engine in FuturePlans.md but University currently takes priority.
+
 ## Libraries
 - GLFW 3.2.1 [zlib](http://www.glfw.org/license.html)
 - GLM 0.9.9.2 [MIT](https://github.com/g-truc/glm/blob/master/manual.md#section0)
