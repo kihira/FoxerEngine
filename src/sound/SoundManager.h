@@ -1,6 +1,6 @@
 
-#ifndef GAMEENGINE301CR_SOUNDMANAGER_H
-#define GAMEENGINE301CR_SOUNDMANAGER_H
+#ifndef FOXERENGINE_SOUNDMANAGER_H
+#define FOXERENGINE_SOUNDMANAGER_H
 
 #include <soloud.h>
 #include <spdlog/spdlog.h>
@@ -59,4 +59,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_SOUNDMANAGER_H
+#endif //FOXERENGINE_SOUNDMANAGER_H

@@ -3,8 +3,8 @@
 #include "../event/EventHandler.h"
 
 
-#ifndef GAMEENGINE301CR_COMPONENT_H
-#define GAMEENGINE301CR_COMPONENT_H
+#ifndef FOXERENGINE_COMPONENT_H
+#define FOXERENGINE_COMPONENT_H
 
 
 class Entity; // Forward deceleration
@@ -41,4 +41,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_COMPONENT_H
+#endif //FOXERENGINE_COMPONENT_H

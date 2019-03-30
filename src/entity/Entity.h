@@ -1,5 +1,5 @@
-#ifndef GAMEENGINE301CR_ENTITY_H
-#define GAMEENGINE301CR_ENTITY_H
+#ifndef FOXERENGINE_ENTITY_H
+#define FOXERENGINE_ENTITY_H
 
 #include <glm/vec3.hpp>
 #include <sol.hpp>
@@ -112,4 +112,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_ENTITY_H
+#endif //FOXERENGINE_ENTITY_H

@@ -148,7 +148,7 @@ void NetworkManager::registerPacket(PacketMeta meta) {
     }
 
     ASSERT(meta.packetHandler != nullptr);
-    ASSERT(meta.packetFlag > 0);
+    // ASSERT(meta.packetFlag > 0);
     ASSERT(meta.packetFlag < 4);
 
     packetHandlers.insert(std::pair<int, PacketMeta>(meta.id, meta));

@@ -61,7 +61,7 @@ void RenderManager::startUp() {
     camera->resize(settings->windowWidth, settings->windowHeight);
 
     // Set OpenGL state stuff
-    glClearColor(0, 0, 0, 1);
+    glClearColor(1, 0, 0, 1);
     glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 

@@ -1,6 +1,6 @@
 
-#ifndef GAMEENGINE301CR_KEYHANDLER_H
-#define GAMEENGINE301CR_KEYHANDLER_H
+#ifndef FOXERENGINE_KEYHANDLER_H
+#define FOXERENGINE_KEYHANDLER_H
 
 #include <vector>
 #include <sol.hpp>
@@ -40,4 +40,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_KEYHANDLER_H
+#endif //FOXERENGINE_KEYHANDLER_H

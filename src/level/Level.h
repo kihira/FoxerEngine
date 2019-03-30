@@ -1,6 +1,6 @@
 
-#ifndef GAMEENGINE301CR_LEVEL_H
-#define GAMEENGINE301CR_LEVEL_H
+#ifndef FOXERENGINE_LEVEL_H
+#define FOXERENGINE_LEVEL_H
 
 #include <string>
 #include <sol.hpp>
@@ -60,4 +60,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_LEVEL_H
+#endif //FOXERENGINE_LEVEL_H

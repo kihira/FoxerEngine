@@ -1,5 +1,5 @@
-#ifndef GAMEENGINE301CR_MANAGERS_H
-#define GAMEENGINE301CR_MANAGERS_H
+#ifndef FOXERENGINE_MANAGERS_H
+#define FOXERENGINE_MANAGERS_H
 #pragma once
 
 // Forward declare for performance
@@ -25,4 +25,4 @@ extern InputManager gInputManager;
 extern EventManager gEventManager;
 extern LevelManager gLevelManager;
 
-#endif //GAMEENGINE301CR_MANAGERS_H
+#endif //FOXERENGINE_MANAGERS_H

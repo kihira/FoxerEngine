@@ -1,5 +1,5 @@
-#ifndef GAMEENGINE301CR_MESH_H
-#define GAMEENGINE301CR_MESH_H
+#ifndef FOXERENGINE_MESH_H
+#define FOXERENGINE_MESH_H
 
 #include <glad/glad.h>
 #include <vector>
@@ -29,4 +29,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_MESH_H
+#endif //FOXERENGINE_MESH_H

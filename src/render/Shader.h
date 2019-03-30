@@ -1,5 +1,5 @@
-#ifndef GAMEENGINE301CR_SHADER_H
-#define GAMEENGINE301CR_SHADER_H
+#ifndef FOXERENGINE_SHADER_H
+#define FOXERENGINE_SHADER_H
 
 
 #include <map>
@@ -31,4 +31,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_SHADER_H
+#endif //FOXERENGINE_SHADER_H

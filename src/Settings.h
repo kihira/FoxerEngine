@@ -1,5 +1,5 @@
-#ifndef GAMEENGINE301CR_SETTINGS_H
-#define GAMEENGINE301CR_SETTINGS_H
+#ifndef FOXERENGINE_SETTINGS_H
+#define FOXERENGINE_SETTINGS_H
 
 #include <string>
 #include "util/StringId.h"
@@ -16,4 +16,4 @@ struct Settings {
     float tickRate = 1.f / 60.f;
 };
 
-#endif //GAMEENGINE301CR_SETTINGS_H
+#endif //FOXERENGINE_SETTINGS_H

@@ -1,6 +1,6 @@
 
-#ifndef GAMEENGINE301CR_EVENT_H
-#define GAMEENGINE301CR_EVENT_H
+#ifndef FOXERENGINE_EVENT_H
+#define FOXERENGINE_EVENT_H
 
 #include <map>
 #include <string>
@@ -64,4 +64,4 @@ public:
     void deserialise(void *data);
 };
 
-#endif //GAMEENGINE301CR_EVENT_H
+#endif //FOXERENGINE_EVENT_H

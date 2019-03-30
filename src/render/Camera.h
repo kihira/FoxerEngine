@@ -1,6 +1,6 @@
 
-#ifndef GAMEENGINE301CR_CAMERA_H
-#define GAMEENGINE301CR_CAMERA_H
+#ifndef FOXERENGINE_CAMERA_H
+#define FOXERENGINE_CAMERA_H
 
 
 #include <glm/glm.hpp>
@@ -61,4 +61,4 @@ public:
 };
 
 
-#endif //GAMEENGINE301CR_CAMERA_H
+#endif //FOXERENGINE_CAMERA_H

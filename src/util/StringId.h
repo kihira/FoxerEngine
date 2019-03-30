@@ -1,6 +1,6 @@
 
-#ifndef GAMEENGINE301CR_SIDPREPROCESSOR_H
-#define GAMEENGINE301CR_SIDPREPROCESSOR_H
+#ifndef FOXERENGINE_SIDPREPROCESSOR_H
+#define FOXERENGINE_SIDPREPROCESSOR_H
 
 #define SID(str) processString(str)
 
@@ -17,4 +17,4 @@ constexpr unsigned int processString(const char *str) {
     return hash;
 }
 
-#endif //GAMEENGINE301CR_SIDPREPROCESSOR_H
+#endif //FOXERENGINE_SIDPREPROCESSOR_H
