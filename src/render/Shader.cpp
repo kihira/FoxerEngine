@@ -8,7 +8,7 @@
 #include "RenderManager.h"
 #include "../util/assert.h"
 
-void Shader::registerUniform(const char *name) {
+void Shader::registerUniform(std::string name) {
     if (uniforms.find(name) != uniforms.end()) {
         spdlog::get("main")->warn("Already registered a uniform with the name: {}", name);
         return;
@@ -19,7 +19,7 @@ void Shader::registerUniform(const char *name) {
         return;
     }
 
-    auto uniformLoc = glGetUniformLocation(program, name);
+    auto uniformLoc = glGetUniformLocation(program, name.c_str());
     if (uniformLoc == -1) {
         spdlog::get("main")->error("Cannot find uniform  '{}' in the program. This will cause undefined behaviour", name);
 		// Proceed to carry on registering as -1 is still valid, just nothing happens

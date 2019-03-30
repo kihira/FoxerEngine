@@ -7,7 +7,7 @@
 class Shader final {
 private:
     unsigned int program = 0;
-    std::map<const char *, int> uniforms;
+    std::map<std::string, int> uniforms;
 public:
     explicit Shader(unsigned int program);
 
@@ -17,7 +17,7 @@ public:
      * Pre-emptively looks up a uniforms location and stores it for faster access later
      * @param name
      */
-    void registerUniform(const char *name);
+    void registerUniform(std::string name);
     /**
      *
      * @tparam T

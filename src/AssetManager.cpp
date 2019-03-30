@@ -425,13 +425,13 @@ std::shared_ptr<Shader> AssetManager::loadShaderProgram(StringId id) {
 
     // Create shader object and register uniforms
     auto shader = std::make_shared<Shader>(program);
-    shader->registerUniform("model");
-    shader->registerUniform("view");
-    shader->registerUniform("projection");
+    shader->registerUniform(std::string("model"));
+    shader->registerUniform(std::string("view"));
+    shader->registerUniform(std::string("projection"));
 
     if (assetData["uniforms"] != sol::lua_nil) {
-        auto uniforms = assetData["uniforms"].get<std::vector<const char *>>();
-        for (auto &uniform : uniforms) {
+        std::vector<std::string> uniforms = assetData["uniforms"].get<std::vector<std::string>>();
+        for (auto uniform : uniforms) {
             shader->registerUniform(uniform);
         }
     }
