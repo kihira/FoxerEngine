@@ -1,4 +1,9 @@
 # Foxer Engine
+3D, data-driven, multiplayer, cross-platform engine developed during final year of University
+There is a bit of ugly code in here as I was up against deadlines but it is fully functional.
+
+I list some plans I want to do with this engine in FuturePlans.md but University currently takes priority.
+
 ## Demo
 An example demo game and binary can be found in the demo script file.
 
@@ -28,5 +33,3 @@ should be as simple as just building the CMake project.
 
 You are able to open CMakeLists.txt inside of Visual Studio 2017 or you
 can generate the required file for your IDE using the `cmake -G` command.
-
-A visual studio project is also provided as well as the library files for a Release x64 build. If you wish to build in Debug then Box2D needs to be compiled in Debug.
